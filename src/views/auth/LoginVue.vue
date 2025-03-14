@@ -1,4 +1,5 @@
 <script setup>
+  import AlertComponent from '@/components/AlertComponent.vue';
   import { useRouter } from 'vue-router';
   import { useAuthStore } from '@/store/auth';
   import { reactive } from 'vue';
@@ -49,10 +50,13 @@
 
 <template>
 
+  <!-- alert success -->
+  <AlertComponent/>
+
   <div class="w-full sm:w-4/6 lg:w-2/6 p-8 flex flex-col items-center">
     <!-- Logo -->
     <div class="mb-8 bg-blue-500/20 p-3 rounded-lg">
-      <img width="40" height="40" src="/public/images/logo-chatwave.png" alt="">
+      <img width="40" height="40" src="/images/logo-chatwave.png" alt="">
     </div>
 
     <!-- Form -->

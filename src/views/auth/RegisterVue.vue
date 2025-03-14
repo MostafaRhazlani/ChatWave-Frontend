@@ -2,7 +2,9 @@
   import { useRouter } from 'vue-router';
   import axios from '@/plugins/axios';
   import { reactive } from 'vue';
+  import { useAlertStore } from '@/store/alert';
 
+  const alertStore = useAlertStore();
   const router = useRouter();
   const form = reactive({
     'full_name': '',
@@ -25,6 +27,7 @@
         error.errors = {};
         Object.keys(form).forEach(key => form[key] = "");
 
+        alertStore.triggerAlert('User created successfully', 'success' );
         router.push('/login');
       } else {
         error.errors = { error: 'something wrong'};
