@@ -1,4 +1,5 @@
 <script setup>
+    import { User, Settings, LogOut } from 'lucide-vue-next';
     import { useAuthStore } from '@/store/auth';
     import { useRouter } from 'vue-router';
 
@@ -12,7 +13,7 @@
 </script>
 
 <template>
-    <div class="w-64 absolute md:flex flex-col bg-slate-800 shadow-md rounded-lg overflow-hidden">
+    <div class="w-64 md:flex absolute flex-col bg-slate-800 shadow-md rounded-lg overflow-hidden">
         <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
         <div class="p-4 border-b">
             <div class="mb-4 flex flex-col">
@@ -26,16 +27,16 @@
             </div>
         </div>
         <div class="p-2">
-            <div class="flex gap-2 px-2 py-1 hover:bg-slate-700 rounded cursor-pointer">
-                <span><i class="fa-solid fa-user"></i></span>
-                <p>Profile</p>
+            <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+                <User :size="22"/>
+                <RouterLink to="/profile" >Profile</RouterLink>
             </div>
-            <div class="flex gap-2 px-2 py-1 hover:bg-slate-700 rounded cursor-pointer">
-                <span><i class="fa-solid fa-gear"></i></span>
+            <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+                <Settings :size="22"/>
                 <p>Settings</p>
             </div>
-            <div @click="logout" class="flex gap-2 px-2 py-1 hover:bg-slate-700 rounded cursor-pointer">
-                <span><i class="fa-solid fa-right-from-bracket"></i></span>
+            <div @click="logout" class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+                <LogOut :size="22"/>
                 <p>Logout</p>
             </div>
         </div>
