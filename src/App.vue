@@ -1,14 +1,10 @@
 <script setup>
-  import { RouterView } from 'vue-router';
+import { RouterView } from 'vue-router';
+
 </script>
 
 <template>
-
-  <main>
-    <RouterView />
-  </main>
+    <div class="h-screen flex items-center justify-center bg-slate-900">
+      <RouterView />
+    </div>
 </template>
-
-<style scoped>
-
-</style>
