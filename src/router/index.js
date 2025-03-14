@@ -19,6 +19,7 @@ const router = createRouter({
       component: () => import('../views/pages/HomeVue.vue'),
       meta: {
         showSidebar: true,
+        showHeader: true
       },
     },
   ],
