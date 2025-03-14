@@ -13,6 +13,14 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/auth/LoginVue.vue'),
     },
+    {
+      path: '/',
+      name: 'Home',
+      component: () => import('../views/pages/HomeVue.vue'),
+      meta: {
+        showSidebar: true,
+      },
+    },
   ],
 });
 
