@@ -3,11 +3,11 @@
     import { useAuthStore } from '@/store/auth';
     import { useRouter } from 'vue-router';
 
-    const store = useAuthStore();
+    const authStore = useAuthStore();
     const router = useRouter();
 
     const logout = () => {
-        store.logout();
+        authStore.logout();
         router.push('/login')
     }
 </script>
@@ -17,9 +17,9 @@
         <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
         <div class="p-4 border-b">
             <div class="mb-4 flex flex-col">
-                <img src="https://i.pravatar.cc/40?img=12" alt="Profile" class="w-10 h-10 rounded-full mb-2" />
-                <span class="font-bold text-lg -mb-1">{{ store.user.full_name }}</span>
-                <span class="">{{ store.user.username }}</span>
+                <img :src="`/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 rounded-full mb-2" />
+                <span class="font-bold text-lg -mb-1">{{ authStore.user.full_name }}</span>
+                <span class="">{{ authStore.user.username }}</span>
             </div>
             <div class="flex gap-5 text-sm">
                 <p><span class="font-bold">200k</span> following</p>

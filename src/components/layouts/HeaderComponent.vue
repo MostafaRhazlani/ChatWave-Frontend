@@ -1,8 +1,10 @@
 <script setup>
+    import { useAuthStore } from '@/store/auth';
     import { Bell, MessageSquareText } from 'lucide-vue-next';
     import CardAccount from '../CardAccountComponent.vue';
     import { ref } from 'vue';
 
+    const authStore = useAuthStore();
     const isCardVisible = ref(false);
 
     const dropdawnAccount = () => {
@@ -31,7 +33,7 @@
                 </transition>
                 
                 <div class="flex items-center ml-4" @click="dropdawnAccount">
-                    <img src="https://i.pravatar.cc/40?img=12" alt="Profile" class="w-12 h-12 rounded-full mr-2" />
+                    <img :src="`/images/${authStore.user.image}`" alt="Profile" class="w-12 h-12 rounded-full mr-2" />
                 </div>
             </div>
         </div>

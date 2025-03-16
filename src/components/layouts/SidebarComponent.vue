@@ -1,12 +1,13 @@
 <script setup>
 
 import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight } from 'lucide-vue-next';
-import router from '@/router';
+import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import CardAccount from '@/components/CardAccountComponent.vue';
 import { ref, watch } from 'vue';
 
 const authStore = useAuthStore();
+const route = useRoute();
 const isCardVisible = ref(false);
 const typeArrow = ref("rotate-0");
 
@@ -17,6 +18,7 @@ const dropdawnAccount = () => {
 watch(isCardVisible, (newValue) => {
     typeArrow.value = newValue ? "-rotate-90" : "rotate-0";
 });
+
 
 </script>
 
@@ -32,9 +34,11 @@ watch(isCardVisible, (newValue) => {
 
         <div class="flex flex-col justify-between h-full w-full">
             <nav class="flex justify-between md:flex-col gap-2">
-                <div class="bg-gray-700 p-2 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <House :size="30" />
-                    <span class="hidden lg:block">Home</span>
+                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Home' }">  
+                    <RouterLink to="/" class="hidden lg:flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <House :size="30" />
+                        <span class="hidden lg:block">Home</span>
+                    </RouterLink>
                 </div>
                 <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                     <TvMinimalPlay :size="30"/>
@@ -60,12 +64,12 @@ watch(isCardVisible, (newValue) => {
                     <Layers2 :size="30"/>
                     <span class="hidden lg:block">Pages</span>
                 </div>
-                <RouterLink to="/profile" class="hidden lg:block">
-                    <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Profile' }">    
+                    <RouterLink to="/profile" class="hidden lg:flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <User :size="30"/>
                         <span >Profile</span>
-                    </div>
-                </RouterLink>
+                    </RouterLink>
+                </div>
             </nav>
 
             <!-- card account -->
@@ -76,7 +80,7 @@ watch(isCardVisible, (newValue) => {
 
                  <!-- account -->
                 <div @click="dropdawnAccount" class="flex justify-center px-2 cursor-pointer">
-                    <img src="https://i.pravatar.cc/40?img=12" alt="Profile" class="w-8 h-8 rounded-full lg:mr-3" />
+                    <img :src="`/images/${authStore.user.image}`" alt="Profile" class="w-8 h-8 rounded-full lg:mr-3" />
                     <div class="hidden lg:flex items-center justify-between gap-3 w-full">
                         <span class="hidden lg:block">{{ authStore.user.full_name }}</span>
                         <span class="hidden lg:block duration-150" :class="typeArrow"><ChevronRight /></span>
