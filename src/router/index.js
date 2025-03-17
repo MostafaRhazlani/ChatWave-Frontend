@@ -19,6 +19,8 @@ const router = createRouter({
       name: 'Home',
       component: () => import('../views/pages/HomeVue.vue'),
       meta: {
+        requiresAuth: true, 
+        role: 'user',
         showSidebar: true,
         showHeader: true
       },
@@ -28,8 +30,8 @@ const router = createRouter({
       name: 'Profile',
       component: () => import('../views/pages/ProfileVue.vue'),
       meta: {
-        requiresAuth: true, 
-        role: 'user', 
+        requiresAuth: true,
+        role: 'user',
         showSidebar: true,
         showHeader: true
       },

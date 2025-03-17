@@ -4,7 +4,7 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: localStorage.getItem("token") || "",
     userRole: localStorage.getItem("role") || "",
-    user: JSON.parse(sessionStorage.getItem("user")) || []
+    user: JSON.parse(localStorage.getItem("user")) || []
   }),
 
   actions: {
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore("auth", {
 
     setUser(user) {
       this.user = user; 
-      sessionStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
     },
 
     logout() {
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth", {
       this.user = ""; 
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("user");
     },
   },
 });
