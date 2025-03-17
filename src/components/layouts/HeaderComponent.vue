@@ -21,10 +21,10 @@
         </div>
         <div class="flex">
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center space-x-3 cursor-pointer">
-                <Bell :size="30"/>
+                <Bell :size="30" :stroke-width="1.5"/>
             </div>
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
-                <MessageSquareText :size="30"/>
+                <MessageSquareText :size="30" :stroke-width="1.5"/>
             </div>
 
             <div class="relative">

@@ -24,7 +24,7 @@ watch(isCardVisible, (newValue) => {
 
 <template lang="">
     <!-- Left sidebar -->
-    <div class="w-full md:flex md:flex-col md:items-center md:w-16 lg:w-72 md:h-screen h-16 bg-gray-800 px-2 md:py-6 py-2 fixed z-30 md:static left-0 bottom-0">
+    <div class="w-full md:flex md:flex-col md:items-center md:w-16 lg:w-72 md:h-screen h-16 bg-slate-800 px-2 md:py-6 py-2 fixed z-30 md:static left-0 bottom-0">
         <div class="w-full hidden md:flex items-center md:justify-center lg:justify-start mb-16">
             <div class="font-bold text-lg flex items-center gap-3">
                 <img width="40" height="40" src="/images/logo-chatwave.png" alt="">
@@ -35,39 +35,39 @@ watch(isCardVisible, (newValue) => {
         <div class="flex flex-col justify-between h-full w-full">
             <nav class="flex justify-between md:flex-col gap-2">
                 <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Home' }">  
-                    <RouterLink to="/" class="hidden lg:flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <House :size="30" />
+                    <RouterLink to="/" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <House :size="30" :stroke-width="1.5"/>
                         <span class="hidden lg:block">Home</span>
                     </RouterLink>
                 </div>
                 <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <TvMinimalPlay :size="30"/>
+                    <TvMinimalPlay :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Videos</span>
                 </div>
                 <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-                    <MessageSquareText :size="30"/>
+                    <MessageSquareText :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Messages</span>
                 </div>
                 <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <Search :size="30"/>
+                    <Search :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Search</span>
                 </div>
                 <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-                    <Bell :size="30"/>
+                    <Bell :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Notification</span>
                 </div>
                 <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <Users :size="30"/>
+                    <Users :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">People</span>
                 </div>
                 <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <Layers2 :size="30"/>
+                    <Layers2 :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Pages</span>
                 </div>
                 <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Profile' }">    
-                    <RouterLink to="/profile" class="hidden lg:flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <User :size="30"/>
-                        <span >Profile</span>
+                    <RouterLink to="/profile" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <User :size="30" :stroke-width="1.5"/>
+                        <span class="hidden lg:block">Profile</span>
                     </RouterLink>
                 </div>
             </nav>
