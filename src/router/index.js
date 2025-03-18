@@ -36,6 +36,17 @@ const router = createRouter({
         showHeader: true
       },
     },
+    {
+      path: '/account/settings',
+      name: 'AccountSettings',
+      component: () => import('../views/pages/AccountSettingsVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
   ],
 });
 
