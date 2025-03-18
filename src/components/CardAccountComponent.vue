@@ -13,7 +13,7 @@
 </script>
 
 <template>
-    <div class="w-64 md:flex absolute flex-col bg-slate-800 shadow-md rounded-lg overflow-hidden">
+    <div class="w-64 md:flex absolute flex-col bg-slate-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
         <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
         <div class="p-4 border-b">
             <div class="mb-4 flex flex-col">
@@ -33,7 +33,7 @@
             </div>
             <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <Settings :size="22"/>
-                <p>Settings</p>
+                <RouterLink to="/account/settings" >Account Settings</RouterLink>
             </div>
             <div @click="logout" class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <LogOut :size="22"/>

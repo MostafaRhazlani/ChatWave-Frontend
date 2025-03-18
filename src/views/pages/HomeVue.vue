@@ -35,7 +35,7 @@
           <div class="w-full lg:w-[60%] xl:w-[70%]">
             <!-- Fixed Create Post Section -->
             <div class="mb-4">
-              <div class="bg-slate-800 rounded-lg p-4">
+              <div class="bg-slate-800 border border-gray-700 rounded-lg p-4">
                 <div class="flex items-center gap-3">
                   <input type="text" placeholder="What do you have in mind?"
                     class="bg-gray-700 text-white rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-1 focus:ring-cyan-400" />
@@ -53,7 +53,7 @@
             <div class="overflow-y-auto scrollbar-hide">
               <div class="space-y-6">
                 <!-- Multiple Posts -->
-                <div v-for="post in 5" :key="`post-${post}`" class="bg-slate-800 rounded-lg overflow-hidden">
+                <div v-for="post in 5" :key="`post-${post}`" class="bg-slate-800 rounded-lg overflow-hidden border border-gray-700">
                   <!-- Post Header -->
                   <div class="p-4 flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
@@ -171,7 +171,7 @@
           <!-- Fixed Right Sidebar -->
           <div class="hidden lg:block md:w-[40%] xl:w-[30%] h-screen sticky top-0">
             <!-- Online Friends -->
-            <div class="mb-4 bg-slate-800 p-4 rounded-lg">
+            <div class="mb-4 bg-slate-800 p-4 rounded-lg border border-gray-700">
               <h3 class="text-sm font-semibold mb-3">Online Friends</h3>
               <div class="relative">
                 <div class="flex gap-2 overflow-x-scroll scrollbar-hide stories-container">
@@ -186,7 +186,7 @@
             </div>
 
             <!-- People You Might Know -->
-            <div class="bg-slate-800 p-4 rounded-lg w-full">
+            <div class="bg-slate-800 p-4 rounded-lg w-full border border-gray-700">
               <h3 class="text-sm font-semibold mb-3">People You might know</h3>
               <div class="space-y-3">
                 <div v-for="i in 5" :key="`suggestion-${i}`" class="flex items-center justify-between">
