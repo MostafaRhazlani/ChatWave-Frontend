@@ -1,5 +1,7 @@
 <script setup>
+  import CountriesComponent from '@/components/CountriesComponent.vue';
   import { useRouter } from 'vue-router';
+  import { ChevronDown } from 'lucide-vue-next';
   import axios from '@/plugins/axios';
   import { reactive } from 'vue';
   import { useAlertStore } from '@/store/alert';
@@ -81,9 +83,16 @@
 
           <!-- Third Row -->
           <div class="col-span-1">
-            <input v-model="form.nationality" type="text" placeholder="Nationality"
-              class="w-full px-4 py-2 rounded bg-slate-800 border border-slate-700 text-gray-300 focus:outline-none focus:border-blue-500" />
-              <p class="text-red-600">{{ error.errors.nationality ? error.errors.nationality[0] : '' }}</p>
+            <div class="relative">
+              <select v-model="form.nationality" id="" class="w-full px-4 py-2 rounded bg-slate-800 border border-slate-700 text-gray-300 focus:outline-none focus:border-blue-500 appearance-none">
+                <CountriesComponent />
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <ChevronDown :size="20" class="opacity-60"/>
+              </div>
+            </div>
+
+            <p class="text-red-600">{{ error.errors.nationality ? error.errors.nationality[0] : '' }}</p>
           </div>
           <div class="col-span-1">
             <input v-model="form.date_birth" type="date" placeholder="Date of Birth"
