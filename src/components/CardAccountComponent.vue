@@ -17,7 +17,7 @@
         <div class="bg-gradient-to-r from-pink-500 to-rose-500 h-2"></div>
         <div class="p-4 border-b">
             <div class="mb-4 flex flex-col">
-                <img :src="`/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 rounded-full mb-2" />
+                <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 rounded-full mb-2" />
                 <span class="font-bold text-lg -mb-1">{{ authStore.user.full_name }}</span>
                 <span class="">{{ authStore.user.username }}</span>
             </div>

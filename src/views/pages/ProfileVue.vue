@@ -58,11 +58,13 @@ onMounted(() => {
             <!-- Profile Header -->
             <div class="border-b border-gray-800 pb-6">
                 <div class="flex flex-col text-center md:flex-row md:text-start gap-6 items-center pt-8 px-4">
-                    <div class="max-w-36 max-h-36 rounded-full border-4 p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
-                        <img class="rounded-full" :src="`/images/${authStore.user.image}`" alt="">
+                    <div>
+                        <div class="w-36 h-36 rounded-full border-4 p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
+                            <img class="w-full h-full object-cover rounded-full" :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile Image">
+                        </div>
                     </div>
 
-                    <div>
+                    <div class="w-full">
                         <h1 class="text-3xl font-bold mt-4">{{ authStore.user.full_name }}</h1>
                         <p class="text-pink-500 text-lg">@{{ authStore.user.username }}</p>
 
@@ -73,7 +75,7 @@ onMounted(() => {
                             Talk about yourself here
                         </p>
 
-                        <div class="flex justify-between w-full max-w-xs mx-auto md:mx-0 mt-4">
+                        <div class="flex justify-between w-3/4 md:w-2/6 mx-auto md:mx-0 mt-4">
                             <div class="text-center">
                                 <p class="text-gray-400">Posts</p>
                                 <p class="font-bold">{{ posts.length }}</p>

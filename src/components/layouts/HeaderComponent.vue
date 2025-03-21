@@ -33,7 +33,7 @@
                 </transition>
                 
                 <div class="flex items-center ml-4" @click="dropdawnAccount">
-                    <img :src="`/images/${authStore.user.image}`" alt="Profile" class="w-12 h-12 rounded-full mr-2" />
+                    <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-12 h-12 rounded-full mr-2" />
                 </div>
             </div>
         </div>

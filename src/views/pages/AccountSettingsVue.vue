@@ -1,7 +1,7 @@
 <template>
 
     <!-- alert success -->
-    <AlertComponent/>
+    <AlertComponent />
 
     <div class="mt-20 md:mt-0 text-white p-4 md:p-6">
         <div class="w-full md:w-4/5 lg:w-4/5 xl:w-3/5 mx-auto mb-16">
@@ -9,20 +9,23 @@
                 <!-- Profile Header -->
                 <div class="flex gap-4 items-center p-10">
                     <div class="relative group">
-                        <div @click="selectFile" class="w-20 h-20 rounded-full overflow-hidden bg-gray-800 border-4 border-gray-800">
-                            <img :src="profileImage"
-                                alt="Profile" class="w-full h-full object-cover" />
+                        <div @click="selectFile"
+                            class="w-20 h-20 rounded-full overflow-hidden bg-gray-800 border-4 border-gray-800">
+                            <img :src="profileImage" alt="Profile" class="w-full h-full object-cover" />
                         </div>
-                        <div @click="selectFile" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 rounded-full transition-opacity cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="text-white">
+                        <div @click="selectFile"
+                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 rounded-full transition-opacity cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-white">
                                 <path
                                     d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
                                 <circle cx="12" cy="13" r="3" />
                             </svg>
                         </div>
-                        <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="uploadFile">
+                        <form enctype="multipart/form-data">
+                            <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="uploadFile">
+                        </form>
                     </div>
                     <div>
                         <h1 class="text-2xl font-bold">{{ authStore.user.full_name }}</h1>
@@ -57,14 +60,14 @@
                                 <!-- Username -->
                                 <div class="grid gap-2 w-full mb-6 md:mb-0">
                                     <label for="username" class="text-sm font-medium text-gray-300">Username</label>
-                                    <input v-model="formData.username" id="username" type="text" placeholder="Username"
+                                    <input v-model="form.username" id="username" type="text" placeholder="Username"
                                         class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
                                 </div>
 
                                 <!-- Full name -->
                                 <div class="grid gap-2 w-full">
                                     <label for="full_name" class="text-sm font-medium text-gray-300">Full name</label>
-                                    <input v-model="formData.full_name" id="full_name" type="text" placeholder="Full name"
+                                    <input v-model="form.full_name" id="full_name" type="text" placeholder="Full name"
                                         class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
                                 </div>
                             </div>
@@ -72,14 +75,14 @@
                             <!-- Email -->
                             <div class="grid gap-2">
                                 <label for="email" class="text-sm font-medium text-gray-300">Email</label>
-                                <input v-model="formData.email" id="email" type="email" placeholder="Email"
+                                <input v-model="form.email" id="email" type="email" placeholder="Email"
                                     class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
                             </div>
 
                             <!-- Bio -->
                             <div class="grid gap-2">
                                 <label for="bio" class="text-sm font-medium text-gray-300">Bio</label>
-                                <textarea id="bio" rows="4" placeholder="Enter your bio" v-model="formData.description"
+                                <textarea id="bio" rows="4" placeholder="Enter your bio" v-model="form.description"
                                     class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-none"></textarea>
                             </div>
 
@@ -87,17 +90,19 @@
                                 <!-- Dte birth -->
                                 <div class="grid gap-2 w-full mb-6 md:mb-0">
                                     <label for="date_birth" class="text-sm font-medium text-gray-300">Date Birth</label>
-                                    <input v-model="formData.date_birth" id="date_birth" type="date"
+                                    <input v-model="form.date_birth" id="date_birth" type="date"
                                         class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
                                 </div>
 
                                 <!-- Nationality -->
                                 <div class="grid gap-2 w-full">
-                                    <label for="nationality" class="text-sm font-medium text-gray-300">Nationality</label>
+                                    <label for="nationality"
+                                        class="text-sm font-medium text-gray-300">Nationality</label>
                                     <div class="relative">
-                                        <CountriesComponent v-model="formData.nationality"/>
-                                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                            <ChevronDown :size="20" class="opacity-60"/>
+                                        <CountriesComponent v-model="form.nationality" />
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                            <ChevronDown :size="20" class="opacity-60" />
                                         </div>
                                     </div>
                                 </div>
@@ -108,22 +113,24 @@
                                 <div class="grid gap-2 w-full mb-6 md:mb-0">
                                     <label for="gender" class="text-sm font-medium text-gray-300">Gender</label>
                                     <div class="relative">
-                                        <select id="gender" v-model="formData.gender"
+                                        <select id="gender" v-model="form.gender"
                                             class="appearance-none bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                         </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                            <ChevronDown :size="20" class="opacity-60"/>
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                            <ChevronDown :size="20" class="opacity-60" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Relationship Status -->
                                 <div class="grid gap-2 w-full">
-                                    <label for="relationship" class="text-sm font-medium text-gray-300">Relationship</label>
+                                    <label for="relationship"
+                                        class="text-sm font-medium text-gray-300">Relationship</label>
                                     <div class="relative">
-                                        <select v-model="formData.relationship" id="relationship"
+                                        <select v-model="form.relationship" id="relationship"
                                             class="appearance-none bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
                                             <option value="none">None</option>
                                             <option value="single">Single</option>
@@ -131,8 +138,9 @@
                                             <option value="married">Married</option>
                                             <option value="complicated">It's complicated</option>
                                         </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                            <ChevronDown :size="20" class="opacity-60"/>
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                            <ChevronDown :size="20" class="opacity-60" />
                                         </div>
                                     </div>
                                 </div>
@@ -266,7 +274,7 @@ const tabs = [
     { id: 'privacy', name: 'Privacy' },
 ]
 
-const formData = ref({
+const form = ref({
     'username': authStore.user.username,
     'full_name': authStore.user.full_name,
     'email': authStore.user.email,
@@ -279,35 +287,54 @@ const formData = ref({
 const activeTab = ref('general');
 
 // upload file
-const profileImage = ref(authStore.user.image ? `/images/${authStore.user.image}` : '/images/default_image.jpg');
+const profileImage = ref(authStore.user.image ? `http://127.0.0.1:8000/storage/images/${authStore.user.image}` : '/images/default_image.jpg');
+
 const fileInput = ref(null);
 
 const selectFile = () => {
     fileInput.value.click();
 }
 
-const uploadFile = (event) => {
+const uploadFile = async (event) => {
     const file = event.target.files[0];
-    if(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            profileImage.value = e.target.result
-            
+    if (!file) return;
+    
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        profileImage.value = e.target.result
+    }
+    reader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append('image', file)
+    
+    try {
+        const response = await axios.post('/user/update-image', formData, {
+            "X-HTTP-Method-Override": "PATCH"
+        });
+
+        if (response.status === 200) {
+            alertStore.triggerAlert('Image updated successfully', 'success');
+            authStore.setUser({ ...authStore.user, image: response.data.image });
         }
-        reader.readAsDataURL(file);
+    } catch (error) {
+        alertStore.triggerAlert('Image not updated', 'error');
+        console.log(error);
+
     }
 }
 
 const handleUpdate = async () => {
-    const response = await axios.put('user/update', formData.value);
-    
+
     try {
-        if(response.status === 200) {
+        const response = await axios.put('user/update', form.value);
+        if (response.status === 200) {
             alertStore.triggerAlert('User updated successfully', 'success');
             authStore.setUser(response.data.user);
         }
     } catch (error) {
-        console.log(error);    
+        console.log(error);
     }
 }
 
