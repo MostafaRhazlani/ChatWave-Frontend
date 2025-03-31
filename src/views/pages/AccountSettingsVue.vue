@@ -169,25 +169,28 @@
                     <!-- Change Password -->
                     <div class="bg-gray-900 rounded-lg p-4">
                         <h3 class="text-lg font-medium mb-4">Change Password</h3>
-                        <form @submit.prevent="changePassword" class="space-y-4">
+                        <form @submit.prevent="changePassword" method="post" class="space-y-4">
                             <div class="grid gap-2">
                                 <label for="current-password" class="text-sm font-medium text-gray-300">Current
                                     Password</label>
-                                <input id="current-password" type="password"
+                                <input v-model="formPassword.current_password" id="current-password" type="password"
                                     class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
+                                <p class="text-red-600">{{ error.errors.current_password ? error.errors.current_password[0] : '' }}</p>
                             </div>
 
                             <div class="grid gap-2">
                                 <label for="new-password" class="text-sm font-medium text-gray-300">New Password</label>
-                                <input id="new-password" type="password"
+                                <input v-model="formPassword.new_password" id="new-password" type="password"
                                     class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
+                                <p class="text-red-600">{{ error.errors.new_password ? error.errors.new_password[0] : '' }}</p>
                             </div>
 
                             <div class="grid gap-2">
                                 <label for="confirm-password" class="text-sm font-medium text-gray-300">Confirm New
                                     Password</label>
-                                <input id="confirm-password" type="password"
+                                <input v-model="formPassword.confirm_password" id="confirm-password" type="password"
                                     class="bg-slate-800 border border-gray-700 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" />
+                                <p class="text-red-600">{{ error.errors.confirm_password ? error.errors.confirm_password[0] : '' }}</p>
                             </div>
 
                             <div class="flex justify-end">
@@ -263,11 +266,14 @@ import AlertComponent from '@/components/AlertComponent.vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { useAuthStore } from '@/store/auth';
 import { useAlertStore } from '@/store/alert';
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import axios from 'axios';
 
 const authStore = useAuthStore();
 const alertStore = useAlertStore();
+const activeTab = ref('general');
+const error = reactive({ errors: {} });
+
 const tabs = [
     { id: 'general', name: 'General' },
     { id: 'security', name: 'Security' },
@@ -284,11 +290,34 @@ const form = ref({
     'gender': authStore.user.gender,
     'relationship': authStore.user.relationship,
 });
-const activeTab = ref('general');
+
+const formPassword = ref({
+    'current_password': '',
+    'new_password': '',
+    'confirm_password': '',
+});
+
+const changePassword = async () => {
+    error.errors = {};
+    
+    try {
+        const response = await axios.patch('user/change-password', formPassword.value, {
+            "X-HTTP-Method-Override": "PATCH"
+        });
+        if(response.status === 200) {
+            alertStore.triggerAlert('password updated successfully', 'success');
+        }
+        Object.keys(formPassword).forEach(key => formPassword[key] = '');
+    } catch (err) {
+        if(err.response && err.response.data) {
+            error.errors = err.response.data.errors
+            Object.keys(formPassword).forEach(key => formPassword[key] = '');
+        }
+    }
+}
 
 // upload file
 const profileImage = ref(authStore.user.image ? `http://127.0.0.1:8000/storage/images/${authStore.user.image}` : '/images/default_image.jpg');
-
 const fileInput = ref(null);
 
 const selectFile = () => {
