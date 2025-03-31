@@ -40,9 +40,11 @@ watch(isCardVisible, (newValue) => {
                         <span class="hidden lg:block">Home</span>
                     </RouterLink>
                 </div>
-                <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <TvMinimalPlay :size="30" :stroke-width="1.5"/>
-                    <span class="hidden lg:block">Videos</span>
+                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Videos' }">  
+                    <RouterLink to="/videos" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <TvMinimalPlay :size="30" :stroke-width="1.5"/>
+                        <span class="hidden lg:block">Videos</span>
+                    </RouterLink>
                 </div>
                 <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
                     <MessageSquareText :size="30" :stroke-width="1.5"/>
