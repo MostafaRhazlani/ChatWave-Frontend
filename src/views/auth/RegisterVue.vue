@@ -20,8 +20,6 @@
     'password_confirmation': '',
   });
   
-  console.log(form);
-  
 
   const error = reactive({ errors: {} });
 
@@ -125,7 +123,7 @@
 
         <!-- Login Link -->
         <div class="text-center mt-6 text-gray-400">
-          I have account - <RouterLink to="/login" class="text-slate-500 hover:text-slate-700 duration-300">Login
+          I have account - <RouterLink to="/login" class="text-slate-500 hover:text-slate-700 duration-300"> Log in
           </RouterLink>
         </div>
       </form>
