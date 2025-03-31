@@ -34,40 +34,42 @@ watch(isCardVisible, (newValue) => {
 
         <div class="flex flex-col justify-between h-full w-full">
             <nav class="flex justify-between md:flex-col gap-2">
-                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Home' }">  
-                    <RouterLink to="/" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Home' }">  
+                    <RouterLink to="/" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <House :size="30" :stroke-width="1.5"/>
                         <span class="hidden lg:block">Home</span>
                     </RouterLink>
                 </div>
-                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Videos' }">  
-                    <RouterLink to="/videos" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Videos' }">  
+                    <RouterLink to="/videos" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <TvMinimalPlay :size="30" :stroke-width="1.5"/>
                         <span class="hidden lg:block">Videos</span>
                     </RouterLink>
                 </div>
-                <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-                    <MessageSquareText :size="30" :stroke-width="1.5"/>
-                    <span class="hidden lg:block">Messages</span>
+                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
+                    <RouterLink to="/messages" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <MessageSquareText :size="30" :stroke-width="1.5"/>
+                        <span class="hidden lg:block">Messages</span>
+                    </RouterLink>
                 </div>
-                <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div class="p-2 hover:bg-slate-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                     <Search :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Search</span>
                 </div>
-                <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+                <div class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer">
                     <Bell :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Notification</span>
                 </div>
-                <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div class="p-2 hover:bg-slate-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                     <Users :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">People</span>
                 </div>
-                <div class="p-2 hover:bg-gray-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div class="p-2 hover:bg-slate-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                     <Layers2 :size="30" :stroke-width="1.5"/>
                     <span class="hidden lg:block">Pages</span>
                 </div>
-                <div :class="{ 'bg-gray-700 rounded-md' : route.name === 'Profile' }">    
-                    <RouterLink to="/profile" class="flex p-2 hover:bg-gray-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Profile' }">    
+                    <RouterLink to="/profile" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <User :size="30" :stroke-width="1.5"/>
                         <span class="hidden lg:block">Profile</span>
                     </RouterLink>

@@ -37,6 +37,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/messages',
+      name: 'Messages',
+      component: () => import('../views/pages/MessagesVue.vue'),
+      meta: {
+        requiresAuth: true, 
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: () => import('../views/pages/ProfileVue.vue'),
