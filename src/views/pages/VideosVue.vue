@@ -5,9 +5,9 @@
         <!-- Center Content Area -->
         <div class="flex flex-col w-full mt-20 md:mt-0">
           <!-- Fixed Stories Section -->
-          <div class="p-4">
-            <div class="pt-6 w-full md:w-5/6 mx-auto lg:w-full xl:w-[90%]">
-              <h2 class="text-3xl font-semibold mb-4">Videos</h2>
+          <div class="md:pt-10 ">
+            <div class="md:p-4 w-full md:w-5/6 mx-auto lg:w-full xl:w-[90%]">
+              <h2 class="text-3xl font-semibold mb-4 hidden md:block">Videos</h2>
             </div>
           </div>
   

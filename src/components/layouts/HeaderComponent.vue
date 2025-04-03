@@ -24,7 +24,9 @@
                 <Bell :size="30" :stroke-width="1.5"/>
             </div>
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
-                <MessageSquareText :size="30" :stroke-width="1.5"/>
+                <RouterLink to="/messages">
+                    <MessageSquareText :size="30" :stroke-width="1.5"/>
+                </RouterLink>
             </div>
 
             <div class="relative">
