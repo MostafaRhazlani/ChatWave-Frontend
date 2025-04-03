@@ -48,6 +48,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/peoples',
+      name: 'Peoples',
+      component: () => import('../views/pages/PeoplesVue.vue'),
+      meta: {
+        requiresAuth: true, 
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: () => import('../views/pages/ProfileVue.vue'),
