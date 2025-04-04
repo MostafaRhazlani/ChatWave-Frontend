@@ -66,9 +66,11 @@ watch(isCardVisible, (newValue) => {
                         <span class="hidden lg:block">People</span>
                     </RouterLink>
                 </div>
-                <div class="p-2 hover:bg-slate-700 rounded-md flex items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <Layers2 :size="30" :stroke-width="1.5"/>
-                    <span class="hidden lg:block">Pages</span>
+                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Pages' }">  
+                    <RouterLink to="/pages" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <Layers2 :size="30" :stroke-width="1.5"/>
+                        <span class="hidden lg:block">Pages</span>
+                    </RouterLink>
                 </div>
                 <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Profile' }">    
                     <RouterLink to="/profile" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">

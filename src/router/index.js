@@ -59,6 +59,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/pages',
+      name: 'Pages',
+      component: () => import('../views/pages/PagesVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: () => import('../views/pages/ProfileVue.vue'),
