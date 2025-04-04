@@ -70,6 +70,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/page/:id',
+      name: 'DetailsPage',
+      component: () => import('../views/pages/DetailsPageVue.vue'),
+      meta: {
+        requiresAuth: true, 
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: () => import('../views/pages/ProfileVue.vue'),
