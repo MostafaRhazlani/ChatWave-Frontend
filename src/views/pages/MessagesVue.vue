@@ -6,7 +6,7 @@
         </div>
 
         <!-- Conversation List Sidebar -->
-        <div class="fixed md:relative z-20 w-80 h-full border-x border-gray-700 flex flex-col bg-slate-800 transition-transform duration-300 ease-in-out"
+        <div class="fixed md:relative z-10 w-80 h-full border-x border-gray-700 flex flex-col bg-slate-800 transition-transform duration-300 ease-in-out"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
             <!-- Search Header -->
             <div class="p-4 border-b border-gray-700">
@@ -194,12 +194,12 @@ const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
 };
 
-// Close sidebar on mobile after selecting a conversation
-const closeSidebarOnMobile = () => {
-    if (window.innerWidth < 768) { // md breakpoint is typically 768px
-        sidebarOpen.value = false;
-    }
-};
+// // Close sidebar on mobile after selecting a conversation
+// const closeSidebarOnMobile = () => {
+//     if (window.innerWidth < 768) { // md breakpoint is typically 768px
+//         sidebarOpen.value = false;
+//     }
+// };
 
 </script>
 
