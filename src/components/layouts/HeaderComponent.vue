@@ -1,12 +1,12 @@
 <script setup>
     import { useAuthStore } from '@/store/auth';
-    import { useNotificationsStore } from '@/store/notificationsStore';
+    import { useSidebarStore } from '@/store/sidebarStore';
     import { Bell, MessageSquareText } from 'lucide-vue-next';
     import CardAccount from '../CardAccountComponent.vue';
     import { ref } from 'vue';
 
     const authStore = useAuthStore();
-    const notificationsStore = useNotificationsStore();
+    const sidebarStore = useSidebarStore();
     const isCardVisible = ref(false);
 
     const dropdawnAccount = () => {
@@ -15,7 +15,7 @@
 
     // Toggle notification
     const toggleNotification = () => {
-        notificationsStore.toggleNotification();
+        sidebarStore.toggleNotification();
     };
 </script>
 
@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="flex">
-            <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : notificationsStore.isNotificationOpen }" class="p-2 hover:bg-gray-700 rounded-md flex items-center space-x-3 cursor-pointer">
+            <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="p-2 hover:bg-gray-700 rounded-md flex items-center space-x-3 cursor-pointer">
                 <Bell :size="30" :stroke-width="1.5"/>
             </div>
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
