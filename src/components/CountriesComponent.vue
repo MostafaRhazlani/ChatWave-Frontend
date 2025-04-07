@@ -17,9 +17,13 @@ watch(selectedCountry, (newValue) => {
 });
 
 const fetchCountries = async () => {
-    const response = await axios.get('https://restcountries.com/v3.1/all');
+    const response = await fetch('/src/countries.json');
 
-    countries.value = response.data.map(el => el.name.common).sort((a,b) => a.localeCompare(b));
+    if(!response.ok) {
+        console.log("Network response was not ok");
+    }
+    const data = await response.json();
+    countries.value = data.countries.map(el => el.name).sort((a,b) => a.localeCompare(b));
 }
 
 onMounted(() => {

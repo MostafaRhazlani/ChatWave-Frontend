@@ -349,7 +349,7 @@ const uploadFile = async (event) => {
         }
     } catch (error) {
         alertStore.triggerAlert('Image not updated', 'error');
-        console.log(error);
+        console.log(error.response.data.message);
 
     }
 }
