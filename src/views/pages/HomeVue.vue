@@ -1,4 +1,8 @@
 <template>
+  
+  <!-- alert success -->
+  <AlertComponent/>
+
   <div class="flex text-white">
     <!-- Main Content with Fixed Sidebar Offset -->
     <div class="flex w-full">
@@ -37,12 +41,13 @@
             <div class="mb-4">
               <div class="bg-slate-800 border border-gray-700 rounded-lg p-4">
                 <div class="flex items-center gap-3">
-                  <input type="text" placeholder="What do you have in mind?"
-                    class="bg-gray-700 text-white rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:ring-1 focus:ring-cyan-400" />
-                  <button class="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                  <button @click="toggleModelCreate('image')" :modelType="modelType" class="bg-slate-700 text-white hover:bg-slate-600 rounded-lg px-4 py-2 text-sm w-full transition-colors">
+                    What do you have in mind?
+                  </button>
+                  <button @click="toggleModelCreate('image')" :modelType="modelType" class="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
                     <Image :stroke-width="1.5"/>
                   </button>
-                  <button class="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                  <button @click="toggleModelCreate('video')" :modelType="modelType" class="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
                     <SquarePlay :stroke-width="1.5"/>
                   </button>
                 </div>
@@ -209,11 +214,24 @@
       </div>
     </div>
   </div>
+
+  <transition name="fade">
+    <CreatePostComponent v-if="isModelCreateOpen" v-model:modelCreate="isModelCreateOpen" v-model:modelType="modelType"/>
+  </transition>
+
 </template>
 
 <script setup>
 
+import CreatePostComponent from '@/components/CreatePostComponent.vue';
+import AlertComponent from '@/components/AlertComponent.vue';
+import { reactive, ref } from 'vue';
 import { Heart, MessageCircleMore, Star, ChevronLeft, ChevronRight, SquarePlay, Image } from 'lucide-vue-next';
+
+const isModelCreateOpen = ref(false);
+
+
+const modelType = ref(null);
 
 // Function to scroll the stories container
 const scrollStories = (direction) => {
@@ -223,9 +241,20 @@ const scrollStories = (direction) => {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 };
+
+const toggleModelCreate = (type) => {
+  modelType.value = type
+  isModelCreateOpen.value = true
+}
 </script>
 
 <style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
