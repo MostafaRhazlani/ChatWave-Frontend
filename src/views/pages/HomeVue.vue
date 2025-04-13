@@ -1,7 +1,7 @@
 <template>
-  
+
   <!-- alert success -->
-  <AlertComponent/>
+  <AlertComponent />
 
   <div class="flex text-white">
     <!-- Main Content with Fixed Sidebar Offset -->
@@ -20,16 +20,17 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- Scroll indicators -->
-              <div class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 p-1 rounded-r-lg cursor-pointer hidden sm:block"
+              <div
+                class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 p-1 rounded-r-lg cursor-pointer hidden sm:block"
                 @click="scrollStories('left')">
-                <ChevronLeft :stroke-width="1.5"/>
+                <ChevronLeft :stroke-width="1.5" />
               </div>
               <div
                 class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-900 bg-opacity-50 p-1 rounded-l-lg cursor-pointer hidden sm:block"
                 @click="scrollStories('right')">
-                <ChevronRight :stroke-width="1.5"/>
+                <ChevronRight :stroke-width="1.5" />
               </div>
             </div>
           </div>
@@ -38,139 +39,11 @@
         <div class="flex gap-4 p-4 md:w-5/6 lg:w-full xl:w-[90%] md:mx-auto">
           <div class="w-full lg:w-[60%] xl:w-[70%]">
             <!-- Fixed Create Post Section -->
-            <div class="mb-4">
-              <div class="bg-slate-800 border border-gray-700 rounded-lg p-4">
-                <div class="flex items-center gap-3">
-                  <button @click="toggleModelCreate('image')" :modelType="modelType" class="bg-slate-700 text-white hover:bg-slate-600 rounded-lg px-4 py-2 text-sm w-full transition-colors">
-                    What do you have in mind?
-                  </button>
-                  <button @click="toggleModelCreate('image')" :modelType="modelType" class="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
-                    <Image :stroke-width="1.5"/>
-                  </button>
-                  <button @click="toggleModelCreate('video')" :modelType="modelType" class="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
-                    <SquarePlay :stroke-width="1.5"/>
-                  </button>
-                </div>
-              </div>
-            </div>
+            <CardCreatePostComponent />
 
             <!-- Scrollable Posts Section -->
             <div class="overflow-y-auto scrollbar-hide">
-              <div class="space-y-6">
-                <!-- Multiple Posts -->
-                <div v-for="post in 5" :key="`post-${post}`" class="bg-slate-800 rounded-lg overflow-hidden border border-gray-700">
-                  <!-- Post Header -->
-                  <div class="p-4 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
-                      <img
-                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                        alt="Profile" class="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <p class="font-medium">Mostafa Rhazlani</p>
-                      <p class="text-xs text-gray-400">2 hours ago</p>
-                    </div>
-                  </div>
-
-                  <!-- Post Content -->
-                  <div class="p-4 pt-0">
-                    <div class="bg-slate-700 rounded-lg h-[350px] w-full"></div>
-                    <div class="mt-6">
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique mollitia quam, optio incidunt tenetur voluptate sit dolor nemo, doloribus animi quas nostrum ex nihil assumenda earum molestiae harum, eum exercitationem.</p>
-                    </div>
-                    <div class="mt-6 space-x-2 text-blue-500">
-                      <span class="hover:text-blue-400">#sport</span>
-                      <span class="hover:text-blue-400">#football</span>
-                      <span class="hover:text-blue-400">#ronaldo</span>
-                      <span class="hover:text-blue-400">#messi</span>
-                    </div>
-                  </div>
-
-                  <!-- Post Actions -->
-                  <div class="px-4 py-2 border-t border-slate-700 flex items-center justify-between">
-                    <div class="flex items-center gap-6">
-                      <div class="flex items-center gap-1">
-                        <button class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                          <Heart :size="18"/>
-                        </button>
-                        <span class="text-sm">1,335</span>
-                      </div>
-                      <div class="flex items-center gap-1">
-                        <button class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                          <MessageCircleMore :size="18"/>
-                        </button>
-                        <span class="text-sm">237</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <button class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                        <Star :size="18"/>
-                      </button>
-                      <span class="text-sm ml-1">237</span>
-                    </div>
-                  </div>
-
-                  <!-- Comments -->
-                  <div class="px-4 py-3 border-t border-gray-700">
-                    <div class="p-2 space-y-3 rounded-md">
-                      <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0 overflow-hidden">
-                          <img
-                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                            alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="flex flex-col">
-                          <p class="font-medium">Mostafa Rhazlani</p>
-                          <span class="text-xs text-gray-400">Hello guys how are you</span>
-                        </div>
-                      </div>
-                      <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
-                          <img
-                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                            alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="flex flex-col">
-                          <p class="font-medium">Mostafa Rhazlani</p>
-                          <span class="text-xs text-gray-400">Hello guys how are you</span>
-                        </div>
-                      </div>
-                      <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
-                          <img
-                            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                            alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="flex flex-col">
-                          <p class="font-medium">Mostafa Rhazlani</p>
-                          <span class="text-xs text-gray-400">Hello guys how are you</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <span class="text-gray-300 cursor-pointer hover:text-gray-200">show more...</span>
-                      </div>
-                    </div>
-
-                    <!-- Add Comment -->
-                    <div class="flex items-center gap-2 pt-4 border-t border-gray-700">
-                      <div class="w-8 h-8 rounded-full bg-slate-700 overflow-hidden">
-                        <img
-                          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                          alt="Profile" class="w-full h-full object-cover" />
-                      </div>
-                      <div class="w-full relative">
-                        <input type="text" placeholder="Add comment..."
-                          class="bg-slate-700 text-white rounded-full px-4 py-2 text-sm w-full focus:outline-none focus:ring-1 focus:ring-cyan-400 pr-16" />
-                        <button
-                          class="absolute right-2 top-1/2 -translate-y-1/2 bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-cyan-600 transition-colors">
-                          Reply
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PostsComponent />
             </div>
           </div>
           <!-- Fixed Right Sidebar -->
@@ -215,23 +88,15 @@
     </div>
   </div>
 
-  <transition name="fade">
-    <CreatePostComponent v-if="isModelCreateOpen" v-model:modelCreate="isModelCreateOpen" v-model:modelType="modelType"/>
-  </transition>
-
 </template>
 
 <script setup>
 
-import CreatePostComponent from '@/components/CreatePostComponent.vue';
+import PostsComponent from '@/components/PostsComponent.vue';
+import CardCreatePostComponent from '@/components/CardCreatePostComponent.vue';
 import AlertComponent from '@/components/AlertComponent.vue';
-import { reactive, ref } from 'vue';
-import { Heart, MessageCircleMore, Star, ChevronLeft, ChevronRight, SquarePlay, Image } from 'lucide-vue-next';
 
-const isModelCreateOpen = ref(false);
-
-
-const modelType = ref(null);
+import {ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
 // Function to scroll the stories container
 const scrollStories = (direction) => {
@@ -242,17 +107,16 @@ const scrollStories = (direction) => {
   }
 };
 
-const toggleModelCreate = (type) => {
-  modelType.value = type
-  isModelCreateOpen.value = true
-}
 </script>
 
 <style>
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.2s;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 

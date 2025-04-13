@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
 import { Plus, Heart, MessageCircleMore, Star } from 'lucide-vue-next';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, computed } from 'vue';
 
 const authStore = useAuthStore();
 const showModal = ref(false);
@@ -11,17 +11,26 @@ const error = reactive({ errors: {} });
 const selectedPost = ref(null);
 const posts = ref([]);
 const post = ref({});
+const activeTab = ref('Posts');
+const statusVideo = ref(false);
 
+const tabs = [
+    { name: 'Posts' },
+    { name: 'Videos' },
+    { name: 'Photos' },
+]
+
+// show model detail post
 const openPostModal = async (postId) => {
     
     const response = await axios.get(`post/${postId}`);
-
     post.value = response.data.post
     
     showModal.value = true;
     document.body.style.overflow = 'hidden';
 };
 
+// close model detail post
 const closePostModal = () => {
     showModal.value = false;
     document.body.style.overflow = '';
@@ -32,9 +41,7 @@ const fetchPosts = async () => {
     try {
         const response = await axios.get('user/posts');
         if(response.status === 200 && response.data.userPosts) {
-
             posts.value = response.data.userPosts;
-            
         } else {
             error.errors = {error: 'posts not found'}
         }
@@ -42,6 +49,22 @@ const fetchPosts = async () => {
     } catch (error) {
         console.log(error);
     }
+}
+
+// display media type if was video ir image
+const DisplayMediaType = computed(() => {
+    if(activeTab.value === 'Posts') {
+        return posts.value.filter(post => post.type === 'image'); 
+    } else if(activeTab.value === 'Videos') {
+        return posts.value.filter(post => post.type === 'video');
+    }
+})
+
+// change status to play or pause video 
+const playPauseVideo = (event) => {
+    statusVideo.value = !statusVideo.value
+    const video = event.target;
+    statusVideo.value === true ? video.play() : (video.pause(), video.currentTime = 0);
 }
 
 onMounted(() => {
@@ -56,7 +79,7 @@ onMounted(() => {
         <!-- Main Content -->
         <div>
             <!-- Profile Header -->
-            <div class="border-b border-gray-800 pb-6">
+            <div class="border-b border-gray-700 pb-6">
                 <div class="flex flex-col text-center md:flex-row md:text-start gap-6 items-center pt-8 px-4">
                     <div>
                         <div class="w-36 h-36 rounded-full border-4 p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
@@ -103,7 +126,7 @@ onMounted(() => {
                                 <p>Add New</p>
                             </div>
                         </div>
-                        <div v-for="i in 10" :key="`highlights-${i}`" class="w-40 h-56 duration-150 cursor-pointer rounded-lg overflow-hidden">
+                            <div v-for="i in 10" :key="`highlights-${i}`" class="w-40 h-56 duration-150 cursor-pointer rounded-lg overflow-hidden">
                             <img class="w-full h-full object-cover" src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" alt="">
                         </div>
                     </div>
@@ -112,14 +135,32 @@ onMounted(() => {
 
             <!-- Posts Section -->
             <div class="px-6 py-6">
-                <h2 class="text-lg font-semibold mb-4">Posts</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div v-for="(post) in posts" 
-                        :key="post.id" 
-                        class="relative h-80 md:h-64 rounded-lg bg-gray-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105 hover:z-10" 
-                        @click="openPostModal(post.id)">
+                <!-- Page Navigation -->
+                <div class="flex mb-8 border-b border-gray-700">
+                    <nav class="flex space-x-8 pt-1">
+                        <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = tab.name" :class="[
+                            'py-3 px-1 font-medium text-sm whitespace-nowrap border-b-2 transition-colors',
+                            activeTab === tab.name
+                                ? 'border-pink-500 text-pink-400'
+                                : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-700'
+                        ]">
+                            {{ tab.name }}
+                        </button>
+                    </nav>
+                </div>
+                <h2 class="text-lg font-semibold mb-4">{{ activeTab }}</h2>
+                <div v-if="activeTab === 'Posts' || activeTab === 'Videos'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div v-for="(post) in DisplayMediaType" :key="post.id" class="h-80 md:h-64 rounded-lg bg-gray-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105"  @click="openPostModal(post.id)">
                         
-                        <img class="w-full h-full object-cover" :src="post.image" alt="Post Image">
+                        <div v-if="post.type === 'image'" class="w-full h-full">
+                            <img class="w-full h-full object-cover" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="Post Image">
+                        </div>
+                        <div v-if="post.type === 'video'" class="w-full h-full">
+                            <video class="w-full h-full" @mouseover="playPauseVideo($event)" @mouseleave="playPauseVideo($event)">
+                                <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -137,7 +178,7 @@ onMounted(() => {
                         </div>
                         <div>
                             <p class="font-medium">{{ post.person.full_name }}</p>
-                            <p class="text-xs text-gray-400">@{{ post.person.username }}</p>
+                            <p class="text-xs text-gray-400">{{ post.person.username }}</p>
                         </div>
                     </div>
                     <button @click="closePostModal" class="text-gray-400 hover:text-white">
@@ -155,16 +196,15 @@ onMounted(() => {
                     <!-- Post Image -->
                     <div class="lg:w-3/5 h-3/6 lg:h-full bg-gray-800 flex items-center justify-center overflow-hidden">
                         <div class="w-full lg:min-h-full rounded-lg flex items-center justify-center">
-                            <img class="w-full h-full object-cover bg-center" :src="post.image" alt="">
+                            <img class="w-full h-full object-cover bg-center" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="">
                         </div>
                     </div>
 
                     <!-- Post Details -->
                     <div class="lg:w-2/5 h-3/6 lg:h-full">
                         <div class="flex flex-col gap-4 p-4">
-                            <h3 class="text-xl font-bold">{{ post.title }}</h3>
                             <p class="text-gray-300">
-                                {{ post.description }}
+                                {{ post.content }}
                             </p>
 
                             <!-- Post Stats -->
