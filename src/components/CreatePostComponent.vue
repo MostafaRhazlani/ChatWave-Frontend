@@ -32,7 +32,7 @@
                                     <p class="text-white">Click to upload image</p>
                                 </div>
                             </div>
-                            <div v-if="postMedia" class="h-72 overflow-hidden rounded-md">
+                            <div v-if="postMedia" class="h-52 overflow-hidden rounded-md">
                                 <img :src="postMedia" alt="Preview" class="w-full h-full object-cover" />
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                                         <p class="text-white">Click to upload video</p>
                                     </div>
                                 </div>
-                                <div v-if="postMedia" class="h-72 overflow-hidden rounded-md">
+                                <div v-if="postMedia" class="h-52 overflow-hidden rounded-md">
                                     <video :src="postMedia" controls class="w-full h-full object-cover" />
                                 </div>
                             </div>

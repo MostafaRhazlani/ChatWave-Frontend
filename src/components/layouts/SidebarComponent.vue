@@ -121,7 +121,9 @@ const toggleSearch = () => {
 
                 <!-- account -->
                 <div @click="dropdawnAccount" class="flex lg:gap-1 justify-center px-2 cursor-pointer">
-                    <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-8 h-8 rounded-full" />
+                    <div class="max-w-8 max-h-8 rounded-full overflow-hidden">
+                        <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-full h-full" />
+                    </div>
                     <div :class="[ statusSidebar ]" class="hidden lg:flex items-center justify-between gap-3 w-full">
                         <span class="hidden lg:block">{{ authStore.user.full_name }}</span>
                         <span class="hidden lg:block duration-150" :class="typeArrow"><ChevronRight /></span>
