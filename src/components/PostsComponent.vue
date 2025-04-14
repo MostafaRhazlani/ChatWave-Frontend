@@ -5,13 +5,16 @@
     import { Heart, MessageCircleMore, Star, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
     import { ref, onMounted, computed, watch } from 'vue';
     import { useRoute } from 'vue-router';
+    import DeleteModelComponent from './deleteModelComponent.vue';
 
     const posts = ref([]);
     const post = ref({})
+    const post_id = ref(null);
     const route = useRoute();
     const openModelPostId = ref(null);
     const modelType = ref(null);
     const isModelUpdateOpen = ref(false);
+    const isModelDeleteOpen = ref(false);
     
     const postsList = async () => {
         const response = await axios.get('posts');
@@ -83,6 +86,7 @@
                     <transition name="fade">
                         <div v-if="openModelPostId === post.id" class="absolute z-30 right-0 top-9 w-32 bg-slate-700 border border-gray-600 p-1 rounded-lg">
                             <p @click="toggleModelUpdate(post.type, post.id)" class="p-1 hover:bg-slate-600 rounded-md flex items-center gap-1 cursor-pointer"><PenLine :size="19"/> Update</p>
+                            <p @click="toggleModelDelete(post.id)" class="p-1 hover:bg-slate-600 rounded-md flex items-center gap-1 cursor-pointer"><Trash2 :size="19"/> Delete</p>
                         </div>
                     </transition>
                 </div>
@@ -199,6 +203,9 @@
 
     <transition name="fade">
         <UpdatePostComponent v-if="isModelUpdateOpen" v-model:modelType="modelType" v-model:modelUpdate="isModelUpdateOpen" v-model:post="post" v-model:refreshPosts="postsList" />
+    </transition>
+    <transition name="fade">
+        <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" v-model:post_id="post_id" v-model:refreshPosts="postsList" />
     </transition>
 </template>
 
