@@ -18,7 +18,7 @@ const toggleModelCreate = (type) => {
             <div class="flex items-center gap-3">
                 <button @click="toggleModelCreate('image')" :modelType="modelType"
                     class="bg-slate-700 text-white hover:bg-slate-600 rounded-lg px-4 py-2 text-sm w-full transition-colors">
-                    What do you have in mind?
+                    What do you have in your mind?
                 </button>
                 <button @click="toggleModelCreate('image')" :modelType="modelType"
                     class="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
@@ -37,4 +37,16 @@ const toggleModelCreate = (type) => {
     </transition>
 </template>
 
-<style></style>
+<style>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+</style>

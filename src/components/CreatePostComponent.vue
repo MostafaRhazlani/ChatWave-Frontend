@@ -3,7 +3,7 @@
         <div class="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-xl">
             <!-- Header -->
             <div class="flex items-center justify-between p-4 border-b border-gray-700">
-                <h2 class="text-lg font-medium">Create Status</h2>
+                <h2 class="text-lg font-medium">Create Post</h2>
                 <button @click="handleClose" class="text-gray-400 hover:text-white">
                     <Close/>
                 </button>
@@ -13,7 +13,7 @@
             <form @submit.prevent="handleCreate" enctype="multipart/form-data">
                 <div class="p-4 space-y-4">
                     <div>
-                        <label for="content" class="block text-sm text-gray-300">What do you have in mind?</label>
+                        <label for="content" class="block text-sm text-gray-300">What do you have in your mind?</label>
                         <textarea id="content" v-model="postData.content" rows="3" class="w-full mt-1 px-3 py-2 bg-slate-800 border border-gray-700 rounded-md text-white"></textarea>
                         <p class="text-red-600">{{ error.errors.content ? error.errors.content[0] : '' }}</p>
                     </div>
