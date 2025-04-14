@@ -1,14 +1,18 @@
 <script setup>
     import UpdatePostComponent from './UpdatePostComponent.vue';
+    import DeleteModelComponent from '@/components/DeleteModelComponent.vue';
+    import DetailsPostComponent from '@/components/DetailsPostComponent.vue';
     import axios from 'axios';
     import { convertTime } from '@/helpers/convertTime';
     import { Heart, MessageCircleMore, Star, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
     import { ref, onMounted, computed, watch } from 'vue';
     import { useRoute } from 'vue-router';
-    import DeleteModelComponent from './deleteModelComponent.vue';
     import { useAuthStore } from '@/store/auth';
+    import { useApiStore } from '@/store/apiStore';
 
+    
     const authStore = useAuthStore();
+    const apiStore = useApiStore();
     const posts = ref([]);
     const post = ref({})
     const post_id = ref(null);
@@ -67,7 +71,7 @@
 </script>
 
 <template>
-    <div v-if="DisplayMediaType.length > 0" class="space-y-6">
+    <div v-if="DisplayMediaType.length > 0" class="flex flex-col gap-4">
         <div v-for="(post, index) in DisplayMediaType" :key="index" class="bg-slate-800 rounded-lg overflow-hidden border border-gray-700">
             <!-- Post Header -->
             <div class="p-4 flex justify-between items-center gap-3">
@@ -96,7 +100,7 @@
 
             <!-- Post Content -->
             <div class="p-4 pt-0">
-                <div v-if="post.type === 'image'" class="bg-slate-700 rounded-lg h-[350px] w-full overflow-hidden">
+                <div v-if="post.type === 'image'" class="bg-slate-700 rounded-lg h-[350px] w-full overflow-hidden cursor-pointer">
                     <img :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" class="w-full h-full object-cover" alt="">
                 </div>
                 <div v-else class="bg-slate-700 rounded-lg h-[350px] w-full overflow-hidden">
@@ -124,8 +128,7 @@
                         <span class="text-sm">1,335</span>
                     </div>
                     <div class="flex items-center gap-1">
-                        <button
-                            class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                        <button @click="apiStore.openModelDetailsPost(post.id)" class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
                             <MessageCircleMore :size="18" />
                         </button>
                         <span class="text-sm">237</span>
@@ -174,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div @click="apiStore.openModelDetailsPost(post.id)">
                         <span class="text-gray-300 cursor-pointer hover:text-gray-200">show more...</span>
                     </div>
                 </div>
@@ -208,6 +211,11 @@
     </transition>
     <transition name="fade">
         <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" v-model:post_id="post_id" v-model:refreshPosts="postsList" />
+    </transition>
+
+    <!-- Post Detail Modal -->
+    <transition name="fade">
+        <DetailsPostComponent v-if="apiStore.showModal"/>
     </transition>
 </template>
 

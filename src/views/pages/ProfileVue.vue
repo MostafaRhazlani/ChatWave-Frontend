@@ -2,15 +2,15 @@
 
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
+import { useApiStore } from '@/store/apiStore';
 import { Plus, Heart, MessageCircleMore, Star } from 'lucide-vue-next';
 import { onMounted, reactive, ref, computed } from 'vue';
+import DetailsPostComponent from '@/components/DetailsPostComponent.vue';
 
 const authStore = useAuthStore();
-const showModal = ref(false);
+const apiStore = useApiStore();
 const error = reactive({ errors: {} });
-const selectedPost = ref(null);
 const posts = ref([]);
-const post = ref({});
 const activeTab = ref('Posts');
 const statusVideo = ref(false);
 
@@ -19,22 +19,6 @@ const tabs = [
     { name: 'Videos' },
     { name: 'Photos' },
 ]
-
-// show model detail post
-const openPostModal = async (postId) => {
-    
-    const response = await axios.get(`post/${postId}`);
-    post.value = response.data.post
-    
-    showModal.value = true;
-    document.body.style.overflow = 'hidden';
-};
-
-// close model detail post
-const closePostModal = () => {
-    showModal.value = false;
-    document.body.style.overflow = '';
-};
 
 // get all posts user
 const fetchPosts = async () => {
@@ -150,7 +134,7 @@ onMounted(() => {
                 </div>
                 <h2 class="text-lg font-semibold mb-4">{{ activeTab }}</h2>
                 <div v-if="activeTab === 'Posts' || activeTab === 'Videos'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div v-for="(post) in DisplayMediaType" :key="post.id" class="h-80 md:h-64 rounded-lg bg-gray-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105"  @click="openPostModal(post.id)">
+                    <div v-for="(post) in DisplayMediaType" :key="post.id" class="h-80 md:h-64 rounded-lg bg-gray-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105"  @click="apiStore.openModelDetailsPost(post.id)">
                         
                         <div v-if="post.type === 'image'" class="w-full h-full">
                             <img class="w-full h-full object-cover" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="Post Image">
@@ -167,100 +151,9 @@ onMounted(() => {
         </div>
 
         <!-- Post Detail Modal -->
-        <div v-if="showModal" class="fixed inset-0 bg-black min-h-screen bg-opacity-75 flex items-center justify-center z-50 lg:p-4">
-            <div class="bg-gray-900 rounded-xl w-full h-full lg:w-4/5 lg:h-5/6 overflow-hidden flex flex-col">
-                <!-- Modal Header -->
-                <div class="p-4 border-b border-gray-800 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gray-700 overflow-hidden">
-                            <img :src="`/images/${post.person.image}`"
-                                alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                            <p class="font-medium">{{ post.person.full_name }}</p>
-                            <p class="text-xs text-gray-400">{{ post.person.username }}</p>
-                        </div>
-                    </div>
-                    <button @click="closePostModal" class="text-gray-400 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Modal Content -->
-                <div class="flex flex-col h-full lg:flex-row overflow-hidden">
-                    <!-- Post Image -->
-                    <div class="lg:w-3/5 h-3/6 lg:h-full bg-gray-800 flex items-center justify-center overflow-hidden">
-                        <div class="w-full lg:min-h-full rounded-lg flex items-center justify-center">
-                            <img class="w-full h-full object-cover bg-center" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="">
-                        </div>
-                    </div>
-
-                    <!-- Post Details -->
-                    <div class="lg:w-2/5 h-3/6 lg:h-full">
-                        <div class="flex flex-col gap-4 p-4">
-                            <p class="text-gray-300">
-                                {{ post.content }}
-                            </p>
-
-                            <!-- Post Stats -->
-                            <div class="flex items-center justify-between gap-4 text-gray-400">
-                                <div class="flex gap-4">
-                                    <div class="flex items-center gap-1">
-                                        <div class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                            <Heart :size="18"/>
-                                        </div>
-                                        <span>245</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <div class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                            <MessageCircleMore :size="18"/>
-                                        </div>
-                                        <span>10</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <div class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                        <Star :size="18"/>
-                                    </div>
-                                    <span>18</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Comments Section -->
-                        <div class="border-t border-gray-800 flex flex-col h-full relative">
-                            <!-- Scrollable Comments -->
-                            <div class="overflow-y-auto no-scrollbar mb-40 p-4">
-                                <div class="space-y-3">
-                                    <div v-for="j in 10" :key="`comment-${j}`" class="flex gap-2">
-                                        <div>
-                                            <div class=" w-8 h-8 rounded-full bg-gray-700"></div>
-                                        </div>
-                                        <div class="rounded-lg mb-3">
-                                            <p class="font-medium">User {{ j }}</p>
-                                            <p class="text-gray-300 text-sm ">This is comment {{ j }} on post {{ selectedPost }}. Great content! dkod coke,oc ocej,e cejiecc ecijcei Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima earum dignissimos iste magnam perspiciatis consectetur maxime, omnis rem ad deserunt?</p>
-                                            <p class="text-xs text-gray-500 mt-1">2h ago</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Fixed Comment Input -->
-                            <div class="sticky bottom-0 w-full bg-gray-900 p-2 flex items-center gap-2">
-                                <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0"></div>
-                                <input type="text" placeholder="Add a comment..."
-                                    class="bg-gray-800 text-white rounded-full px-4 py-2 text-sm w-full focus:outline-none focus:ring-1 focus:ring-pink-500" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <transition name="fade">
+            <DetailsPostComponent v-if="apiStore.showModal"/>
+        </transition>
     </div>
 </template>
 
