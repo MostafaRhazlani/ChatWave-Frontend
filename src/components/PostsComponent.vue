@@ -6,7 +6,9 @@
     import { ref, onMounted, computed, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import DeleteModelComponent from './deleteModelComponent.vue';
+    import { useAuthStore } from '@/store/auth';
 
+    const authStore = useAuthStore();
     const posts = ref([]);
     const post = ref({})
     const post_id = ref(null);
@@ -79,7 +81,7 @@
                         <p class="text-xs text-gray-400">{{ convertTime(post.created_at) }}</p>
                     </div>
                 </div>
-                <div class="relative">
+                <div v-if="post.person.id === authStore.user.id" class="relative">
                     <div @click="toggleInfoPost(post.id)" class="w-7 h-7 rounded-full flex justify-center items-center hover:bg-slate-600 transition cursor-pointer ">
                         <EllipsisVertical :size="20"/>
                     </div>
