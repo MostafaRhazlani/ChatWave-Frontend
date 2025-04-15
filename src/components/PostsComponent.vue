@@ -21,10 +21,16 @@
     const modelType = ref(null);
     const isModelUpdateOpen = ref(false);
     const isModelDeleteOpen = ref(false);
+    const commentForm = ref({
+        post_id: 0,
+        person_id: authStore.user.id,
+        comment: '',
+    })
     
     const postsList = async () => {
         const response = await axios.get('posts');
         posts.value = response.data.posts
+        
     }
 
     const DisplayMediaType = computed(() => {
@@ -63,6 +69,17 @@
         openModelPostId.value = null
         isModelDeleteOpen.value = true
         post_id.value = postId;
+    }
+
+    const createComment = async (postId) => {
+        commentForm.value.post_id = postId;
+        try {
+            await axios.post('comment/create', commentForm.value);
+            commentForm.value.comment = ''
+        } catch (error) {
+            console.log("Error fetching comments", error);
+        }
+        postsList();
     }
 
     onMounted(() => {
@@ -110,7 +127,7 @@
                     </video>
                 </div>
                 <div class="mt-6">
-                    <p>{{ post.content }}</p>
+                    <p class="break-all">{{ post.content }}</p>
                 </div>
                 <div class="mt-6 space-x-2 flex text-blue-500">
                     <span v-for="(tag, index) in post.tags" :key="index" class="hover:text-blue-400">#{{ tag.tag_name }}</span>
@@ -131,7 +148,7 @@
                         <button @click="apiStore.openModelDetailsPost(post.id)" class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
                             <MessageCircleMore :size="18" />
                         </button>
-                        <span class="text-sm">237</span>
+                        <span class="text-sm">{{ post.comments_count }}</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
@@ -145,56 +162,40 @@
 
             <!-- Comments -->
             <div class="px-4 py-3 border-t border-gray-700">
-                <div class="p-2 space-y-3 rounded-md">
-                    <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0 overflow-hidden">
-                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                                alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="font-medium">Mostafa Rhazlani</p>
-                            <span class="text-xs text-gray-400">Hello guys how are you</span>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-2">
+                <div v-if="post.latest_three_comments.length > 0" class="p-2 space-y-3 rounded-md">
+                    <div v-for="(comment, index) in post.latest_three_comments" :key="index" class="flex items-start gap-2">
                         <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
-                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
+                            <img :src="`http://127.0.0.1:8000/storage/images/${comment.person.image}`"
                                 alt="Profile" class="w-full h-full object-cover" />
                         </div>
                         <div class="flex flex-col">
-                            <p class="font-medium">Mostafa Rhazlani</p>
-                            <span class="text-xs text-gray-400">Hello guys how are you</span>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
-                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
-                                alt="Profile" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="font-medium">Mostafa Rhazlani</p>
-                            <span class="text-xs text-gray-400">Hello guys how are you</span>
+                            <p class="font-medium">{{ comment.person.full_name }}</p>
+                            <span class="text-xs text-gray-400">{{ comment.comment }}</span>
+                            <p class="text-xs text-gray-500 mt-1">{{ convertTime(comment.created_at) }}</p>
                         </div>
                     </div>
 
-                    <div @click="apiStore.openModelDetailsPost(post.id)">
-                        <span class="text-gray-300 cursor-pointer hover:text-gray-200">show more...</span>
+                    <div>
+                        <span @click="apiStore.openModelDetailsPost(post.id)" class="text-gray-300 cursor-pointer hover:text-gray-200">show more...</span>
                     </div>
+                </div>
+                <div v-else class="pb-4 pt-2">
+                        <span class="text-gray-400">No comments yet</span>
                 </div>
 
                 <!-- Add Comment -->
                 <div class="flex items-center gap-2 pt-4 border-t border-gray-700">
-                    <div class="w-8 h-8 rounded-full bg-slate-700 overflow-hidden">
-                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_2025-03-16_182245839-i1J7mYAoXkpTavJKv8DDojaSWO3XQh.png"
+                    <div class="max-w-10 max-h-10 rounded-full bg-slate-700 overflow-hidden">
+                        <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`"
                             alt="Profile" class="w-full h-full object-cover" />
                     </div>
                     <div class="w-full relative">
-                        <input type="text" placeholder="Add comment..."
-                            class="bg-slate-700 text-white rounded-full px-4 py-2 text-sm w-full focus:outline-none focus:ring-1 focus:ring-pink-400 pr-16" />
-                        <button
-                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-pink-600 transition-colors">
-                            Reply
-                        </button>
+                        <form @submit.prevent="createComment(post.id)" >
+                            <textarea v-model="commentForm.comment" id="" class="bg-slate-700 text-white rounded-lg text-sm w-full pl-3 pt-2 resize-none min-h-16 focus:outline-none focus:ring-1 focus:ring-pink-400 pr-16" placeholder="Add comment..."></textarea>
+                            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-pink-600 transition-colors">
+                                Reply
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -18,10 +18,8 @@
             
             <!-- Scrollable Posts Section -->
             <div class="overflow-y-auto scrollbar-hide">
-              <div class="space-y-6">
                 <!-- Multiple Posts -->
                 <PostsComponent />
-              </div>
             </div>
           </div>
           <!-- Fixed Right Sidebar -->
