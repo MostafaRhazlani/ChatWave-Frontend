@@ -35,12 +35,13 @@ import { ref, defineProps, defineEmits } from 'vue'
 import { X as Close, CircleAlert as Warning } from 'lucide-vue-next';
 import axios from 'axios';
 import { useAlertStore } from '@/store/alert';
+import { useApiStore } from '@/store/apiStore';
 
 const alertStore = useAlertStore();
+const apiStore = useApiStore();
 const props = defineProps({
     modelDelete: Boolean,
     post_id: Number,
-    refreshPosts: Function,
 });
 
 const emit = defineEmits(['update:modelDelete']);
@@ -51,7 +52,7 @@ const handleDelete = async () => {
         const response = await axios.delete(`post/${props.post_id}/delete`);
         
         if(response.status === 200) {
-            await props.refreshPosts();
+            apiStore.postsList();
             alertStore.triggerAlert('Post deleted successfully', 'success');
         }
     } catch (error) {

@@ -112,9 +112,11 @@
 import { ref, reactive, onMounted, defineProps, defineEmits, watch } from 'vue'
 import { X as Close, Image, SquarePlay } from 'lucide-vue-next';
 import { useAlertStore } from '@/store/alert';
+import { useApiStore } from '@/store/apiStore';
 import axios from 'axios';
 const fileInput = ref(null);
 const alertStore = useAlertStore();
+const apiStore = useApiStore();
 
 const selectedTags = ref([]);
 const hashtagSearch = ref('');
@@ -127,8 +129,7 @@ const previewMedia = ref(null);
 const props = defineProps({
     modelUpdate: Boolean,
     modelType: String,
-    post: Object,
-    refreshPosts: Function,
+    post: Object
 });
 
 const postData = reactive({
@@ -205,7 +206,7 @@ const handleUpdate = async () => {
         });
         if(response.status === 200) {
             handleClose();
-            await props.refreshPosts();
+            apiStore.postsList();
             alertStore.triggerAlert('Post updated successfully', 'success');
         }
     } catch (err) {
