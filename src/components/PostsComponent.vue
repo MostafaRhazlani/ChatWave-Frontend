@@ -2,18 +2,17 @@
     import UpdatePostComponent from './UpdatePostComponent.vue';
     import DeleteModelComponent from '@/components/DeleteModelComponent.vue';
     import DetailsPostComponent from '@/components/DetailsPostComponent.vue';
+    import LikeComponent from '@/components/LikeComponent.vue';
     import axios from 'axios';
     import { convertTime } from '@/helpers/convertTime';
-    import { Heart, MessageCircleMore, Star, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
+    import { MessageCircleMore, Star, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
     import { ref, onMounted, computed, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import { useAuthStore } from '@/store/auth';
     import { useApiStore } from '@/store/apiStore';
-
     
     const authStore = useAuthStore();
     const apiStore = useApiStore();
-    const posts = ref([]);
     const post = ref({})
     const post_id = ref(null);
     const route = useRoute();
@@ -27,17 +26,12 @@
         comment: '',
     })
     
-    const postsList = async () => {
-        const response = await axios.get('posts');
-        posts.value = response.data.posts
-        
-    }
 
     const DisplayMediaType = computed(() => {
         if(route.name === 'Home') {
-            return posts.value.filter(post => post.type === 'image');
+            return apiStore.posts.filter(post => post.type === 'image');
         } else if(route.name === 'Videos') {
-            return posts.value.filter(post => post.type === 'video');
+            return apiStore.posts.filter(post => post.type === 'video');
         }
     })
 
@@ -79,11 +73,11 @@
         } catch (error) {
             console.log("Error fetching comments", error);
         }
-        postsList();
+        apiStore.postsList();
     }
 
     onMounted(() => {
-        postsList();
+        apiStore.postsList();
     })
 </script>
 
@@ -137,24 +131,18 @@
             <!-- Post Actions -->
             <div class="px-4 py-2 border-t border-slate-700 flex items-center justify-between">
                 <div class="flex items-center gap-6">
-                    <div class="flex items-center gap-1">
-                        <button
-                            class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                            <Heart :size="18" />
+                    <LikeComponent v-model:likesCount="post.likes_count" v-model:isLiked="post.is_liked" v-model:postId="post.id"/>
+                    <div class="flex items-center gap-2">
+                        <button @click="apiStore.openModelDetailsPost(post.id)" class="w-9 h-9 bg-slate-700 hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                            <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
                         </button>
-                        <span class="text-sm">1,335</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button @click="apiStore.openModelDetailsPost(post.id)" class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                            <MessageCircleMore :size="18" />
-                        </button>
-                        <span class="text-sm">{{ post.comments_count }}</span>
+                        <span class="text-sm">{{ post.comments_count }} comment</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
                     <button
-                        class="p-2 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                        <Star :size="18" />
+                        class="w-9 h-9 bg-slate-700 hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                        <Star :size="24" stroke-width="2" class="mt-[1px]" />
                     </button>
                     <span class="text-sm ml-1">237</span>
                 </div>
@@ -208,10 +196,10 @@
     </div>
 
     <transition name="fade">
-        <UpdatePostComponent v-if="isModelUpdateOpen" v-model:modelType="modelType" v-model:modelUpdate="isModelUpdateOpen" v-model:post="post" v-model:refreshPosts="postsList" />
+        <UpdatePostComponent v-if="isModelUpdateOpen" v-model:modelType="modelType" v-model:modelUpdate="isModelUpdateOpen" v-model:post="post" />
     </transition>
     <transition name="fade">
-        <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" v-model:post_id="post_id" v-model:refreshPosts="postsList" />
+        <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" v-model:post_id="post_id" />
     </transition>
 
     <!-- Post Detail Modal -->

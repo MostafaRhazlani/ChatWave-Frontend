@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import axios from "axios";
 export const useApiStore = defineStore("apiStore", {
   state: () => ({
+    posts: [],
     postId: 0,
     post: {},
     typePost: '',
@@ -9,6 +10,11 @@ export const useApiStore = defineStore("apiStore", {
   }),
 
   actions: {
+
+    async postsList() {
+      const response = await axios.get('posts');
+      this.posts = response.data.posts
+    },
     async openModelDetailsPost(postId) {
 
         this.postId = postId;

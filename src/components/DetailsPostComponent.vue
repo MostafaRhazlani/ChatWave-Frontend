@@ -1,4 +1,5 @@
 <script setup>
+    import LikeComponent from '@/components/LikeComponent.vue';
     import { ref, defineProps, defineEmits } from 'vue';
     import { Heart, MessageCircleMore, Star, Ellipsis, PenLine, Trash2 } from 'lucide-vue-next';
     import { useApiStore } from '@/store/apiStore';
@@ -10,6 +11,7 @@
     const apiStore = useApiStore();
     const openModelComment = ref(null);
     const typeFunction = ref('create');
+    const buttonType = ref('Replay');
     const commentForm = ref({
         id: 0,
         post_id: apiStore.post.id,
@@ -47,6 +49,7 @@
         commentForm.value.comment = response.data.comment.comment;
         commentForm.value.id = response.data.comment.id;
         typeFunction.value = 'update';
+        buttonType.value = 'Update'
         openModelComment.value = null;
     }
 
@@ -138,27 +141,20 @@
                         <!-- Post Stats -->
                         <div class="flex items-center justify-between gap-4 text-gray-400">
                             <div class="flex gap-4">
-                                <div class="flex items-center gap-1">
-                                    <div
-                                        class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                        <Heart :size="18" />
-                                    </div>
-                                    <span>245</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <div
-                                        class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                        <MessageCircleMore :size="18" />
-                                    </div>
-                                    <span>{{ apiStore.post.comments.length }} comment</span>
+                                <LikeComponent v-model:likesCount="apiStore.post.likes_count" v-model:isLiked="apiStore.post.is_liked" v-model:postId="apiStore.post.id"/>
+                                <div class="flex items-center gap-2">
+                                    <button class="w-9 h-9 bg-slate-700 text-white hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                                        <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
+                                    </button>
+                                    <span class="text-sm">{{ apiStore.post.comments.length }} comment</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-1">
-                                <div
-                                    class="h-8 w-8 bg-slate-700 hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                    <Star :size="18" />
-                                </div>
-                                <span>18</span>
+                                <button
+                                    class="w-9 h-9 bg-slate-700 hover:scale-[1.1] text-white hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                                    <Star :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
+                                </button>
+                                <span class="text-sm ml-1">237</span>
                             </div>
                         </div>
                     </div>
@@ -209,7 +205,7 @@
                                 <form @submit.prevent="handleComment(typeFunction)" >
                                     <textarea v-model="commentForm.comment" id="" class="bg-slate-700 text-white rounded-lg text-sm w-full pl-3 pt-2 resize-none min-h-16 focus:outline-none focus:ring-1 focus:ring-pink-400 pr-16" placeholder="Add comment..."></textarea>
                                     <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-pink-600 transition-colors">
-                                        Reply
+                                        {{ buttonType }}
                                     </button>
                                 </form>
                             </div>
