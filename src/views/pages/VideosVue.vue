@@ -40,24 +40,7 @@
             </div>
 
             <!-- People You Might Know -->
-            <div class="bg-slate-800 p-4 rounded-lg w-full border border-gray-700">
-              <h3 class="text-sm font-semibold mb-3">People You might know</h3>
-              <div class="space-y-3">
-                <div v-for="i in 5" :key="`suggestion-${i}`" class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-gray-700"></div>
-                    <div>
-                      <p class="text-sm font-medium">Othman Rhazlani</p>
-                      <p class="text-xs text-gray-400">@Othman</p>
-                    </div>
-                  </div>
-                  <button
-                    class="bg-gray-700 text-white text-xs px-3 py-1 rounded-full hover:bg-gray-600 transition-colors">
-                    Follow
-                  </button>
-                </div>
-              </div>
-            </div>
+            <RandomPeoplesComponent />
           </div>
         </div>
       </div>
@@ -71,6 +54,7 @@ import { Heart, MessageCircleMore, Star } from 'lucide-vue-next';
 import PostsComponent from '@/components/PostsComponent.vue';
 import CreatePostComponent from '@/components/CreatePostComponent.vue';
 import CardCreatePostComponent from '@/components/CardCreatePostComponent.vue';
+import RandomPeoplesComponent from '@/components/RandomPeoplesComponent.vue';
 
 </script>
 

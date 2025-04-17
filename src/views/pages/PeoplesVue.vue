@@ -9,22 +9,19 @@
 
             <!-- People List -->
             <div class="space-y-4">
-                <h2 class="text-xl font-semibold mb-4">Friend requests</h2>
-                <div v-for="(person, index) in people" :key="index" class="flex items-center justify-between">
+                <h2 v-if="usersNotFollowBack.length > 0" class="text-xl font-semibold mb-4">Friend requests</h2>
+                <div v-for="(person, index) in usersNotFollowBack" :key="index" class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
-                            <img :src="person.avatar" :alt="person.name" class="w-full h-full object-cover" />
+                            <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
                         </div>
                         <div>
-                            <h3 class="text-white font-medium">{{ person.name }}</h3>
-                            <p class="text-gray-400 text-sm">{{ person.followers }} following</p>
+                            <h3 class="text-white font-medium">{{ person.full_name }}</h3>
+                            <p class="text-gray-400 text-sm">{{ person.username }}</p>
                         </div>
                     </div>
                     <div class="flex gap-2 flex-col sm:flex-row">
-                        <button
-                            class="px-4 py-1.5 bg-[#3a4356] text-white rounded-md hover:bg-[#4a5366] transition-colors">
-                            Follow back
-                        </button>
+                        <FollowComponent :userId="person.id" @refreshFunction="() => getAllUsersNotFollowBack(false)"/>
                         <button
                             class="px-4 py-1.5 bg-[#e91e63] text-white rounded-md hover:bg-[#d81b60] transition-colors">
                             Message
@@ -37,26 +34,24 @@
             <div class="mt-8">
                 <h2 class="text-xl font-semibold mb-4">Suggested People</h2>
                 <div class="space-y-4">
-                    <div v-for="(person, index) in suggestedPeople" :key="index"
-                        class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
-                                <img :src="person.avatar" :alt="person.name" class="w-full h-full object-cover" />
+                    <div v-for="(person, index) in suggestedPeople" :key="index">
+                        <div v-if="person.id !== authStore.user.id" class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                    <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-medium">{{ person.full_name }}</h3>
+                                    <p class="text-gray-400 text-sm">{{ person.username }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 class="text-white font-medium">{{ person.name }}</h3>
-                                <p class="text-gray-400 text-sm">{{ person.followers }} following</p>
+                            <div class="flex gap-2 flex-col sm:flex-row">
+                                <FollowComponent :userId="person.id"/>
+                                <button
+                                    class="px-4 py-1.5 bg-pink-600 text-white rounded-md hover:bg-pink-500 transition-colors">
+                                    Message
+                                </button>
                             </div>
-                        </div>
-                        <div class="flex gap-2 flex-col sm:flex-row">
-                            <button
-                                class="px-4 py-1.5 bg-[#3a4356] text-white rounded-md hover:bg-[#4a5366] transition-colors">
-                                Follow
-                            </button>
-                            <button
-                                class="px-4 py-1.5 bg-[#e91e63] text-white rounded-md hover:bg-[#d81b60] transition-colors">
-                                Message
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -66,83 +61,47 @@
 </template>
 
 <script setup>
-import {
-    Home as HomeIcon,
-    Video as VideoIcon,
-    Search as SearchIcon,
-    MessageSquare as MessageSquareIcon,
-    Bell as BellIcon,
-    Users as UsersIcon,
-    Layers as LayersIcon,
-    User as UserIcon
-} from 'lucide-vue-next';
+    import FollowComponent from '@/components/FollowComponent.vue';
+    import axios from 'axios';
+    import { onMounted, ref } from 'vue';
+    import { useApiStore } from '@/store/apiStore';
+    import { useAuthStore } from '@/store/auth';
 
-// Navigation menu items
-const menuItems = [
-    { icon: HomeIcon, label: "Home" },
-    { icon: VideoIcon, label: "Videos" },
-    { icon: SearchIcon, label: "Search" },
-    { icon: MessageSquareIcon, label: "Messages" },
-    { icon: BellIcon, label: "Notification" },
-    { icon: UsersIcon, label: "People" },
-    { icon: LayersIcon, label: "Pages" },
-    { icon: UserIcon, label: "Profile" },
-];
+    const usersNotFollowBack = ref([]);
+    const suggestedPeople = ref([]);
+    const apiStore = useApiStore();
+    const authStore = useAuthStore();
 
-// People who followed me
-const people = [
-    {
-        name: "Othmane Rhazlani",
-        followers: "30k",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "100k",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "599",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "30k",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "100k",
-        avatar: "/placeholder.svg?height=50&width=50"
+    const getAllUsersNotFollowBack = async (showModel = true) => {
+        if (showModel) apiStore.isLoading = true
+        try {
+            const response = await axios.get('user/users-not-follow-back');
+            usersNotFollowBack.value = response.data.usersNotFollowBack
+        } catch (error) {
+           console.log(error);
+        } finally {
+            if (showModel) apiStore.isLoading = false
+        }
     }
-];
 
-// Suggested people
-const suggestedPeople = [
-    {
-        name: "Othmane Rhazlani",
-        followers: "599",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "30k",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "100k",
-        avatar: "/placeholder.svg?height=50&width=50"
-    },
-    {
-        name: "Othmane Rhazlani",
-        followers: "599",
-        avatar: "/placeholder.svg?height=50&width=50"
+    const getSuggestedPeople = async (showModel = true) => {
+        if (showModel) apiStore.isLoading = true
+        try {
+            const response = await axios.get('users');
+            suggestedPeople.value = response.data.randomUsers
+        } catch (error) {
+           console.log(error);
+        } finally {
+            if (showModel) apiStore.isLoading = false
+        }
     }
-];
+
+    onMounted(() => {
+        getAllUsersNotFollowBack();
+        getSuggestedPeople();
+    })
 </script>
 
 <style>
-/* Add any additional styles here if needed */
+
 </style>

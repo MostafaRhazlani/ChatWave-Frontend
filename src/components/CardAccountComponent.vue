@@ -29,7 +29,7 @@
         <div class="p-2">
             <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <User :size="22"/>
-                <RouterLink to="/profile" >Profile</RouterLink>
+                <RouterLink :to="`/profile/${authStore.user.id}`" >Profile</RouterLink>
             </div>
             <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <Settings :size="22"/>

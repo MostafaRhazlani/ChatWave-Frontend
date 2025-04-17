@@ -87,12 +87,13 @@
             <!-- Post Header -->
             <div class="p-4 flex justify-between items-center gap-3">
                 <div class="flex gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
-                        <img :src="`http://127.0.0.1:8000/storage/images/${post.person.image}`"
-                            alt="Profile" class="w-full h-full object-cover" />
-                    </div>
+                    <RouterLink :to="`profile/${post.person.id}`" class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden">
+                        <img :src="`http://127.0.0.1:8000/storage/images/${post.person.image}`" alt="Profile" class="w-full h-full object-cover" />
+                    </RouterLink>
                     <div>
-                        <p class="font-medium">{{ post.person.full_name }}</p>
+                        <RouterLink :to="`profile/${post.person.id}`" >
+                            <p class="font-medium">{{ post.person.full_name }}</p>
+                        </RouterLink>
                         <p class="text-xs text-gray-400">{{ convertTime(post.created_at) }}</p>
                     </div>
                 </div>
@@ -131,7 +132,7 @@
             <!-- Post Actions -->
             <div class="px-4 py-2 border-t border-slate-700 flex items-center justify-between">
                 <div class="flex items-center gap-6">
-                    <LikeComponent v-model:likesCount="post.likes_count" v-model:isLiked="post.is_liked" v-model:postId="post.id"/>
+                    <LikeComponent :likesCount="post.likes_count" v-model:isLiked="post.is_liked" :postId="post.id"/>
                     <div class="flex items-center gap-2">
                         <button @click="apiStore.openModelDetailsPost(post.id)" class="w-9 h-9 bg-slate-700 hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
                             <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
@@ -152,12 +153,14 @@
             <div class="px-4 py-3 border-t border-gray-700">
                 <div v-if="post.latest_three_comments.length > 0" class="p-2 space-y-3 rounded-md">
                     <div v-for="(comment, index) in post.latest_three_comments" :key="index" class="flex items-start gap-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
+                        <RouterLink :to="`profile/${comment.person.id}`" class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
                             <img :src="`http://127.0.0.1:8000/storage/images/${comment.person.image}`"
                                 alt="Profile" class="w-full h-full object-cover" />
-                        </div>
+                        </RouterLink>
                         <div class="flex flex-col">
-                            <p class="font-medium">{{ comment.person.full_name }}</p>
+                            <RouterLink :to="`profile/${comment.person.id}`">
+                                <p class="font-medium">{{ comment.person.full_name }}</p>
+                            </RouterLink>
                             <span class="text-xs text-gray-400">{{ comment.comment }}</span>
                             <p class="text-xs text-gray-500 mt-1">{{ convertTime(comment.created_at) }}</p>
                         </div>
@@ -196,10 +199,10 @@
     </div>
 
     <transition name="fade">
-        <UpdatePostComponent v-if="isModelUpdateOpen" v-model:modelType="modelType" v-model:modelUpdate="isModelUpdateOpen" v-model:post="post" />
+        <UpdatePostComponent v-if="isModelUpdateOpen" v-model:modelType="modelType" v-model:modelUpdate="isModelUpdateOpen" :post="post" />
     </transition>
     <transition name="fade">
-        <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" v-model:post_id="post_id" />
+        <DeleteModelComponent v-if="isModelDeleteOpen" v-model:modelDelete="isModelDeleteOpen" :post_id="post_id" />
     </transition>
 
     <!-- Post Detail Modal -->
