@@ -141,7 +141,7 @@
                         <!-- Post Stats -->
                         <div class="flex items-center justify-between gap-4 text-gray-400">
                             <div class="flex gap-4">
-                                <LikeComponent v-model:likesCount="apiStore.post.likes_count" v-model:isLiked="apiStore.post.is_liked" v-model:postId="apiStore.post.id"/>
+                                <LikeComponent v-model:likesCount="apiStore.post.likes_count" v-model:isLiked="apiStore.post.is_liked" :postId="apiStore.post.id"/>
                                 <div class="flex items-center gap-2">
                                     <button class="w-9 h-9 bg-slate-700 text-white hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
                                         <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />

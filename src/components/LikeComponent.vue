@@ -28,7 +28,7 @@
         } finally {
             isLoading.value = false;
         }
-        apiStore.postsList();
+        apiStore.postsList(false);
         if(apiStore.showModal === true) {
             apiStore.openModelDetailsPost(props.postId);
         }
@@ -39,7 +39,7 @@
     <div class="flex items-center gap-2">
         <button :class="[props.isLiked === true ? 'bg-red-500' : 'bg-slate-700 hover:bg-slate-500']" @click="toggleLike()"
             class="w-9 h-9 cursor-pointer hover:scale-[1.1] text-white duration-150 flex items-center justify-center rounded-full">
-            <Heart :size="24" stroke-width="2" class="mt-[3px] ml-[1px]"/>
+            <Heart :size="24" stroke-width="2" class="mt-[3px]"/>
         </button>
         <span class="text-sm">{{ props.likesCount }} like</span>
     </div>
