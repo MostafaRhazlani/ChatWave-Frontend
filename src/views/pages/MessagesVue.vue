@@ -20,18 +20,18 @@
 
             <!-- Conversations -->
             <div class="overflow-y-auto">
-                <div class="p-4 border-b border-gray-700 cursor-pointer hover:bg-slate-700 transition-colors">
-                    <div class="flex items-center gap-3">
+                <div v-for="(contact, index) in contacts" :key="index" class="p-4 border-b border-gray-700 cursor-pointer hover:bg-slate-700 transition-colors">
+                    <div @click="getConversation(contact.id)" class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0">
-                            <img src="" alt=""
-                                class="w-full h-full rounded-full" />
+                            <img :src="`http://127.0.0.1:8000/storage/images/${contact.image}`" alt=""
+                                class="w-full h-full object-cover rounded-full" />
                         </div>
                         <div class="min-w-52">
                             <div class="flex justify-between items-center">
-                                <h3 class="text-white font-medium text-sm truncate">Othmane Rhazlani</h3>
-                                <span class="text-gray-400 text-xs">10:45</span>
+                                <h3 class="text-white font-medium text-sm truncate">{{ contact.full_name }}</h3>
+                                <span class="text-gray-400 text-xs">{{ convertTime(contact.lastMessage.created_at) }}</span>
                             </div>
-                            <p class="text-gray-400 text-sm truncate">Hello my friend</p>
+                            <p class="text-gray-400 text-sm truncate"><span class="font-semibold text-gray-300" v-if="authStore.user.id == contact.lastMessage.sender_id">You :</span> {{ contact.lastMessage.content }}</p>
                         </div>
                     </div>
                 </div>
@@ -183,24 +183,38 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { Search, Info, SendHorizontal, Menu } from 'lucide-vue-next';
-
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import { convertTime } from '@/helpers/convertTime';
+import { useApiStore } from '@/store/apiStore';
+import { useAuthStore } from '@/store/auth';
 // Sidebar state
 const sidebarOpen = ref(false);
-
+const contacts = ref([]);
+const apiStore = useApiStore();
+const authStore = useAuthStore();
 // Toggle sidebar function
 const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
 };
 
-// // Close sidebar on mobile after selecting a conversation
-// const closeSidebarOnMobile = () => {
-//     if (window.innerWidth < 768) { // md breakpoint is typically 768px
-//         sidebarOpen.value = false;
-//     }
-// };
+const listContacts = async () => {
+    apiStore.isLoading = true
+    try {
+        const response = await axios.get('contacts');
+        contacts.value = response.data.contacts
+    } catch (error) {
+        console.log(error);
+        
+    } finally {
+        apiStore.isLoading = false
+    }
+}
 
+onMounted(() => {
+    listContacts();
+})
 </script>
 
 <style>
