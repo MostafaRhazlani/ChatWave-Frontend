@@ -10,7 +10,9 @@ export const useApiStore = defineStore("apiStore", {
     typePost: '',
     showModal: false,
     isLoading: false,
-    followStatuses: {}
+    followStatuses: {},
+    contacts: [],
+    firstFriend: null
   }),
 
   actions: {
@@ -67,7 +69,21 @@ export const useApiStore = defineStore("apiStore", {
       await axios.post(`user/${userId}/toggle-follow`);
       await this.handleFollowStatus(userId);
       await this.showProfileUser(userId, false);
-    }
+    },
+
+    async listContacts () {
+      this.isLoading = true
+      try {
+          const response = await axios.get('contacts');
+          this.contacts = response.data.contacts
+          this.firstFriend = response.data.contacts[0].id
+      } catch (error) {
+          console.log(error);
+          
+      } finally {
+          this.isLoading = false
+      }
+  }
   },
 });
 

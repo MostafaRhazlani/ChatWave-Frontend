@@ -3,8 +3,10 @@
     import { useSidebarStore } from '@/store/sidebarStore';
     import { Bell, MessageSquareText } from 'lucide-vue-next';
     import CardAccount from '../CardAccountComponent.vue';
+    import { useApiStore } from '@/store/apiStore';
     import { ref } from 'vue';
 
+    const apiStore = useApiStore();
     const authStore = useAuthStore();
     const sidebarStore = useSidebarStore();
     const isCardVisible = ref(false);
@@ -31,7 +33,7 @@
                 <Bell :size="30" :stroke-width="1.5"/>
             </div>
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
-                <RouterLink to="/messages">
+                <RouterLink :to="`/messages/${apiStore.firstFriend}`">
                     <MessageSquareText :size="30" :stroke-width="1.5"/>
                 </RouterLink>
             </div>

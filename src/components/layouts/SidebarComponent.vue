@@ -4,13 +4,15 @@ import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquare
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import { useSidebarStore } from '@/store/sidebarStore.js';
+import { useApiStore } from '@/store/apiStore';
 import CardAccount from '@/components/CardAccountComponent.vue';
 import Notification from '@/views/pages/NotificationVue.vue';
 import SearchVue from '@/views/pages/SearchVue.vue';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const authStore = useAuthStore();
 const sidebarStore = useSidebarStore();
+const apiStore = useApiStore();
 const route = useRoute();
 const isCardVisible = ref(false);
 const sidebarWidth = ref('lg:w-72');
@@ -25,6 +27,10 @@ const dropdawnAccount = () => {
 watch(isCardVisible, (newValue) => {
     typeArrow.value = newValue ? "-rotate-90" : "rotate-0";
 });
+
+onMounted(() => {
+    apiStore.listContacts();
+})
 
 
 // Toggle notification
@@ -80,7 +86,7 @@ const toggleSearch = () => {
                     </RouterLink>
                 </div>
                 <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
-                    <RouterLink to="/messages" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                    <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <MessageSquareText :size="30" :stroke-width="1.5"/>
                         <span :class="[ statusSidebar ]" class="hidden lg:block">Messages</span>
                     </RouterLink>
