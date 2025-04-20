@@ -37,7 +37,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/messages',
+      path: '/messages/:id',
       name: 'Messages',
       component: () => import('../views/pages/MessagesVue.vue'),
       meta: {

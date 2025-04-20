@@ -46,79 +46,84 @@ const playPauseVideo = (event) => {
 
 <template>
 
-    <div class="md:w-[98%] lg:w-5/6 mx-auto mt-16 md:mt-0">
+    <div class="md:w-[98%] lg:w-5/6 mx-auto mt-20 md:mt-0">
         <!-- Main Content -->
         <div>
             <!-- Profile Header -->
-            <div class="border-b border-gray-700 pb-6">
-                <div class="flex flex-col text-center md:flex-row md:text-start gap-6 items-center pt-8 px-4">
-                    <div>
-                        <div
-                            class="w-36 h-36 rounded-full border-4 p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
-                            <img class="w-full h-full object-cover rounded-full"
-                                :src="`http://127.0.0.1:8000/storage/images/${apiStore.userInfo.image}`"
-                                alt="Profile Image">
+            <div class="border-b border-gray-700">
+                <div class="p-4">
+                    <div class="flex items-center gap-4">
+                        <div class="min-w-24 min-h-24 max-w-24 max-h-24 md:min-w-32 md:min-h-32 md:max-w-32 md:max-h-32 rounded-full border-[3px] p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
+                            <img class="w-full h-full object-cover rounded-full" :src="`http://127.0.0.1:8000/storage/images/${apiStore.userInfo.image}`" alt="Profile Image">
                         </div>
-                    </div>
 
-                    <div class="w-full">
-                        <h1 class="text-3xl font-bold mt-4">{{ apiStore.userInfo.full_name }}</h1>
-                        <p class="text-pink-500 text-lg">{{ apiStore.userInfo.username }}</p>
-
-                        <p v-if="apiStore.userInfo.description" class="text-gray-400 mt-2 max-w-lg">
-                            {{ apiStore.userInfo.description }}
-                        </p>
-                        <p v-else class="text-gray-400 mt-2 max-w-lg">
-                            Talk about yourself here
-                        </p>
-
-                        <div class="flex justify-between items-center">
-                            <div class="flex justify-between w-3/4 md:w-2/6 mx-auto md:mx-0 mt-4">
-                                <div class="text-center">
-                                    <p class="text-gray-400">Posts</p>
-                                    <p class="font-bold">{{ apiStore.userPosts.length }}</p>
+                        <div class="w-full">
+                            <h1 class="text-xl md:text-2xl font-bold">{{ apiStore.userInfo.full_name }}</h1>
+                            <p class="text-pink-500 text-lg">{{ apiStore.userInfo.username }}</p>
+                            <div class="sm:flex items-center justify-between w-full mt-2">
+                                <div class="w-full flex gap-4">
+                                    <div class="">
+                                        <p class="text-gray-400">Posts</p>
+                                        <p class="font-bold">{{ apiStore.userPosts.length }}</p>
+                                    </div>
+                                    <div class="">
+                                        <p class="text-gray-400">Following</p>
+                                        <p class="font-bold">{{ apiStore.userInfo.following_count }}</p>
+                                    </div>
+                                    <div class="">
+                                        <p class="text-gray-400">Followers</p>
+                                        <p class="font-bold">{{ apiStore.userInfo.followers_count }}</p>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <p class="text-gray-400">Following</p>
-                                    <p class="font-bold">{{ apiStore.userInfo.following_count }}</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-gray-400">Followers</p>
-                                    <p class="font-bold">{{ apiStore.userInfo.followers_count }}</p>
-                                </div>
-                            </div>
 
-                            <div v-if="authStore.user.id !== apiStore.userInfo.id">
-                                <div class="flex gap-3">
-                                    <FollowComponent :userId="apiStore.userInfo.id"/>
-                                    <RouterLink to=""
-                                        class="px-4 py-2 transition-colors duration-150 rounded-md bg-pink-600 hover:bg-pink-500">
+                                <div class="hidden sm:flex justify-between gap-3" v-if="authStore.user.id !== apiStore.userInfo.id">
+                                    <FollowComponent class="w-full text-center" :userId="apiStore.userInfo.id"/>
+                                    <RouterLink :to="`/messages/${apiStore.userInfo.id}`"
+                                        class="w-full text-center px-4 py-2 transition-colors duration-150 rounded-md bg-pink-600 hover:bg-pink-500">
                                         Message
                                     </RouterLink>
-                                    <div
-                                        class="p-2 cursor-pointer transition-colors duration-150 rounded-md bg-slate-600 hover:bg-slate-500">
+                                    <div class="p-2 cursor-pointer transition-colors duration-150 rounded-md bg-slate-600 hover:bg-slate-500">
                                         <Ellipsis />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="w-full mt-6">
+                        <p v-if="apiStore.userInfo.description" class="text-gray-400 mt-2">
+                            {{ apiStore.userInfo.description }}
+                        </p>
+                        <p v-else class="text-gray-400 my-2">
+                            Talk about yourself here
+                        </p>
+                        <div class="sm:hidden flex justify-between gap-3" v-if="authStore.user.id !== apiStore.userInfo.id">
+                            <FollowComponent class="w-full text-center" :userId="apiStore.userInfo.id"/>
+                            <RouterLink :to="`/messages/${apiStore.userInfo.id}`"
+                                class="w-full text-center px-4 py-2 transition-colors duration-150 rounded-md bg-pink-600 hover:bg-pink-500">
+                                Message
+                            </RouterLink>
+                            <div class="p-2 cursor-pointer transition-colors duration-150 rounded-md bg-slate-600 hover:bg-slate-500">
+                                <Ellipsis />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="px-6 py-6">
-                <h2 class="text-lg font-semibold mb-4">Highlights</h2>
+            <div class="px-4 py-4">
+                <h2 class="text-lg font-semibold mb-4">Stories</h2>
                 <div class="overflow-x-auto w-full scroll-smooth no-scrollbar">
                     <div class="snap-x snap-mandatory text-pink-500 flex gap-4 min-w-max">
                         <div
-                            class="w-40 h-56 border-2 hover:bg-slate-800 duration-150 cursor-pointer border-dashed border-pink-500 rounded-lg flex justify-center items-center">
+                            class="w-32 h-32 border-2 hover:bg-slate-800 duration-150 cursor-pointer border-dashed border-pink-500 rounded-full flex justify-center items-center">
                             <div class="flex flex-col items-center">
                                 <Plus />
                                 <p>Add New</p>
                             </div>
                         </div>
                         <div v-for="i in 10" :key="`highlights-${i}`"
-                            class="w-40 h-56 duration-150 cursor-pointer rounded-lg overflow-hidden">
+                            class="w-32 h-32 duration-150 cursor-pointer rounded-full overflow-hidden">
                             <img class="w-full h-full object-cover"
                                 src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
                                 alt="">
@@ -128,7 +133,7 @@ const playPauseVideo = (event) => {
             </div>
 
             <!-- Posts Section -->
-            <div class="px-6 py-6">
+            <div class="px-4 py-4">
                 <!-- Page Navigation -->
                 <div class="flex mb-8 border-b border-gray-700">
                     <nav class="flex space-x-8 pt-1">

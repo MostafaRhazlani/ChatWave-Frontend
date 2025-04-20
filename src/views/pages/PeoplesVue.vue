@@ -47,10 +47,9 @@
                             </div>
                             <div class="flex gap-2 flex-col sm:flex-row">
                                 <FollowComponent :userId="person.id"/>
-                                <button
-                                    class="px-4 py-1.5 bg-pink-600 text-white rounded-md hover:bg-pink-500 transition-colors">
+                                <RouterLink :to="`messages/${person.id}`" class="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-500 transition-colors">
                                     Message
-                                </button>
+                                </RouterLink>
                             </div>
                         </div>
                     </div>

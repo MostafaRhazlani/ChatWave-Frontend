@@ -71,8 +71,8 @@ export const useApiStore = defineStore("apiStore", {
       await this.showProfileUser(userId, false);
     },
 
-    async listContacts () {
-      this.isLoading = true
+    async listContacts (showLoader = true) {
+      if(showLoader) this.isLoading = true
       try {
           const response = await axios.get('contacts');
           this.contacts = response.data.contacts
@@ -81,7 +81,7 @@ export const useApiStore = defineStore("apiStore", {
           console.log(error);
           
       } finally {
-          this.isLoading = false
+        if(showLoader) this.isLoading = false
       }
   }
   },

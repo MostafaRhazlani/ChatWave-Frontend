@@ -31,7 +31,7 @@
                         <div class="min-w-52">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-white font-medium text-sm truncate">{{ contact.full_name }}</h3>
-                                <span class="text-gray-400 text-xs">{{ convertTime(contact.lastMessage.created_at)
+                                <span class="text-gray-400 text-xs">{{ formatDate(contact.lastMessage.created_at)
                                     }}</span>
                             </div>
                             <p class="text-gray-400 text-sm truncate"><span class="font-semibold text-gray-300"
@@ -55,7 +55,7 @@
 
                     <div class="w-10 h-10 rounded-full bg-gray-300">
                         <img :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt=""
-                            class="w-full h-full rounded-full" />
+                            class="w-full h-full object-cover rounded-full" />
                     </div>
                     <div>
                         <h3 class="text-white font-medium">{{ friendInfo.full_name }}</h3>
@@ -71,16 +71,16 @@
             </div>
 
             <!-- Messages -->
-            <div class="flex-1 p-4 overflow-y-auto scrollbar-hide flex flex-col space-y-4">
+            <div ref="messagesContainer" class="flex-1 p-4 overflow-y-auto scrollbar-hide flex flex-col space-y-4 pb-20">
 
                 <div v-for="(message, index) in conversation" :key="index" class="flex flex-col">
-                    <div v-if="message.receiver_id == friendInfo.id">
+                    <div v-if="message.sender_id == authStore.user.id">
                         <!-- Received Message -->
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-gray-300">
-                                <img src="" alt="" class="w-full h-full rounded-full" />
+                                <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="" class="w-full h-full object-cover rounded-full" />
                             </div>
-                            <div class="bg-gray-700 text-white p-3 rounded-2xl rounded-tl-none max-w-[80%]">
+                            <div class="bg-blue-700 text-white p-3 rounded-2xl rounded-tl-none max-w-[80%]">
                                 <p>{{ message.content }}</p>
                             </div>
                         </div>
@@ -89,11 +89,10 @@
                     <div v-else>
                         <!-- Sent Message -->
                         <div class="flex flex-row-reverse items-center gap-3">
-                            <div
-                                class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0">
-                                M
+                            <div class="w-10 h-10 rounded-full bg-gray-300">
+                                <img :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt="" class="w-full h-full object-cover rounded-full" />
                             </div>
-                            <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
+                            <div class="bg-slate-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
                                 <p>{{ message.content }}</p>
                             </div>
                         </div>
@@ -103,14 +102,16 @@
 
             <!-- Message Input -->
             <div class="mb-16 md:mb-0 p-3 border-y border-gray-700">
-                <div class="relative">
-                    <input type="text" placeholder="Write your message"
-                        class="w-full py-3 px-4 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                    <button
-                        class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
-                        <SendHorizontal class="w-5 h-5 text-white" />
-                    </button>
-                </div>
+                <form @submit.prevent="sendMessage">
+                    <div class="relative">
+                        <input v-model="form.content" type="text" placeholder="Write your message"
+                            class="w-full py-3 px-4 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                        <button
+                            class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
+                            <SendHorizontal class="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -119,11 +120,12 @@
 <script setup>
 import { Search, Info, SendHorizontal, Menu } from 'lucide-vue-next';
 import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
-import { convertTime } from '@/helpers/convertTime';
+import { nextTick, onMounted, ref, watch } from 'vue';
+import { convertTime , formatDate } from '@/helpers/convertTime';
 import { useApiStore } from '@/store/apiStore';
 import { useAuthStore } from '@/store/auth';
 import { useRoute } from 'vue-router';
+
 // Sidebar state
 const sidebarOpen = ref(false);
 const conversation = ref([]);
@@ -131,26 +133,65 @@ const friendInfo = ref({});
 const apiStore = useApiStore();
 const authStore = useAuthStore();
 const route = useRoute();
+const messagesContainer = ref(null);
+const form = ref({
+    content: '',
+    sender_id: authStore.user.id,
+    receiver_id: route.params.id,
+})
 
 // Toggle sidebar function
 const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
 };
 
+const sendMessage = async () => {
+    
+    const response = await axios.post('message/send', form.value);
+    if(response.status === 200) {
+        form.value.content = ''
+        conversation.value.push(response.data.message);
+        scrollToBottm();
+        if(conversation.value.length <= 1) {
+            apiStore.listContacts(false);
+        }
+    }
+}
+
 watch(() => route.params.id, async (newId) => {
     try {
         const response = await axios.get(`contact/${newId}/conversation`);
         conversation.value = response.data.messages
         friendInfo.value = response.data.friend
-        console.log(conversation.value);
     } catch (error) {
         console.log(error);
     }
 }, { immediate: true });
 
+
+const scrollToBottm = () => {
+    if(messagesContainer.value) {
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+    }
+}
+watch(conversation ,() => {
+    nextTick(() => {
+        scrollToBottm();
+    })
+})
+
 onMounted(() => {
     apiStore.listContacts();
 
+    window.Echo.private(`chat.${authStore.user.id}`)
+    .listen('.message.sent', (event) => {
+        
+        if (event.message.sender_id == route.params.id) {
+            console.log(event.message.content);
+            
+            conversation.value.push(event.message)
+        }
+    });
 })
 </script>
 
