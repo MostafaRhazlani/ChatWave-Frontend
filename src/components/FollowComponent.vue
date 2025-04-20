@@ -25,16 +25,16 @@
 <template>
     <div>
         <div :class="route.name === 'Profile' || route.name === 'Peoples' ? 'px-4 py-2 rounded-md' : 'text-xs px-3 py-1 rounded-full'" v-if="followStatus.isFollowMe && !followStatus.isFollowHim" @click="toggoleFollowAndRefresh"
-            class=" cursor-pointer transition-colors duration-150  bg-slate-600 hover:bg-slate-500">
+            class="cursor-pointer transition-colors duration-150  bg-slate-600 hover:bg-slate-500">
             Follow Back
         </div>
         <div v-else class="">
             <div :class="route.name === 'Profile' || route.name === 'Peoples' ? 'px-4 py-2 rounded-md' : 'text-xs px-3 py-1 rounded-full'" v-if="followStatus.isFollowHim" @click="toggoleFollowAndRefresh"
-                class=" h-full cursor-pointer transition-colors duration-150  bg-pink-100 hover:bg-pink-200 font-semibold text-pink-600">
+                class="cursor-pointer transition-colors duration-150  bg-pink-100 hover:bg-pink-200 font-semibold text-pink-600">
                 Unfollow
             </div>
             <div :class="route.name === 'Profile' || route.name === 'Peoples' ? 'px-4 py-2 rounded-md' : 'text-xs px-3 py-1 rounded-full'" v-else @click="toggoleFollowAndRefresh"
-                class=" h-full cursor-pointer transition-colors duration-150  bg-slate-600 hover:bg-slate-500">
+                class="cursor-pointer transition-colors duration-150  bg-slate-600 hover:bg-slate-500">
                 Follow
             </div>
         </div>
