@@ -54,7 +54,9 @@ const playPauseVideo = (event) => {
                 <div class="p-4">
                     <div class="flex items-center gap-4">
                         <div class="min-w-24 min-h-24 max-w-24 max-h-24 md:min-w-32 md:min-h-32 md:max-w-32 md:max-h-32 rounded-full border-[3px] p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
-                            <img class="w-full h-full object-cover rounded-full" :src="`http://127.0.0.1:8000/storage/images/${apiStore.userInfo.image}`" alt="Profile Image">
+                            <div class="w-full h-full rounded-full overflow-hidden">
+                                <img class="w-full h-full object-cover" :src="`http://127.0.0.1:8000/storage/images/${apiStore.userInfo.image}`" alt="Profile Image">
+                            </div>
                         </div>
 
                         <div class="w-full">

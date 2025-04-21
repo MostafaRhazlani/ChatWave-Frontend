@@ -15,7 +15,7 @@ const sidebarStore = useSidebarStore();
 const apiStore = useApiStore();
 const route = useRoute();
 const isCardVisible = ref(false);
-const sidebarWidth = ref('lg:w-72');
+const sidebarWidth = ref('lg:w-80');
 const statusSidebar = ref('');
 const statusLayout = ref('')
 const typeArrow = ref("rotate-0");
@@ -41,7 +41,7 @@ const toggleNotification = () => {
         statusSidebar.value = "lg:hidden";
         statusLayout.value = "lg:justify-center";
     } else {
-        sidebarWidth.value = "lg:w-72";
+        sidebarWidth.value = "lg:w-80";
         statusSidebar.value = "lg:block";
         statusLayout.value = "lg:justify-start";
     }
@@ -54,7 +54,7 @@ const toggleSearch = () => {
         statusSidebar.value = "lg:hidden";
         statusLayout.value = "lg:justify-center";
     } else {
-        sidebarWidth.value = "lg:w-72";
+        sidebarWidth.value = "lg:w-80";
         statusSidebar.value = "lg:block";
         statusLayout.value = "lg:justify-start";
     }
