@@ -7,7 +7,7 @@
         </div>
 
         <!-- Conversation List Sidebar -->
-        <div class="fixed md:relative z-10 w-80 h-full border-x border-gray-700 flex flex-col bg-slate-800 transition-transform duration-300 ease-in-out"
+        <div class="fixed md:relative z-10 max-w-80 min-w-80 h-full border-x border-gray-700 flex flex-col bg-slate-800 transition-transform duration-300 ease-in-out"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
             <!-- Search Header -->
             <div class="p-4 border-b border-gray-700">
@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            <!-- Conversations -->
+            <!-- Contacts -->
             <div class="overflow-y-auto">
                 <div v-for="(contact, index) in apiStore.contacts" :key="index" :class="[route.params.id == contact.id ? 'bg-slate-700' : '']"
                     class="p-4 border-b border-gray-700 cursor-pointer hover:bg-slate-700 transition-colors">
@@ -28,11 +28,10 @@
                             <img :src="`http://127.0.0.1:8000/storage/images/${contact.image}`" alt=""
                                 class="w-full h-full object-cover rounded-full" />
                         </div>
-                        <div class="min-w-52">
+                        <div class="w-full">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-white font-medium text-sm truncate">{{ contact.full_name }}</h3>
-                                <span class="text-gray-400 text-xs">{{ formatDate(contact.lastMessage.created_at)
-                                    }}</span>
+                                <span class="text-gray-400 text-xs">{{ formatDate(contact.lastMessage.created_at)}}</span>
                             </div>
                             <p class="text-gray-400 text-sm truncate"><span class="font-semibold text-gray-300"
                                     v-if="authStore.user.id == contact.lastMessage.sender_id">You :</span> {{
@@ -75,25 +74,59 @@
 
                 <div v-for="(message, index) in conversation" :key="index" class="flex flex-col">
                     <div v-if="message.sender_id == authStore.user.id">
-                        <!-- Received Message -->
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-300">
-                                <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="" class="w-full h-full object-cover rounded-full" />
-                            </div>
-                            <div class="bg-blue-700 text-white p-3 rounded-2xl rounded-tl-none max-w-[80%]">
-                                <p>{{ message.content }}</p>
+                        <!-- Sent Message -->
+                        <div class="flex items-start gap-3">
+                            <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
+                            <div class="space-y-1 w-full flex flex-col items-start">
+                                <div>
+                                    {{ authStore.user.full_name }} • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
+                                </div>
+                                <div v-if="message.content" class="text-white w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                    <p class="break-all text-sm text-gray-200 font-light max-w-[80%]">{{ message.content }}</p>
+                                </div>
+                                <div class="w-72 h-72" v-if="message.messageType && message.messageType === 'image'">
+                                    <img :src="`http://127.0.0.1:8000/storage/chat/images/${message.media}`" alt="Image" class="h-full w-full object-cover rounded-md" />
+                                </div>
+                                <div class="w-72 h-72" v-else-if="message.messageType && message.messageType === 'video'">
+                                    <video :src="`http://127.0.0.1:8000/storage/chat/videos/${message.media}`" controls class="h-full w-full rounded-md"></video>
+                                </div>
+                                <div class="w-full" v-else-if="message.messageType && message.messageType === 'document'">
+                                    <a class="flex p-2 items-center gap-2 border max-w-52 border-gray-700 rounded-lg transition-colors duration-150 hover:bg-slate-600" :href="`http://127.0.0.1:8000/storage/chat/documents/${message.media}`" target="_blank">
+                                        <p class="bg-red-600 p-2 rounded-sm">{{ message.media.split('.').pop().toUpperCase() }}</p>
+                                        <p class="font-light text-sm hover:text-gray-300 truncate">{{ message.media }}</p>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div v-else>
-                        <!-- Sent Message -->
-                        <div class="flex flex-row-reverse items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-300">
-                                <img :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt="" class="w-full h-full object-cover rounded-full" />
-                            </div>
-                            <div class="bg-slate-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
-                                <p>{{ message.content }}</p>
+                        <!-- Received Message -->
+                        <div class="flex items-start gap-3">
+                            <img :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
+                            <div class="space-y-1 w-full flex flex-col items-start">
+                                <div>
+                                    {{ friendInfo.full_name }} • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
+                                </div>
+                                <div v-if="message.content" class="text-white w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                    <p class="break-all text-sm text-gray-200 font-light max-w-[80%]">{{ message.content }}</p>
+                                </div>
+                                <div v-if="message.messageType && message.messageType === 'image'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                    <div class="w-72 h-72">
+                                        <img :src="`http://127.0.0.1:8000/storage/chat/images/${message.media}`" alt="Image" class="h-full w-full object-cover rounded-md" />
+                                    </div>
+                                </div>
+                                <div v-else-if="message.messageType && message.messageType === 'video'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                    <div class="w-72 h-72">
+                                        <video :src="`http://127.0.0.1:8000/storage/chat/videos/${message.media}`" controls class="h-full w-full rounded-md"></video>
+                                    </div>
+                                </div>
+                                <div class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150" v-else-if="message.messageType && message.messageType === 'document'">
+                                    <a class="flex p-2 items-center gap-2 border bg-slate-800 max-w-52 border-gray-700 rounded-lg transition-colors duration-150 hover:bg-slate-600" :href="`http://127.0.0.1:8000/storage/chat/documents/${message.media}`" target="_blank">
+                                        <p class="bg-red-600 p-2 rounded-sm">{{ message.media.split('.').pop().toUpperCase() }}</p>
+                                        <p class="font-light text-sm hover:text-gray-300 truncate">{{ message.media }}</p>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -101,24 +134,72 @@
             </div>
 
             <!-- Message Input -->
-            <div class="mb-16 md:mb-0 p-3 border-y border-gray-700">
-                <form @submit.prevent="sendMessage">
+            <form @submit.prevent="sendMessage" enctype="multipart/form-data">
+                <div v-if="selectedFileType" class="p-3 border-t border-gray-700 rounded-md mt-2 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-2" v-if="selectedFileType === 'image'">
+                        <div v-if="filePreviewUrl">
+                            <img :src="filePreviewUrl" alt="Selected Image" class="h-16 rounded-md" />
+                        </div>
+                        <div v-else>
+                            <OctagonX />
+                        </div>
+                        <div class="flex flex-col">
+                            <span>{{ filename }}</span>
+                            <span :class="[typeof fileSize === 'string' ? 'text-red-500' : 'text-gray-300']" class="text-xs text-gray-300 font-light">{{ convertFileSize(fileSize) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2" v-else-if="selectedFileType === 'video'">
+                        <div v-if="filePreviewUrl">
+                            <video :src="filePreviewUrl" class="h-16 w-32 rounded-md"></video>
+                        </div>
+                        <div v-else>
+                            <OctagonX class="text-red-500"/>
+                        </div>
+                        <div class="flex flex-col">
+                            <span>{{ filename }}</span>
+                            <span :class="[typeof fileSize === 'string' ? 'text-red-500' : 'text-gray-300']" class="text-xs font-light">{{ convertFileSize(fileSize) }}</span>
+                        </div>
+                    </div>
+
+                    <div v-else-if="selectedFileType === 'document'" class="text-slate-200 p-2">
+                        <span class="p-3 rounded-sm bg-red-700 text-white">{{ extension }}</span> {{ filename }}
+                    </div>
+
+                    <button @click="removeSelectedFile" class="text-red-400 hover:text-red-600 text-sm underline"><Close /></button>
+                </div>
+                <div class="mb-16 md:mb-0 p-3 border-y border-gray-700">
                     <div class="relative">
                         <input v-model="form.content" type="text" placeholder="Write your message"
-                            class="w-full py-3 px-4 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                        <button
-                            class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
+                            class="w-full py-3 px-4 pr-24 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                        <div>
+                            <div @click="toggleChooseFile" class="absolute cursor-pointer transition-colors duratoin-150 right-12 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
+                                <Paperclip class="w-5 h-5 text-white"/>
+                            </div>
+                            <transition name="fade">
+                                <div v-if="chooseFileOpen" class="w-36 md:flex space-y-1 absolute bottom-12 right-10 z-40 p-1 flex-col bg-slate-800 shadow-md rounded-lg overflow-hidden border border-gray-700">
+                                    <span @click="openFileInput('image')" class="flex p-2 gap-2 text-slate-300 hover:bg-slate-700 transition-colors duratoin-150 cursor-pointer rounded-md"><Image /> Image</span>
+                                    <span @click="openFileInput('document')" class="flex p-2 gap-2 text-slate-300 hover:bg-slate-700 transition-colors duratoin-150 cursor-pointer rounded-md"><FileText /> Document</span>
+                                    <span @click="openFileInput('video')" class="flex p-2 gap-2 text-slate-300 hover:bg-slate-700 transition-colors duratoin-150 cursor-pointer rounded-md"><SquarePlay /> Video</span>
+
+                                    <input ref="imageInput" type="file" accept="image/*" class="hidden" @change="handleFileUpload('image', $event)" />
+                                    <input ref="documentInput" type="file" accept=".pdf,.doc,.docx,.txt" class="hidden" @change="handleFileUpload('document', $event)" />
+                                    <input ref="videoInput" type="file" accept="video/*" class="hidden" @change="handleFileUpload('video', $event)" />
+                                </div>
+                            </transition>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
                             <SendHorizontal class="w-5 h-5 text-white" />
                         </button>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </template>
 
 <script setup>
-import { Search, Info, SendHorizontal, Menu } from 'lucide-vue-next';
+import { Search, Info, SendHorizontal, Menu, Paperclip, Image, FileText, SquarePlay, X as Close, OctagonX } from 'lucide-vue-next';
 import axios from 'axios';
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { convertTime , formatDate } from '@/helpers/convertTime';
@@ -134,6 +215,16 @@ const apiStore = useApiStore();
 const authStore = useAuthStore();
 const route = useRoute();
 const messagesContainer = ref(null);
+const chooseFileOpen = ref(false);
+const imageInput = ref(null);
+const documentInput = ref(null);
+const videoInput = ref(null);
+const selectedFile = ref(null);
+const selectedFileType = ref('');
+const filePreviewUrl = ref('');
+const filename = ref('');
+const fileSize = ref('');
+const extension = ref('');
 const form = ref({
     content: '',
     sender_id: authStore.user.id,
@@ -145,18 +236,84 @@ const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value;
 };
 
+const toggleChooseFile = () => {
+    chooseFileOpen.value = !chooseFileOpen.value;
+};
+
 const sendMessage = async () => {
     
-    const response = await axios.post('message/send', form.value);
+    const formData = new FormData();
+    if(form.value.content) {
+        formData.append('content', form.value.content)
+    }
+    if(selectedFile.value) {
+        formData.append('media', selectedFile.value)
+    }
+    formData.append('messageType', selectedFileType.value);
+    formData.append('sender_id', form.value.sender_id);
+    formData.append('receiver_id', form.value.receiver_id);
+    
+    const response = await axios.post('message/send', formData);
     if(response.status === 200) {
         form.value.content = ''
         conversation.value.push(response.data.message);
+        removeSelectedFile();
+        
         scrollToBottm();
-        if(conversation.value.length <= 1) {
-            apiStore.listContacts(false);
-        }
+        apiStore.listContacts(false);
     }
 }
+
+const openFileInput = (type) => {
+    chooseFileOpen.value = false;
+    if (type === 'image') imageInput.value.click();
+    else if (type === 'document') documentInput.value.click();
+    else if (type === 'video') videoInput.value.click();
+};
+
+const handleFileUpload = (type, event) => {
+    const file = event.target.files[0];
+    
+    if (!file) return;
+
+    const maxSizeMB = 20;
+    const fileSizeInMB = file.size / (1024 * 1024);
+
+    if ((type === 'image' || type === 'video') && fileSizeInMB > maxSizeMB) {
+        selectedFile.value = null;
+        selectedFileType.value = type;
+        filePreviewUrl.value = '';
+        filename.value = file.name;
+        fileSize.value = 'File size cannot exceed 20 MB';
+        return;
+    }
+
+    selectedFile.value = file;
+    selectedFileType.value = type;
+
+    if (type === 'image' || type === 'video') {
+        fileSize.value = file.size;
+        filePreviewUrl.value = URL.createObjectURL(file);
+        filename.value = file.name;
+    } else {
+        extension.value = file.name.split('.').pop().toUpperCase();
+        filename.value = file.name;
+    }
+};
+
+
+const convertFileSize = (size) => {
+    if(typeof size === 'string') return size;
+    if(size < 1024) return size + ' B';
+    if(size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB'
+    if(size < 1024 * 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + ' MB'
+}
+
+const removeSelectedFile = () => {
+    selectedFile.value = null;
+    selectedFileType.value = '';
+    filePreviewUrl.value = '';
+};
 
 watch(() => route.params.id, async (newId) => {
     try {
@@ -187,9 +344,8 @@ onMounted(() => {
     .listen('.message.sent', (event) => {
         
         if (event.message.sender_id == route.params.id) {
-            console.log(event.message.content);
-            
             conversation.value.push(event.message)
+            scrollToBottm();
         }
     });
 })
@@ -198,5 +354,12 @@ onMounted(() => {
 <style>
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
 }
 </style>
