@@ -82,14 +82,14 @@
                                 <span v-if="message.sender_id === authStore.user.id">{{ authStore.user.full_name }}</span>
                                 <span v-else >{{ friendInfo.full_name }}</span>
                                     • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
-                                <div class="relative">
+                                <div v-if="message.sender_id === authStore.user.id" class="relative">
                                     <div @click="toggleMenuMessage(message.id)" class="cursor-pointer transition-colors duration-150 rounded-sm">
                                         <Ellipsis />
                                     </div>
                                     <transition name="fade">
                                         <div v-if="openModelMessageIndex === message.id" class="flex flex-col p-1 z-40 rounded-md top-6 left-0 absolute bg-slate-700">
                                             <span @click="editMessage(message.id)" v-if="!message.messageType || (message.messageType && message.content)"  class="flex items-center gap-1 p-1 hover:bg-slate-500 rounded-sm cursor-pointer"><Pencil :stroke-width="1.8" :size="21" /> Edit</span>
-                                            <span class="flex items-center gap-1 p-1 hover:bg-slate-500 rounded-sm cursor-pointer"><Trash2 :stroke-width="1.8" :size="21" /> Delete</span>
+                                            <span @click="deleteMessage(message.id)" class="flex items-center gap-1 p-1 hover:bg-slate-500 rounded-sm cursor-pointer"><Trash2 :stroke-width="1.8" :size="21" /> Delete</span>
                                         </div>
                                     </transition>
                                 </div>
@@ -190,7 +190,7 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import { convertTime , formatDate } from '@/helpers/convertTime';
 import { useApiStore } from '@/store/apiStore';
 import { useAuthStore } from '@/store/auth';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 // Sidebar state
 const sidebarOpen = ref(false);
@@ -199,6 +199,7 @@ const friendInfo = ref({});
 const apiStore = useApiStore();
 const authStore = useAuthStore();
 const route = useRoute();
+const router = useRouter();
 const messagesContainer = ref(null);
 const chooseFileOpen = ref(false);
 const imageInput = ref(null);
@@ -260,10 +261,23 @@ const updateMessage = async (messageId) => {
         form.value.content = ''
         let index = conversation.value.findIndex(msg => msg.id === response.data.message.id);
         conversation.value[index].content = response.data.message.content;
+        apiStore.listContacts(false);
         
     } catch (error) {
         console.log("Error fetching message", error);
 
+    }
+}
+
+
+const deleteMessage = async (messageId) => {
+    try {
+        await axios.delete(`/message/${messageId}/delete`);
+        openModelMessageIndex.value = null;
+        conversation.value = conversation.value.filter(msg => msg.id !== messageId);
+        apiStore.listContacts(false);
+    } catch (error) {
+        console.log("Error delete message", error);
     }
 }
 
