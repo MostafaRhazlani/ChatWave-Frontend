@@ -69,64 +69,49 @@
                 </button>
             </div>
 
-            <!-- Messages -->
+            <!-- messages container -->
             <div ref="messagesContainer" class="flex-1 p-4 overflow-y-auto scrollbar-hide flex flex-col space-y-4 pb-20">
 
                 <div v-for="(message, index) in conversation" :key="index" class="flex flex-col">
-                    <div v-if="message.sender_id == authStore.user.id">
-                        <!-- Sent Message -->
-                        <div class="flex items-start gap-3">
-                            <img :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
-                            <div class="space-y-1 w-full flex flex-col items-start">
-                                <div>
-                                    {{ authStore.user.full_name }} • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
-                                </div>
-                                <div v-if="message.content" class="text-white w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
-                                    <p class="break-all text-sm text-gray-200 font-light max-w-[80%]">{{ message.content }}</p>
-                                </div>
-                                <div class="w-72 h-72" v-if="message.messageType && message.messageType === 'image'">
-                                    <img :src="`http://127.0.0.1:8000/storage/chat/images/${message.media}`" alt="Image" class="h-full w-full object-cover rounded-md" />
-                                </div>
-                                <div class="w-72 h-72" v-else-if="message.messageType && message.messageType === 'video'">
-                                    <video :src="`http://127.0.0.1:8000/storage/chat/videos/${message.media}`" controls class="h-full w-full rounded-md"></video>
-                                </div>
-                                <div class="w-full" v-else-if="message.messageType && message.messageType === 'document'">
-                                    <a class="flex p-2 items-center gap-2 border max-w-52 border-gray-700 rounded-lg transition-colors duration-150 hover:bg-slate-600" :href="`http://127.0.0.1:8000/storage/chat/documents/${message.media}`" target="_blank">
-                                        <p class="bg-red-600 p-2 rounded-sm">{{ message.media.split('.').pop().toUpperCase() }}</p>
-                                        <p class="font-light text-sm hover:text-gray-300 truncate">{{ message.media }}</p>
-                                    </a>
+                    <!-- Conversation -->
+                    <div class="flex items-start gap-3">
+                        <img v-if="message.sender_id === authStore.user.id" :src="`http://127.0.0.1:8000/storage/images/${authStore.user.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
+                        <img v-else :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
+                        <div class="space-y-1 w-full flex flex-col items-start relative">
+                            <div class="flex items-center gap-2">
+                                <span v-if="message.sender_id === authStore.user.id">{{ authStore.user.full_name }}</span>
+                                <span v-else >{{ friendInfo.full_name }}</span>
+                                    • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
+                                <div class="relative">
+                                    <div @click="toggleMenuMessage(message.id)" class="cursor-pointer transition-colors duration-150 rounded-sm">
+                                        <Ellipsis />
+                                    </div>
+                                    <transition name="fade">
+                                        <div v-if="openModelMessageIndex === message.id" class="flex flex-col p-1 z-40 rounded-md top-6 left-0 absolute bg-slate-700">
+                                            <span @click="editMessage(message.id)" v-if="!message.messageType || (message.messageType && message.content)"  class="flex items-center gap-1 p-1 hover:bg-slate-500 rounded-sm cursor-pointer"><Pencil :stroke-width="1.8" :size="21" /> Edit</span>
+                                            <span class="flex items-center gap-1 p-1 hover:bg-slate-500 rounded-sm cursor-pointer"><Trash2 :stroke-width="1.8" :size="21" /> Delete</span>
+                                        </div>
+                                    </transition>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div v-else>
-                        <!-- Received Message -->
-                        <div class="flex items-start gap-3">
-                            <img :src="`http://127.0.0.1:8000/storage/images/${friendInfo.image}`" alt="Profile" class="w-10 h-10 object-cover rounded-full mb-2" />
-                            <div class="space-y-1 w-full flex flex-col items-start">
-                                <div>
-                                    {{ friendInfo.full_name }} • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
+                            <div v-if="message.content" class="text-white w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                <p class="break-all text-sm text-gray-200 font-light max-w-[80%]">{{ message.content }}</p>
+                            </div>
+                            <div v-if="message.messageType && message.messageType === 'image'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                <div class="w-72 h-72">
+                                    <img :src="`http://127.0.0.1:8000/storage/chat/images/${message.media}`" alt="Image" class="h-full w-full object-cover rounded-md" />
                                 </div>
-                                <div v-if="message.content" class="text-white w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
-                                    <p class="break-all text-sm text-gray-200 font-light max-w-[80%]">{{ message.content }}</p>
+                            </div>
+                            <div v-else-if="message.messageType && message.messageType === 'video'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
+                                <div class="w-72 h-72">
+                                    <video :src="`http://127.0.0.1:8000/storage/chat/videos/${message.media}`" controls class="h-full w-full rounded-md"></video>
                                 </div>
-                                <div v-if="message.messageType && message.messageType === 'image'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
-                                    <div class="w-72 h-72">
-                                        <img :src="`http://127.0.0.1:8000/storage/chat/images/${message.media}`" alt="Image" class="h-full w-full object-cover rounded-md" />
-                                    </div>
-                                </div>
-                                <div v-else-if="message.messageType && message.messageType === 'video'" class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150">
-                                    <div class="w-72 h-72">
-                                        <video :src="`http://127.0.0.1:8000/storage/chat/videos/${message.media}`" controls class="h-full w-full rounded-md"></video>
-                                    </div>
-                                </div>
-                                <div class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150" v-else-if="message.messageType && message.messageType === 'document'">
-                                    <a class="flex p-2 items-center gap-2 border bg-slate-800 max-w-52 border-gray-700 rounded-lg transition-colors duration-150 hover:bg-slate-600" :href="`http://127.0.0.1:8000/storage/chat/documents/${message.media}`" target="_blank">
-                                        <p class="bg-red-600 p-2 rounded-sm">{{ message.media.split('.').pop().toUpperCase() }}</p>
-                                        <p class="font-light text-sm hover:text-gray-300 truncate">{{ message.media }}</p>
-                                    </a>
-                                </div>
+                            </div>
+                            <div class="w-full hover:bg-slate-600 p-1 rounded-sm transition-colors duration-150" v-else-if="message.messageType && message.messageType === 'document'">
+                                <a class="flex p-2 items-center gap-2 border bg-slate-800 max-w-52 border-gray-700 rounded-lg transition-colors duration-150 hover:bg-slate-600" :href="`http://127.0.0.1:8000/storage/chat/documents/${message.media}`" target="_blank">
+                                    <p class="bg-red-600 p-2 rounded-sm">{{ message.media.split('.').pop().toUpperCase() }}</p>
+                                    <p class="font-light text-sm hover:text-gray-300 truncate">{{ message.media }}</p>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -134,7 +119,7 @@
             </div>
 
             <!-- Message Input -->
-            <form @submit.prevent="sendMessage" enctype="multipart/form-data">
+            <form @submit.prevent="handleChat(typeFunction)" enctype="multipart/form-data">
                 <div v-if="selectedFileType" class="p-3 border-t border-gray-700 rounded-md mt-2 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-2" v-if="selectedFileType === 'image'">
                         <div v-if="filePreviewUrl">
@@ -144,7 +129,7 @@
                             <OctagonX />
                         </div>
                         <div class="flex flex-col">
-                            <span>{{ filename }}</span>
+                            <span class="truncate max-w-32">{{ filename }}</span>
                             <span :class="[typeof fileSize === 'string' ? 'text-red-500' : 'text-gray-300']" class="text-xs text-gray-300 font-light">{{ convertFileSize(fileSize) }}</span>
                         </div>
                     </div>
@@ -199,7 +184,7 @@
 </template>
 
 <script setup>
-import { Search, Info, SendHorizontal, Menu, Paperclip, Image, FileText, SquarePlay, X as Close, OctagonX } from 'lucide-vue-next';
+import { Search, Info, SendHorizontal, Menu, Paperclip, Image, FileText, SquarePlay, X as Close, OctagonX, Ellipsis, Download, Pencil, Trash2 } from 'lucide-vue-next';
 import axios from 'axios';
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { convertTime , formatDate } from '@/helpers/convertTime';
@@ -225,7 +210,10 @@ const filePreviewUrl = ref('');
 const filename = ref('');
 const fileSize = ref('');
 const extension = ref('');
+const typeFunction = ref('create');
+const openModelMessageIndex = ref(null)
 const form = ref({
+    id: null,
     content: '',
     sender_id: authStore.user.id,
     receiver_id: route.params.id,
@@ -239,6 +227,45 @@ const toggleSidebar = () => {
 const toggleChooseFile = () => {
     chooseFileOpen.value = !chooseFileOpen.value;
 };
+
+const toggleMenuMessage = (messageId) => {
+    if(messageId === openModelMessageIndex.value) {
+        openModelMessageIndex.value = null;
+    } else {
+        openModelMessageIndex.value = messageId;
+    }
+}
+
+const handleChat = (typeFunction) => {
+    if(typeFunction === 'create') {
+        sendMessage();
+    } else {
+        updateMessage(form.value.id);
+    }
+}
+
+const editMessage = async (messageId) => {
+    const response = await axios.get(`/message/${messageId}/edit`);
+
+    form.value.content = response.data.message.content;
+    form.value.id = response.data.message.id;
+    typeFunction.value = 'update';
+    openModelMessageIndex.value = null;
+    console.log(typeFunction.value);
+    }
+
+const updateMessage = async (messageId) => {
+    try {
+        const response = await axios.patch(`/message/${messageId}/update`, form.value);
+        form.value.content = ''
+        let index = conversation.value.findIndex(msg => msg.id === response.data.message.id);
+        conversation.value[index].content = response.data.message.content;
+        
+    } catch (error) {
+        console.log("Error fetching message", error);
+
+    }
+}
 
 const sendMessage = async () => {
     
@@ -357,7 +384,7 @@ onMounted(() => {
 }
 
 .fade-enter-active, .fade-leave-active {
-    transition: opacity 0.5s;
+    transition: opacity 0.3s;
 }
 .fade-enter-from, .fade-leave-to {
     opacity: 0;
