@@ -3,17 +3,20 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth';
 import { useApiStore } from '@/store/apiStore';
-import { Plus, Heart, MessageCircleMore, Star, Ellipsis } from 'lucide-vue-next';
-import { onMounted, reactive, ref, computed, watch } from 'vue';
+import { Plus, Heart, MessageCircleMore, Star, Ellipsis, CircleMinus } from 'lucide-vue-next';
+import { ref, computed, watch } from 'vue';
 import DetailsPostComponent from '@/components/DetailsPostComponent.vue';
 import FollowComponent from '@/components/FollowComponent.vue';
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const apiStore = useApiStore();
 const route = useRoute();
+const router = useRouter();
 const activeTab = ref('Posts');
 const statusVideo = ref(false);
+const openMenuProfile = ref(false);
+const isBlockedHim = ref();
 
 const tabs = [
     { name: 'Posts' },
@@ -21,9 +24,28 @@ const tabs = [
     { name: 'Photos' },
 ]
 
+const toggleMenuProfile = () => {
+    openMenuProfile.value = !openMenuProfile.value;
+}
+
+const changeStatusBlock = async (userId) => {
+    const response = await axios.post(`/user/${userId}/block`);
+    isBlockedHim.value = response.data.isBlockedHim;
+    router.push({ name: 'Home' });
+
+}
+
+const blockStatus = async (userId) => {
+    const response = await axios.get(`/user/${userId}/block-status`);
+    isBlockedHim.value = response.data.isBlockedHim;
+    
+}
+
 watch(() => route.params.id, async (newId) => {
     apiStore.showProfileUser(newId)
     apiStore.handleFollowStatus(newId);
+    blockStatus(newId);
+    console.log(isBlockedHim.value);
 }, { immediate: true });
 
 
@@ -46,7 +68,7 @@ const playPauseVideo = (event) => {
 
 <template>
 
-    <div class="md:w-[98%] lg:w-5/6 mx-auto mt-20 md:mt-0">
+    <div class="md:w-[98%] lg:max-w-4xl mx-auto mt-20 md:mt-0">
         <!-- Main Content -->
         <div>
             <!-- Profile Header -->
@@ -78,14 +100,27 @@ const playPauseVideo = (event) => {
                                     </div>
                                 </div>
 
-                                <div class="hidden sm:flex justify-between gap-3" v-if="authStore.user.id !== apiStore.userInfo.id">
+                                <div class="hidden sm:flex justify-between gap-3" v-if="authStore.user.id !== apiStore.userInfo.id && isBlockedHim === false">
                                     <FollowComponent class="w-full text-center" :userId="apiStore.userInfo.id"/>
                                     <RouterLink :to="`/messages/${apiStore.userInfo.id}`"
                                         class="w-full text-center px-4 py-2 transition-colors duration-150 rounded-md bg-pink-600 hover:bg-pink-500">
                                         Message
                                     </RouterLink>
-                                    <div class="p-2 cursor-pointer transition-colors duration-150 rounded-md bg-slate-600 hover:bg-slate-500">
-                                        <Ellipsis />
+                                    <div>
+                                    <div class="relative">
+                                        <div @click="toggleMenuProfile()" class="p-2 cursor-pointer transition-colors duration-150 rounded-md bg-slate-600 hover:bg-slate-500">
+                                            <Ellipsis />
+                                        </div>
+                                        <transition name="fade">
+                                            <div v-if="openMenuProfile" class="absolute z-30 right-0 top-11 w-48 bg-slate-700 border border-gray-600 p-1 rounded-lg">
+                                                <p @click="changeStatusBlock(apiStore.userInfo.id)" class="p-1 hover:bg-slate-600 rounded-md flex items-center gap-1 cursor-pointer"><CircleMinus :size="19" class="text-red-500"/>
+                                                    <span v-if="isBlockedHim === false" class="text-red-500">Block</span>
+                                                    <span v-else class="text-red-500">Unblock</span>
+                                                    {{ apiStore.userInfo.full_name.split(' ')[0] }}
+                                                </p>
+                                            </div>
+                                        </transition>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
