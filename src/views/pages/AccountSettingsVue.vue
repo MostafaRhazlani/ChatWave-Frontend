@@ -223,31 +223,19 @@
                     <div class="bg-gray-900 rounded-lg p-4">
                         <h3 class="text-lg font-medium mb-4">Blocked Accounts</h3>
 
-                        <div class="space-y-3">
+                        <div v-for="(user, index) in listUsersBlocked" :key="index" class="space-y-3">
                             <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gray-700"></div>
+                                    <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-700">
+                                        <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" class="w-full h-full object-cover" alt="">
+                                    </div>
                                     <div>
-                                        <p class="font-medium">John Smith</p>
-                                        <p class="text-xs text-gray-400">@johnsmith</p>
+                                        <p class="font-medium">{{ user.full_name }}</p>
+                                        <p class="text-xs text-gray-400">{{ user.username }}</p>
                                     </div>
                                 </div>
-                                <button
-                                    class="px-2 py-1 text-xs font-medium text-white bg-cyan-500 hover:bg-cyan-600 rounded-full transition-colors">
-                                    Unblock
-                                </button>
-                            </div>
-
-                            <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gray-700"></div>
-                                    <div>
-                                        <p class="font-medium">Jane Doe</p>
-                                        <p class="text-xs text-gray-400">@janedoe</p>
-                                    </div>
-                                </div>
-                                <button
-                                    class="px-2 py-1 text-xs font-medium text-white bg-cyan-500 hover:bg-cyan-600 rounded-full transition-colors">
+                                <button @click="changeStatusBlock(user.id)"
+                                    class="px-2 py-1 text-xs font-medium text-white bg-pink-500 hover:bg-pink-600 rounded-full transition-colors">
                                     Unblock
                                 </button>
                             </div>
@@ -266,13 +254,14 @@ import AlertComponent from '@/components/AlertComponent.vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { useAuthStore } from '@/store/auth';
 import { useAlertStore } from '@/store/alert';
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import axios from 'axios';
 
 const authStore = useAuthStore();
 const alertStore = useAlertStore();
 const activeTab = ref('general');
 const error = reactive({ errors: {} });
+const listUsersBlocked = ref([]);
 
 const tabs = [
     { id: 'general', name: 'General' },
@@ -296,6 +285,17 @@ const formPassword = ref({
     'new_password': '',
     'confirm_password': '',
 });
+
+const usersBlocked = async () => {
+    const response = await axios.get('/users/blocked');
+    listUsersBlocked.value = response.data.usersBlocked;
+}
+
+const changeStatusBlock = async (userId) => {
+    await axios.post(`/user/${userId}/block`);
+    await usersBlocked();
+
+}
 
 const changePassword = async () => {
     error.errors = {};
@@ -366,5 +366,9 @@ const handleUpdate = async () => {
         console.log(error);
     }
 }
+
+onMounted(() => {
+    usersBlocked();
+})
 
 </script>
