@@ -12,12 +12,16 @@
                 <h2 v-if="usersNotFollowBack.length > 0" class="text-xl font-semibold mb-4">Friend requests</h2>
                 <div v-for="(person, index) in usersNotFollowBack" :key="index" class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
-                            <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
-                        </div>
+                        <RouterLink :to="`/profile/${person.id}`">
+                            <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
+                            </div>
+                        </RouterLink>
                         <div>
-                            <h3 class="text-white font-medium">{{ person.full_name }}</h3>
-                            <p class="text-gray-400 text-sm">{{ person.username }}</p>
+                            <RouterLink :to="`/profile/${person.id}`">
+                                <h3 class="text-white font-medium">{{ person.full_name }}</h3>
+                                <p class="text-gray-400 text-sm">{{ person.username }}</p>
+                            </RouterLink>
                         </div>
                     </div>
                     <div class="flex gap-2 flex-col sm:flex-row">
@@ -37,12 +41,16 @@
                     <div v-for="(person, index) in suggestedPeople" :key="index">
                         <div v-if="person.id !== authStore.user.id" class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
-                                    <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
-                                </div>
+                                <RouterLink :to="`/profile/${person.id}`">
+                                    <div class="w-12 h-12 rounded-full bg-gray-300 overflow-hidden">
+                                        <img :src="`http://127.0.0.1:8000/storage/images/${person.image}`" alt="" class="w-full h-full object-cover" />
+                                    </div>
+                                </RouterLink>
                                 <div>
-                                    <h3 class="text-white font-medium">{{ person.full_name }}</h3>
-                                    <p class="text-gray-400 text-sm">{{ person.username }}</p>
+                                    <RouterLink :to="`/profile/${person.id}`">
+                                        <h3 class="text-white font-medium">{{ person.full_name }}</h3>
+                                        <p class="text-gray-400 text-sm">{{ person.username }}</p>
+                                    </RouterLink>
                                 </div>
                             </div>
                             <div class="flex gap-2 flex-col sm:flex-row">

@@ -33,12 +33,16 @@
             <div v-for="(user, index) in randomUsers" :key="index">
                 <div v-if="user.id !== authStore.user.id" class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-                            <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt="" class="w-full h-full object-cover" />
-                        </div>
+                        <RouterLink :to="`/profile/${user.id}`">
+                            <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
+                                <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt="" class="w-full h-full object-cover" />
+                            </div>
+                        </RouterLink>
                         <div>
-                            <p class="text-sm font-medium">{{ user.full_name }}</p>
-                            <p class="text-xs text-gray-400">{{ user.username }}</p>
+                            <RouterLink :to="`/profile/${user.id}`">
+                                <p class="text-sm font-medium">{{ user.full_name }}</p>
+                                <p class="text-xs text-gray-400">{{ user.username }}</p>
+                            </RouterLink>
                         </div>
                     </div>
                     <FollowComponent :userId="user.id"/>

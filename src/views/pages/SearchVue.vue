@@ -58,19 +58,23 @@
             </div>
             <div v-else-if="filtredUsers.length > 0">
                 <div v-for="(user, index) in filtredUsers" :key="index" class="p-2 cursor-pointer hover:bg-slate-700 transition ease-in-out rounded-lg">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0">
-                            <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt=""
-                                class="w-full h-full rounded-full" />
-                        </div>
-                        <div class="flex items-center justify-between w-full">
-                            <div class="flex flex-col justify-between items-center">
-                                <h3 class="text-white font-medium text-sm truncate">{{ user.full_name }}</h3>
-                                <p class="text-gray-400 text-sm truncate">{{ user.username }}</p>
+                        <div class="flex items-center gap-3">
+                            <RouterLink :to="`/profile/${user.id}`">
+                                <div class="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0">
+                                    <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt=""
+                                        class="w-full h-full rounded-full" />
+                                </div>
+                            </RouterLink>
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex flex-col justify-between items-center">
+                                    <RouterLink :to="`/profile/${user.id}`">
+                                        <h3 class="text-white font-medium text-sm truncate">{{ user.full_name }}</h3>
+                                    </RouterLink>
+                                    <p class="text-gray-400 text-sm truncate">{{ user.username }}</p>
+                                </div>
+                                <FollowComponent v-if="user.id !== authStore.user.id" :userId="user.id"/>
                             </div>
-                            <FollowComponent v-if="user.id !== authStore.user.id" :userId="user.id"/>
                         </div>
-                    </div>
                 </div>
             </div>
             <div v-else class="text-center w-full">
