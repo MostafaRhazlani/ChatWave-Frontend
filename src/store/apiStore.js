@@ -14,6 +14,7 @@ export const useApiStore = defineStore("apiStore", {
     contacts: [],
     firstFriend: null,
     notifications: [],
+    statusMessages: [],
   }),
 
   actions: {
@@ -91,6 +92,18 @@ export const useApiStore = defineStore("apiStore", {
         const response = await axios.get(`/user/notifications`);
         if(response.status === 200) {
             this.notifications = response.data.notifications
+        }
+      } catch (error) {
+          console.log(error);
+          
+      }
+    },
+ 
+    async getStatusMessage () {
+      try {
+        const response = await axios.get(`/messages/status`);
+        if(response.status === 200) {
+            this.statusMessages = response.data.statusMessages
         }
       } catch (error) {
           console.log(error);

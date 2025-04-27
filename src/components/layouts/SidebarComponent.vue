@@ -32,10 +32,13 @@ const hasUnreadNotifications = computed(() => {
     return apiStore.notifications.some(notification => notification.is_read === false);
 });
 
+const hasUnreadMessages = computed(() => {
+        return apiStore.statusMessages.some(status => status.is_read === false);
+    });
+
 onMounted(async () => {
     await apiStore.listContacts();
     await apiStore.getAllNotifications();
-    console.log(hasUnreadNotifications.value);
     
 })
 
@@ -93,7 +96,8 @@ const toggleSearch = () => {
                     </RouterLink>
                 </div>
                 <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
-                    <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                    <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer relative">
+                        <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
                         <MessageSquareText :size="30" :stroke-width="1.5"/>
                         <span :class="[ statusSidebar ]" class="hidden lg:block">Messages</span>
                     </RouterLink>

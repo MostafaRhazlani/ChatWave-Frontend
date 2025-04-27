@@ -4,16 +4,21 @@
     import { Bell, MessageSquareText } from 'lucide-vue-next';
     import CardAccount from '../CardAccountComponent.vue';
     import { useApiStore } from '@/store/apiStore';
+    import { useRoute } from 'vue-router';
     import { ref, computed, onMounted } from 'vue';
 
     const apiStore = useApiStore();
     const authStore = useAuthStore();
+    const route = useRoute();
     const sidebarStore = useSidebarStore();
     const isCardVisible = ref(false);
 
-
     const hasUnreadNotifications = computed(() => {
         return apiStore.notifications.some(notification => notification.is_read === false);
+    });
+
+    const hasUnreadMessages = computed(() => {
+        return apiStore.statusMessages.some(status => status.is_read === false);
     });
 
     const dropdawnAccount = () => {
@@ -42,11 +47,10 @@
                 <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
                 <Bell :size="30" :stroke-width="1.5"/>
             </div>
-            <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
-                <RouterLink :to="`/messages/${apiStore.firstFriend}`">
-                    <MessageSquareText :size="30" :stroke-width="1.5"/>
-                </RouterLink>
-            </div>
+            <RouterLink class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer" :to="`/messages/${apiStore.firstFriend}`">
+                <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
+                <MessageSquareText :size="30" :stroke-width="1.5"/>
+            </RouterLink>
 
             <div class="relative">
                 <transition name="fade">

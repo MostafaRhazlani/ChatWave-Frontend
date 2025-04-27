@@ -12,18 +12,26 @@ const apiStore = useApiStore();
 const authStore = useAuthStore();
 const route = useRoute();
 
-onMounted(() => {
+onMounted(async () => {
   window.Echo.private(`comment-post.${authStore.user.id}`)
-    .listen('.comment.added', (event) => {
+  .listen('.comment.added', (event) => {
       apiStore.notifications.unshift(event);
     }
   );
-
+  
   window.Echo.private(`post-created.${authStore.user.id}`)
-    .listen('.post.created', (event) => {
-      apiStore.notifications.unshift(event);
-    }
-  );
+  .listen('.post.created', (event) => {
+    apiStore.notifications.unshift(event);
+  }
+);
+
+window.Echo.private(`chat.${authStore.user.id}`)
+.listen('.message.sent', (event) => {
+  if(event.message.receiver_id == authStore.user.id) {
+    apiStore.statusMessages.push(event.message);
+  }
+}
+);
 })
 </script>
 
