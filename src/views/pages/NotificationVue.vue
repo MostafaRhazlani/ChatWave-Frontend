@@ -2,6 +2,7 @@
     import { ref, onMounted } from 'vue';
     import { useApiStore } from '@/store/apiStore';
     import axios from 'axios';
+    import { convertTime } from '@/helpers/convertTime';
 
     const apiStore = useApiStore();
 
@@ -41,7 +42,7 @@
                         <div class="flex justify-between items-center">
                             <span class="">{{ notification.content }}</span>
                         </div>
-                        <span class="text-gray-400 text-xs">{{ notification.created_at }}</span>
+                        <span class="text-gray-400 text-xs">{{ convertTime(notification.created_at) }}</span>
                     </div>
                 </div>
             </div>

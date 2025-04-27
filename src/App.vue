@@ -15,8 +15,13 @@ const route = useRoute();
 onMounted(() => {
   window.Echo.private(`comment-post.${authStore.user.id}`)
     .listen('.comment.added', (event) => {
-      apiStore.notifications.push(event);
-      console.log(event);
+      apiStore.notifications.unshift(event);
+    }
+  );
+
+  window.Echo.private(`post-created.${authStore.user.id}`)
+    .listen('.post.created', (event) => {
+      apiStore.notifications.unshift(event);
     }
   );
 })
