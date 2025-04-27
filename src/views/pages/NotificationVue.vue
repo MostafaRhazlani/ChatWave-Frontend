@@ -1,18 +1,12 @@
 <script setup>
-    import { Search } from 'lucide-vue-next';
+    import { ref, onMounted } from 'vue';
+    import { useApiStore } from '@/store/apiStore';
 
-    const notifications = [
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-        { owner: 'Othmane Rhazlani', content: "sent you a new message"},
-    ]
+    const apiStore = useApiStore();
+
+    onMounted(() => {
+        apiStore.getAllNotifications();
+    })
 </script>
 
 <template>
@@ -23,16 +17,16 @@
 
         <!-- Notifications -->
         <div class="overflow-y-auto p-2 space-y-1">
-            <div v-for="(notification, index) in notifications" :key="index" class="p-2 cursor-pointer hover:bg-slate-700 rounded-lg">
+            <div v-for="(notification, index) in apiStore.notifications" :class="{'bg-slate-700' : notification.is_read}" :key="index" class="p-2 cursor-pointer hover:bg-slate-600 transition-colors duration-150 rounded-lg">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-gray-300 flex-shrink-0">
-                        <img src="" alt="" class="w-full h-full rounded-full" />
+                        <img :src="`http://127.0.0.1:8000/storage/images/${notification.sender.image}`" alt="" class="w-full h-full rounded-full" />
                     </div>
                     <div class="min-w-52">
                         <div class="flex justify-between items-center">
-                            <p class="text-white font-medium text-[13px]">{{ notification.owner }} <span class="font-light">{{ notification.content }}</span></p>
+                            <span class="">{{ notification.content }}</span>
                         </div>
-                        <span class="text-gray-400 text-xs">2h ago</span>
+                        <span class="text-gray-400 text-xs">{{ notification.created_at }}</span>
                     </div>
                 </div>
             </div>

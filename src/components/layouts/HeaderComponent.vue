@@ -4,12 +4,17 @@
     import { Bell, MessageSquareText } from 'lucide-vue-next';
     import CardAccount from '../CardAccountComponent.vue';
     import { useApiStore } from '@/store/apiStore';
-    import { ref } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
 
     const apiStore = useApiStore();
     const authStore = useAuthStore();
     const sidebarStore = useSidebarStore();
     const isCardVisible = ref(false);
+
+
+    const hasUnreadNotifications = computed(() => {
+        return apiStore.notifications.some(notification => notification.is_read === false);
+    });
 
     const dropdawnAccount = () => {
         isCardVisible.value = !isCardVisible.value;  
@@ -19,6 +24,10 @@
     const toggleNotification = () => {
         sidebarStore.toggleNotification();
     };
+
+    onMounted(async () => {
+        await apiStore.getAllNotifications();
+    })
 </script>
 
 <template>
@@ -29,7 +38,8 @@
             </div>
         </div>
         <div class="flex">
-            <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="p-2 hover:bg-gray-700 rounded-md flex items-center space-x-3 cursor-pointer">
+            <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
+                <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
                 <Bell :size="30" :stroke-width="1.5"/>
             </div>
             <div class="p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">

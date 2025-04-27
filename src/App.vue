@@ -5,9 +5,21 @@ import Sidebar from '@/components/layouts/SidebarComponent.vue';
 import Header from '@/components/layouts/HeaderComponent.vue';
 import { useRoute } from 'vue-router';
 import { useApiStore } from './store/apiStore';
+import { useAuthStore } from './store/auth';
+import { onMounted } from 'vue';
 
 const apiStore = useApiStore();
+const authStore = useAuthStore();
 const route = useRoute();
+
+onMounted(() => {
+  window.Echo.private(`comment-post.${authStore.user.id}`)
+    .listen('.comment.added', (event) => {
+      apiStore.notifications.push(event);
+      console.log(event);
+    }
+  );
+})
 </script>
 
 <template>

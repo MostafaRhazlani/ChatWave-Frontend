@@ -8,7 +8,7 @@ import { useApiStore } from '@/store/apiStore';
 import CardAccount from '@/components/CardAccountComponent.vue';
 import Notification from '@/views/pages/NotificationVue.vue';
 import SearchVue from '@/views/pages/SearchVue.vue';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 
 const authStore = useAuthStore();
 const sidebarStore = useSidebarStore();
@@ -28,8 +28,15 @@ watch(isCardVisible, (newValue) => {
     typeArrow.value = newValue ? "-rotate-90" : "rotate-0";
 });
 
-onMounted(() => {
-    apiStore.listContacts();
+const hasUnreadNotifications = computed(() => {
+    return apiStore.notifications.some(notification => notification.is_read === false);
+});
+
+onMounted(async () => {
+    await apiStore.listContacts();
+    await apiStore.getAllNotifications();
+    console.log(hasUnreadNotifications.value);
+    
 })
 
 
@@ -95,8 +102,9 @@ const toggleSearch = () => {
                     <Search :size="30" :stroke-width="1.5"/>
                     <span :class="[ statusSidebar ]" class="hidden lg:block">Search</span>
                 </div>
-                <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer">
+                <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer relative">
                     <Bell :size="30" :stroke-width="1.5"/>
+                    <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
                     <span :class="[ statusSidebar ]" class="hidden lg:block">Notification</span>
                 </div>
                 <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Peoples' }">  

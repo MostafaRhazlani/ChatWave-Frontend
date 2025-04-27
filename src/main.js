@@ -8,6 +8,7 @@ import router from './router'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 
+Pusher.logToConsole = true;
 window.Pusher = Pusher
 
 window.Echo = new Echo({

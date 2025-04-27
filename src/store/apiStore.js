@@ -12,7 +12,8 @@ export const useApiStore = defineStore("apiStore", {
     isLoading: false,
     followStatuses: {},
     contacts: [],
-    firstFriend: null
+    firstFriend: null,
+    notifications: [],
   }),
 
   actions: {
@@ -83,7 +84,19 @@ export const useApiStore = defineStore("apiStore", {
       } finally {
         if(showLoader) this.isLoading = false
       }
-  }
+    },
+
+    async getAllNotifications () {
+      try {
+        const response = await axios.get(`/user/notifications`);
+        if(response.status === 200) {
+            this.notifications = response.data.notifications
+        }
+      } catch (error) {
+          console.log(error);
+          
+      }
+    }
   },
 });
 
