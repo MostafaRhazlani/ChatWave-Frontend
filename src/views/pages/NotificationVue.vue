@@ -1,8 +1,19 @@
 <script setup>
     import { ref, onMounted } from 'vue';
     import { useApiStore } from '@/store/apiStore';
+    import axios from 'axios';
 
     const apiStore = useApiStore();
+
+    const clearNotifications = async () => {
+        await axios.delete('notifications/clear');
+        apiStore.getAllNotifications();
+    }
+
+    const markAllNotifactions = async () => {
+        await axios.patch('notifications/mark');
+        apiStore.getAllNotifications();
+    }
 
     onMounted(() => {
         apiStore.getAllNotifications();
@@ -13,6 +24,10 @@
     <div class="h-full border-r md:border-x border-gray-700 flex flex-col bg-slate-800 transition-transform duration-300 ease-in-out">
         <div class="p-4">
             <h2 class="text-white text-2xl font-semibold mb-2">Notifications</h2>
+            <div class="flex justify-between mt-8">
+                <span @click="clearNotifications" class="text-xs transition-colors duration-150 py-1 px-4 bg-slate-700 rounded-full hover:bg-slate-600 border border-gray-700 cursor-pointer">clear all</span>
+                <span @click="markAllNotifactions" class="text-xs transition-colors duration-150 py-1 px-4 bg-slate-700 rounded-full hover:bg-slate-600 border border-gray-700 cursor-pointer">mark all</span>
+            </div>
         </div>
 
         <!-- Notifications -->
