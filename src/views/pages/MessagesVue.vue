@@ -59,8 +59,13 @@
                     <div>
                         <h3 class="text-white font-medium">{{ friendInfo.full_name }}</h3>
                         <div class="flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                            <span class="text-green-500 text-xs">Online</span>
+                            <div v-if="apiStore.user_status[friendInfo.id]?.isLoggedIn ?? friendInfo.is_logged">
+                                <span class="text-xs text-green-500">Online</span>
+                            </div>
+
+                            <div v-else>
+                                <span class="text-xs text-red-500">Ofline</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +161,7 @@
                 <div class="mb-16 md:mb-0 p-3 border-y border-gray-700">
                     <div class="relative">
                         <input v-model="form.content" type="text" placeholder="Write your message"
-                            class="w-full py-3 px-4 pr-24 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                            class="w-full py-3 px-4 pr-24 bg-slate-700 border border-gray-700 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500" />
                         <div>
                             <div @click="toggleChooseFile" class="absolute cursor-pointer transition-colors duratoin-150 right-12 top-1/2 transform -translate-y-1/2 p-2 transition-colors hover:bg-slate-600 rounded-full">
                                 <Paperclip class="w-5 h-5 text-white"/>
@@ -186,7 +191,7 @@
 <script setup>
 import { Search, Info, SendHorizontal, Menu, Paperclip, Image, FileText, SquarePlay, X as Close, OctagonX, Ellipsis, Download, Pencil, Trash2 } from 'lucide-vue-next';
 import axios from 'axios';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch, computed } from 'vue';
 import { convertTime , formatDate } from '@/helpers/convertTime';
 import { useApiStore } from '@/store/apiStore';
 import { useAuthStore } from '@/store/auth';
@@ -212,7 +217,7 @@ const filename = ref('');
 const fileSize = ref('');
 const extension = ref('');
 const typeFunction = ref('create');
-const openModelMessageIndex = ref(null)
+const openModelMessageIndex = ref(null);
 const form = ref({
     id: null,
     content: '',
@@ -357,15 +362,27 @@ const removeSelectedFile = () => {
 };
 
 watch(() => route.params.id, async (newId) => {
+    if(!newId) return;
+
     try {
         const response = await axios.get(`contact/${newId}/conversation`);
         conversation.value = response.data.messages
+
         friendInfo.value = response.data.friend
+        
     } catch (error) {
         console.log(error);
     }
-}, { immediate: true });
 
+    try {
+        await axios.patch(`messages/mark-as-read`, { friend_id: newId })
+        
+        apiStore.getStatusMessage();
+    } catch (error) {
+        console.log(error);
+    }
+
+}, { immediate: true });
 
 const scrollToBottm = () => {
     if(messagesContainer.value) {
@@ -378,8 +395,9 @@ watch(conversation ,() => {
     })
 })
 
-onMounted(() => {
-    apiStore.listContacts();
+onMounted(async () => {
+    await apiStore.listContacts();
+    
 
     window.Echo.private(`chat.${authStore.user.id}`)
     .listen('.message.sent', (event) => {

@@ -26,12 +26,19 @@ onMounted(async () => {
 );
 
 window.Echo.private(`chat.${authStore.user.id}`)
-.listen('.message.sent', (event) => {
-  if(event.message.receiver_id == authStore.user.id) {
-    apiStore.statusMessages.push(event.message);
+  .listen('.message.sent', (event) => {
+    if(event.message.receiver_id == authStore.user.id) {
+      apiStore.statusMessages.push(event.message);
+    }
   }
-}
 );
+
+window.Echo.channel('user-status')
+  .listen('.user.status', (event) => {
+    apiStore.user_status[event.user_status.userId] = event.user_status;
+  }
+);
+await apiStore.getStatusMessage();
 })
 </script>
 

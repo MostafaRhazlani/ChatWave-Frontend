@@ -1,3 +1,4 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
@@ -23,7 +24,8 @@ export const useAuthStore = defineStore("auth", {
       localStorage.setItem("user", JSON.stringify(user));
     },
 
-    logout() {
+    async logout() {
+      await axios.patch('logout');
       this.token = ""; 
       this.userRole = ""; 
       this.user = ""; 

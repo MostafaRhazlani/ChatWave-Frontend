@@ -15,6 +15,7 @@ export const useApiStore = defineStore("apiStore", {
     firstFriend: null,
     notifications: [],
     statusMessages: [],
+    user_status: [],
   }),
 
   actions: {
