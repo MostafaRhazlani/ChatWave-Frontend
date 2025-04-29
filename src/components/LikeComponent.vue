@@ -37,9 +37,8 @@
 
 <template>
     <div class="flex items-center gap-2">
-        <button :class="[props.isLiked === true ? 'bg-red-500' : 'bg-slate-700 hover:bg-slate-500']" @click="toggleLike()"
-            class="w-9 h-9 cursor-pointer hover:scale-[1.1] text-white duration-150 flex items-center justify-center rounded-full">
-            <Heart :size="24" stroke-width="2" class="mt-[3px]"/>
+        <button @click="toggleLike()" class="cursor-pointer text-white duration-150 rounded-full">
+            <Heart :class="['hover:scale-110 transition-transform duration-150 ease-in-out', props.isLiked === true ? 'fill-red-500 text-red-500' : 'text-red-500']" :size="28" stroke-width="1.6"/>
         </button>
         <span class="text-sm">{{ props.likesCount }} like</span>
     </div>

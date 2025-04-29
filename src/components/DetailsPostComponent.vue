@@ -1,7 +1,8 @@
 <script setup>
     import LikeComponent from '@/components/LikeComponent.vue';
+    import SavePostComponent from '@/components/SavePostComponent.vue';
     import { ref, defineProps, defineEmits } from 'vue';
-    import { Heart, MessageCircleMore, Star, Ellipsis, PenLine, Trash2 } from 'lucide-vue-next';
+    import { Heart, MessageCircleMore, Ellipsis, PenLine, Trash2 } from 'lucide-vue-next';
     import { useApiStore } from '@/store/apiStore';
     import { useAuthStore } from '@/store/auth';
     import axios from 'axios';
@@ -143,19 +144,13 @@
                             <div class="flex gap-4">
                                 <LikeComponent v-model:likesCount="apiStore.post.likes_count" v-model:isLiked="apiStore.post.is_liked" :postId="apiStore.post.id"/>
                                 <div class="flex items-center gap-2">
-                                    <button class="w-9 h-9 bg-slate-700 text-white hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                        <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
+                                    <button class="cursor-pointer duration-150 flex items-center justify-center rounded-full">
+                                        <MessageCircleMore :size="28" stroke-width="1.6" class="hover:scale-110 transition-transform duration-150 ease-in-out" />
                                     </button>
                                     <span class="text-sm">{{ apiStore.post.comments.length }} comment</span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-1">
-                                <button
-                                    class="w-9 h-9 bg-slate-700 hover:scale-[1.1] text-white hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                                    <Star :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
-                                </button>
-                                <span class="text-sm ml-1">237</span>
-                            </div>
+                            <SavePostComponent :savesCount="apiStore.post.saved_by_users_count" v-model:isSaved="apiStore.post.is_saved" :postId="apiStore.post.id"/>
                         </div>
                     </div>
 

@@ -3,9 +3,10 @@
     import DeleteModelComponent from '@/components/DeleteModelComponent.vue';
     import DetailsPostComponent from '@/components/DetailsPostComponent.vue';
     import LikeComponent from '@/components/LikeComponent.vue';
+    import SavePostComponent from '@/components/SavePostComponent.vue';
     import axios from 'axios';
     import { convertTime } from '@/helpers/convertTime';
-    import { MessageCircleMore, Star, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
+    import { MessageCircleMore, EllipsisVertical, PenLine, Trash2, MessageSquareWarning as Report} from 'lucide-vue-next';
     import { ref, onMounted, computed, watch } from 'vue';
     import { useRoute } from 'vue-router';
     import { useAuthStore } from '@/store/auth';
@@ -130,23 +131,17 @@
             </div>
 
             <!-- Post Actions -->
-            <div class="px-4 py-2 border-t border-slate-700 flex items-center justify-between">
+            <div class="px-4 py-3 border-t border-slate-700 flex items-center justify-between">
                 <div class="flex items-center gap-6">
                     <LikeComponent :likesCount="post.likes_count" v-model:isLiked="post.is_liked" :postId="post.id"/>
                     <div class="flex items-center gap-2">
-                        <button @click="apiStore.openModelDetailsPost(post.id)" class="w-9 h-9 bg-slate-700 hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                            <MessageCircleMore :size="24" stroke-width="2" class="mt-[1px] ml-[1px]" />
+                        <button @click="apiStore.openModelDetailsPost(post.id)" class="cursor-pointer flex items-center justify-center rounded-full">
+                            <MessageCircleMore :size="28" stroke-width="1.6" class="hover:scale-110 transition-transform duration-150 ease-in-out" />
                         </button>
                         <span class="text-sm">{{ post.comments_count }} comment</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button
-                        class="w-9 h-9 bg-slate-700 hover:scale-[1.1] hover:bg-slate-500 cursor-pointer duration-150 flex items-center justify-center rounded-full">
-                        <Star :size="24" stroke-width="2" class="mt-[1px]" />
-                    </button>
-                    <span class="text-sm ml-1">237</span>
-                </div>
+                <SavePostComponent :savesCount="post.saved_by_users_count" v-model:isSaved="post.is_saved" :postId="post.id"/>
             </div>
 
             <!-- Comments -->
