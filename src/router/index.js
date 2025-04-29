@@ -103,6 +103,17 @@ const router = createRouter({
         showHeader: true
       },
     },
+    {
+      path: '/saves/posts',
+      name: 'SavesPosts',
+      component: () => import('../views/pages/SavesPostsVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: 'user',
+        showSidebar: true,
+        showHeader: true
+      },
+    },
   ],
 });
 
@@ -122,19 +133,20 @@ router.beforeEach(async (to, from, next) => {
       const response = await axios.get('/check-user-auth');
 
       authStore.setUser(response.data.user);
-      next();
+
+      if(to.meta.role && userRole !== to.meta.role) {
+        return next({ name: 'Home' });
+      }
+      return next();
 
     } catch (error) {
       authStore.logout();
       return next({ name: 'Login' });
     }
-    if (to.name !== 'login') {
-      next({ name: 'Login' });
-    } else {
-      next();
-    }
+    
+    return next();
   } else {
-    next();
+    return next({ name: 'Home' });
   }
 });
 

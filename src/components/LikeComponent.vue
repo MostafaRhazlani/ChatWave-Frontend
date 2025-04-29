@@ -32,6 +32,9 @@
         if(apiStore.showModal === true) {
             apiStore.openModelDetailsPost(props.postId);
         }
+        if(apiStore.savedPosts) {
+            apiStore.mySavedPosts();
+        }
     }
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-    import { User, Settings, LogOut } from 'lucide-vue-next';
+    import { User, Settings, Star, LogOut } from 'lucide-vue-next';
     import { useAuthStore } from '@/store/auth';
     import { useRouter } from 'vue-router';
 
@@ -34,6 +34,10 @@
             <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <Settings :size="22"/>
                 <RouterLink to="/account/settings" >Account Settings</RouterLink>
+            </div>
+            <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+                <Star :size="22"/>
+                <RouterLink to="/saves/posts" >Saves</RouterLink>
             </div>
             <div @click="logout" class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <LogOut :size="22"/>

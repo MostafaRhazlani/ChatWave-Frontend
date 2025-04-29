@@ -16,6 +16,7 @@ export const useApiStore = defineStore("apiStore", {
     notifications: [],
     statusMessages: [],
     user_status: [],
+    savedPosts: [],
   }),
 
   actions: {
@@ -107,10 +108,18 @@ export const useApiStore = defineStore("apiStore", {
             this.statusMessages = response.data.statusMessages
         }
       } catch (error) {
-          console.log(error);
-          
+        console.log(error); 
       }
-    }
+    },
+
+    async mySavedPosts () {
+      try {
+        const response = await axios.get('my-saved/posts');
+        this.savedPosts = response.data.savedPosts
+      } catch (error) {
+        console.log(error); 
+      }
+  }
   },
 });
 

@@ -20,6 +20,7 @@
             if(apiStore.showModal === true) {
                 apiStore.openModelDetailsPost(props.postId);
             }
+            apiStore.mySavedPosts();
         } catch (error) {
             console.log("Error fetching save post", error);
         } finally {
