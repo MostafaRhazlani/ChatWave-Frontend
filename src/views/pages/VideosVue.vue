@@ -1,7 +1,7 @@
 <template>
   <div class="flex text-white">
     <!-- Main Content with Fixed Sidebar Offset -->
-    <div class="flex w-full">
+    <div class="flex w-full mb-16">
       <!-- Center Content Area -->
       <div class="flex flex-col w-full mt-20 md:mt-0">
         <!-- Fixed Stories Section -->
