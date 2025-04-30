@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/auth';
 import axios from 'axios';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/register',
@@ -52,28 +52,6 @@ const router = createRouter({
       path: '/peoples',
       name: 'Peoples',
       component: () => import('../views/pages/PeoplesVue.vue'),
-      meta: {
-        requiresAuth: true, 
-        role: 'user',
-        showSidebar: true,
-        showHeader: true
-      },
-    },
-    {
-      path: '/pages',
-      name: 'Pages',
-      component: () => import('../views/pages/PagesVue.vue'),
-      meta: {
-        requiresAuth: true,
-        role: 'user',
-        showSidebar: true,
-        showHeader: true
-      },
-    },
-    {
-      path: '/page/:id',
-      name: 'DetailsPage',
-      component: () => import('../views/pages/DetailsPageVue.vue'),
       meta: {
         requiresAuth: true, 
         role: 'user',

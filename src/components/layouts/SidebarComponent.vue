@@ -117,12 +117,6 @@ const toggleSearch = () => {
                         <span :class="[ statusSidebar ]" class="hidden lg:block">People</span>
                     </RouterLink>
                 </div>
-                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Pages' }">  
-                    <RouterLink to="/pages" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <Layers2 :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">Pages</span>
-                    </RouterLink>
-                </div>
                 <div :class="{ 'bg-slate-700 rounded-md' : route.params.id == authStore.user.id }">    
                     <RouterLink :to="`/profile/${authStore.user.id}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                         <User :size="30" :stroke-width="1.5"/>
