@@ -82,60 +82,66 @@ const toggleSearch = () => {
         </div>
 
         <div class="flex flex-col justify-between h-full w-full">
-            <nav class="flex justify-between md:flex-col">
-                <div v-if="authStore.userRole === 'user'" class="space-y-1">
+            <nav>
+                <div v-if="authStore.userRole === 'user'" class="flex justify-between md:flex-col space-y-1">
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Home' }">  
                         <RouterLink to="/" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <House :size="30" :stroke-width="1.5"/>
+                            <House :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Home</span>
                         </RouterLink>
                     </div>
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Videos' }">  
                         <RouterLink to="/videos" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <TvMinimalPlay :size="30" :stroke-width="1.5"/>
+                            <TvMinimalPlay :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Videos</span>
                         </RouterLink>
                     </div>
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
                         <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer relative">
                             <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
-                            <MessageSquareText :size="30" :stroke-width="1.5"/>
+                            <MessageSquareText :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Messages</span>
                         </RouterLink>
                     </div>
                     <div @click="toggleSearch" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isSearchOpen }" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <Search :size="30" :stroke-width="1.5"/>
+                        <Search :size="26" :stroke-width="1.5"/>
                         <span :class="[ statusSidebar ]" class="hidden lg:block">Search</span>
                     </div>
                     <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer relative">
-                        <Bell :size="30" :stroke-width="1.5"/>
+                        <Bell :size="26" :stroke-width="1.5"/>
                         <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
                         <span :class="[ statusSidebar ]" class="hidden lg:block">Notification</span>
                     </div>
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Peoples' }">  
                         <RouterLink to="/peoples" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <Users :size="30" :stroke-width="1.5"/>
+                            <Users :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">People</span>
                         </RouterLink>
                     </div>
                     <div :class="{ 'bg-slate-700 rounded-md' : route.params.id == authStore.user.id }">    
                         <RouterLink :to="`/profile/${authStore.user.id}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <User :size="30" :stroke-width="1.5"/>
+                            <User :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Profile</span>
                         </RouterLink>
                     </div>
                 </div>
-                <div v-else-if="authStore.userRole === 'admin'" class="space-y-1">
+                <div v-else-if="authStore.userRole === 'admin'" class="flex justify-between md:flex-col space-y-1">
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Dashboard' }">  
                         <RouterLink to="/dashboard" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <LayoutDashboard absoluteStrokeWidth :size="30" :stroke-width="1.5"/>
+                            <LayoutDashboard absoluteStrokeWidth :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Dashboard</span>
                         </RouterLink>
                     </div>
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'AdminPosts' }">  
                         <RouterLink to="/admin/posts" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <FileTextIcon absoluteStrokeWidth :size="30" :stroke-width="1.5"/>
+                            <FileTextIcon absoluteStrokeWidth :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Posts</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'AdminUsers' }">  
+                        <RouterLink to="/admin/users" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <Users :size="26" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Users</span>
                         </RouterLink>
                     </div>
                 </div>
