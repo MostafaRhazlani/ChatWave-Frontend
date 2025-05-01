@@ -1,6 +1,6 @@
 <script setup>
 
-import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight } from 'lucide-vue-next';
+import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight, LayoutDashboard } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import { useSidebarStore } from '@/store/sidebarStore.js';
@@ -83,45 +83,56 @@ const toggleSearch = () => {
 
         <div class="flex flex-col justify-between h-full w-full">
             <nav class="flex justify-between md:flex-col gap-2">
-                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Home' }">  
-                    <RouterLink to="/" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <House :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">Home</span>
-                    </RouterLink>
+                <div v-if="authStore.userRole === 'user'">
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Home' }">  
+                        <RouterLink to="/" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <House :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Home</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Videos' }">  
+                        <RouterLink to="/videos" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <TvMinimalPlay :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Videos</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
+                        <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer relative">
+                            <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
+                            <MessageSquareText :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Messages</span>
+                        </RouterLink>
+                    </div>
+                    <div @click="toggleSearch" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isSearchOpen }" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                        <Search :size="30" :stroke-width="1.5"/>
+                        <span :class="[ statusSidebar ]" class="hidden lg:block">Search</span>
+                    </div>
+                    <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer relative">
+                        <Bell :size="30" :stroke-width="1.5"/>
+                        <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span :class="[ statusSidebar ]" class="hidden lg:block">Notification</span>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Peoples' }">  
+                        <RouterLink to="/peoples" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <Users :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">People</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.params.id == authStore.user.id }">    
+                        <RouterLink :to="`/profile/${authStore.user.id}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <User :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Profile</span>
+                        </RouterLink>
+                    </div>
                 </div>
-                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Videos' }">  
-                    <RouterLink to="/videos" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <TvMinimalPlay :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">Videos</span>
-                    </RouterLink>
-                </div>
-                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Messages' }">  
-                    <RouterLink :to="`/messages/${apiStore.firstFriend}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer relative">
-                        <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
-                        <MessageSquareText :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">Messages</span>
-                    </RouterLink>
-                </div>
-                <div @click="toggleSearch" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isSearchOpen }" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                    <Search :size="30" :stroke-width="1.5"/>
-                    <span :class="[ statusSidebar ]" class="hidden lg:block">Search</span>
-                </div>
-                <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="hidden md:flex items-center md:justify-center lg:justify-start gap-2 p-2 hover:bg-slate-700 rounded-md cursor-pointer relative">
-                    <Bell :size="30" :stroke-width="1.5"/>
-                    <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
-                    <span :class="[ statusSidebar ]" class="hidden lg:block">Notification</span>
-                </div>
-                <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Peoples' }">  
-                    <RouterLink to="/peoples" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <Users :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">People</span>
-                    </RouterLink>
-                </div>
-                <div :class="{ 'bg-slate-700 rounded-md' : route.params.id == authStore.user.id }">    
-                    <RouterLink :to="`/profile/${authStore.user.id}`" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                        <User :size="30" :stroke-width="1.5"/>
-                        <span :class="[ statusSidebar ]" class="hidden lg:block">Profile</span>
-                    </RouterLink>
+                <div v-else-if="authStore.userRole === 'admin'">
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Dashboard' }">  
+                        <RouterLink to="/dashboard" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <!-- <Users /> -->
+                            <LayoutDashboard absoluteStrokeWidth :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Dashboard</span>
+                        </RouterLink>
+                    </div>
                 </div>
             </nav>
 
