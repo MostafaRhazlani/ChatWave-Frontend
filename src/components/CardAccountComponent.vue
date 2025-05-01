@@ -21,13 +21,13 @@
                 <span class="font-bold text-lg -mb-1">{{ authStore.user.full_name }}</span>
                 <span class="">{{ authStore.user.username }}</span>
             </div>
-            <div class="flex gap-5 text-sm">
+            <div v-if="authStore.userRole !== 'admin'" class="flex gap-5 text-sm">
                 <p><span class="font-bold">200k</span> following</p>
                 <p><span class="font-bold">200k</span> followers</p>
             </div>
         </div>
         <div class="p-2">
-            <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+            <div v-if="authStore.userRole === 'user'" class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <User :size="22"/>
                 <RouterLink :to="`/profile/${authStore.user.id}`" >Profile</RouterLink>
             </div>
@@ -35,7 +35,7 @@
                 <Settings :size="22"/>
                 <RouterLink to="/account/settings" >Account Settings</RouterLink>
             </div>
-            <div class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
+            <div v-if="authStore.userRole === 'user'" class="flex gap-2 px-2 py-2 hover:bg-slate-700 rounded cursor-pointer">
                 <Star :size="22"/>
                 <RouterLink to="/saves/posts" >Saves</RouterLink>
             </div>

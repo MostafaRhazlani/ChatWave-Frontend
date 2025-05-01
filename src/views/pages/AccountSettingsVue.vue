@@ -36,13 +36,13 @@
                 <!-- Navigation Tabs -->
                 <div class="border-t border-gray-700">
                     <nav class="flex space-x-8 px-4 pt-1">
-                        <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
+                        <button v-for="tab in filterTab" :key="tab.id" @click="activeTab = tab.id" :class="[
                             'py-3 px-1 font-medium text-sm whitespace-nowrap border-b-2 transition-colors',
                             activeTab === tab.id
                                 ? 'border-blue-500 text-blue-400'
                                 : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-700'
                         ]">
-                            {{ tab.name }}
+                            <span>{{ tab.name }}</span>
                         </button>
                     </nav>
                 </div>
@@ -216,7 +216,7 @@
                 </div>
 
                 <!-- Privacy Settings -->
-                <div v-if="activeTab === 'privacy'" class="space-y-6">
+                <div v-if="activeTab === 'privacy' && authStore.userRole === 'user'" class="space-y-6">
                     <h2 class="text-xl font-semibold mb-4">Privacy Settings</h2>
 
                     <!-- Blocked Accounts -->
@@ -254,7 +254,7 @@ import AlertComponent from '@/components/AlertComponent.vue';
 import { ChevronDown } from 'lucide-vue-next';
 import { useAuthStore } from '@/store/auth';
 import { useAlertStore } from '@/store/alert';
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import axios from 'axios';
 
 const authStore = useAuthStore();
@@ -268,6 +268,14 @@ const tabs = [
     { id: 'security', name: 'Security' },
     { id: 'privacy', name: 'Privacy' },
 ]
+
+const filterTab = computed(() => {
+    if(authStore.userRole === 'admin') {
+        return tabs.filter(el => el.id !== 'privacy')
+    } else {
+        return tabs;
+    }
+})
 
 const form = ref({
     'username': authStore.user.username,

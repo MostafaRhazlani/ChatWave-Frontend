@@ -43,14 +43,16 @@
             </div>
         </div>
         <div class="flex">
-            <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
-                <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
-                <Bell :size="30" :stroke-width="1.5"/>
+            <div v-if="authStore.userRole === 'user'" class="flex">
+                <div @click="toggleNotification" :class="{ 'bg-slate-700 rounded-md' : sidebarStore.isNotificationOpen }" class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer">
+                    <span v-if="hasUnreadNotifications" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
+                    <Bell :size="30" :stroke-width="1.5"/>
+                </div>
+                <RouterLink class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer" :to="`/messages/${apiStore.firstFriend}`">
+                    <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
+                    <MessageSquareText :size="30" :stroke-width="1.5"/>
+                </RouterLink>
             </div>
-            <RouterLink class="relative p-2 hover:bg-gray-700 rounded-md flex items-center cursor-pointer" :to="`/messages/${apiStore.firstFriend}`">
-                <span v-if="hasUnreadMessages" class="absolute top-1 left-8 w-2 h-2 bg-red-500 rounded-full"></span>
-                <MessageSquareText :size="30" :stroke-width="1.5"/>
-            </RouterLink>
 
             <div class="relative">
                 <transition name="fade">

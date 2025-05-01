@@ -21,7 +21,7 @@ const router = createRouter({
       component: () => import('../views/pages/HomeVue.vue'),
       meta: {
         requiresAuth: true, 
-        role: 'user',
+        role: ['user'],
         showSidebar: true,
         showHeader: true
       },
@@ -32,7 +32,7 @@ const router = createRouter({
       component: () => import('../views/pages/VideosVue.vue'),
       meta: {
         requiresAuth: true, 
-        role: 'user',
+        role: ['user'],
         showSidebar: true,
         showHeader: true
       },
@@ -43,7 +43,7 @@ const router = createRouter({
       component: () => import('../views/pages/MessagesVue.vue'),
       meta: {
         requiresAuth: true, 
-        role: 'user',
+        role: ['user'],
         showSidebar: true,
         showHeader: true
       },
@@ -54,7 +54,7 @@ const router = createRouter({
       component: () => import('../views/pages/PeoplesVue.vue'),
       meta: {
         requiresAuth: true, 
-        role: 'user',
+        role: ['user'],
         showSidebar: true,
         showHeader: true
       },
@@ -65,7 +65,7 @@ const router = createRouter({
       component: () => import('../views/pages/ProfileVue.vue'),
       meta: {
         requiresAuth: true,
-        role: 'user',
+        role: ['user'],
         showSidebar: true,
         showHeader: true
       },
@@ -76,7 +76,7 @@ const router = createRouter({
       component: () => import('../views/pages/AccountSettingsVue.vue'),
       meta: {
         requiresAuth: true,
-        role: 'user',
+        role: ['user', 'admin'],
         showSidebar: true,
         showHeader: true
       },
@@ -87,7 +87,28 @@ const router = createRouter({
       component: () => import('../views/pages/SavesPostsVue.vue'),
       meta: {
         requiresAuth: true,
-        role: 'user',
+        role: ['user'],
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: () => import('../views/pages/admin/DashboardVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: ['admin'],
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
+      path: '/authorization',
+      name: 'Authorization',
+      component: () => import('../views/pages/AuthorizationVue.vue'),
+      meta: {
+        requiresAuth: true,
         showSidebar: true,
         showHeader: true
       },
@@ -99,7 +120,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   const token = authStore.token;
-  const userRole = authStore.userRole;
 
   if (to.meta.requiresAuth) {
     
@@ -109,11 +129,15 @@ router.beforeEach(async (to, from, next) => {
 
     try {
       const response = await axios.get('/check-user-auth');
-
-      authStore.setUser(response.data.user);
-
-      if(to.meta.role && userRole !== to.meta.role) {
-        return next({ name: 'Home' });
+      const user = response.data.user;
+      const role = user.role;
+      authStore.setUser(user);
+      authStore.userRole = role;
+      
+      if(to.meta.role && !to.meta.role.includes(role)) {
+        if(to.name !== 'Authorization') {
+          return next({ name: 'Authorization' });
+        }
       }
       return next();
 
@@ -121,10 +145,8 @@ router.beforeEach(async (to, from, next) => {
       authStore.logout();
       return next({ name: 'Login' });
     }
-    
-    return next();
   } else {
-    return next({ name: 'Home' });
+    return next();
   }
 });
 
