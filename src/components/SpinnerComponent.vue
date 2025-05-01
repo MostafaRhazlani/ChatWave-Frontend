@@ -8,8 +8,6 @@
 
 <style>
 .btnLoader {
-    width: 25px;
-    height: 25px;
     border: 3px solid #FFF;
     border-bottom-color: transparent;
     border-radius: 50%;

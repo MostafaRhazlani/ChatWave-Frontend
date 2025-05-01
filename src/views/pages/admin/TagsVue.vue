@@ -23,9 +23,9 @@
                             <input :class="[ error ? 'ring-2 ring-red-600' : '' ]" v-model="formTag.tag_name" type="text" placeholder="Enter tag name"
                                 class="w-5/6 bg-slate-700 rounded-md px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
                             <button class="w-44 px-2 bg-pink-600 hover:bg-pink-500 rounded-md flex items-center justify-center">
-                                <SpinnerComponent v-if="isLoading"/>
+                                <SpinnerComponent v-if="isFormLoadin" class="w-6 h-6"/>
                                 <div v-else>
-                                    <span v-if="statusFrom === 'create'" class="flex items-center gap-1"><CirclePlus :size="18" />Add Tag</span>
+                                    <span v-if="statusButton === 'create'" class="flex items-center gap-1"><CirclePlus :size="18" />Add Tag</span>
                                     <span v-else class="flex items-center gap-1"><EditIcon :size="18" />Update Tag</span>
                                 </div>
                             </button>
@@ -52,12 +52,14 @@
                                 <td class="py-3 px-4">{{ index+1 }}</td>
                                 <td class="py-3 px-4 min-w-36">{{ tag.tag_name }}</td>
                                 <td class="py-3 px-4">{{ tag.created_at }}</td>
-                                <td class="py-3 px-4 text-center">
-                                    <button @click="editTag(tag.id)" class="p-1 rounded hover:bg-gray-700" title="Delete">
-                                        <EditIcon class="w-5 h-5 text-gray-400 hover:text-white" />
+                                <td class="py-3 px-4 flex justify-center">
+                                    <button @click="editTag(tag.id)" class="p-1 rounded hover:bg-gray-700 flex" title="Edit">
+                                        <SpinnerComponent v-if="activeLoaderId === tag.id && statusButton === 'update'" class="w-5 h-5" />
+                                        <EditIcon v-else class="w-5 h-5 text-gray-400 hover:text-white" />
                                     </button>
-                                    <button class="p-1 rounded hover:bg-gray-700" title="Delete">
-                                        <Trash2Icon class="w-5 h-5 text-gray-400 hover:text-red-500" />
+                                    <button @click="deleteTag(tag.id)" class="p-1 rounded hover:bg-gray-700 flex" title="Delete">
+                                        <SpinnerComponent v-if="activeLoaderId === tag.id && statusButton === 'delete'" class="w-5 h-5" />
+                                        <Trash2Icon v-else class="w-5 h-5 text-gray-400 hover:text-red-500" />
                                     </button>
                                 </td>
                             </tr>
@@ -100,8 +102,9 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
     const apiStore = useApiStore();
     const alertStore = useAlertStore();
     const error = ref('');
-    const isLoading = ref(false);
-    const statusFrom = ref('create');
+    const isFormLoadin = ref(false);
+    const activeLoaderId = ref(null);
+    const statusButton = ref('create');
 
     const getAllTags = async (showLoader) => {
         if(showLoader) apiStore.isLoading = true
@@ -116,7 +119,7 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
     }
 
     const handleSubmit = () => {
-        if(statusFrom.value === 'create') {
+        if(statusButton.value === 'create') {
             createTag();
         } else {
             updateTag(formTag.value.id)
@@ -125,8 +128,8 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
 
     const createTag = async () => {
         error.value = '';
-        if(isLoading.value) return;
-        isLoading.value = true;
+        if(isFormLoadin.value) return;
+        isFormLoadin.value = true;
         try {
             const response = await axios.post('tag/store', formTag.value);
             if(response.status === 200) {
@@ -137,38 +140,59 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
         } catch (err) {
             error.value = err.response.data.message
         } finally {
-            isLoading.value = false;
+            isFormLoadin.value = false;
         }
     }
 
     const editTag = async (tagId) => {
+        if(activeLoaderId.value !== null) return;
+        activeLoaderId.value = tagId;
+        statusButton.value = 'update';
         try {
             const response = await axios.get(`tag/${tagId}/edit`);
             if(response.status === 200) {
                 formTag.value = response.data.tag;
-                statusFrom.value = 'update';
             }
         } catch (error) {
             console.log('Error fetchng tag', error); 
+        } finally {
+            activeLoaderId.value = null;
         }
     }
 
     const updateTag = async (tagId) => {
         error.value = '';
-        if(isLoading.value) return;
-        isLoading.value = true;
+        if(isFormLoadin.value) return;
+        isFormLoadin.value = true;
         try {
             const response = await axios.patch(`tag/${tagId}/update`, formTag.value);
             if(response.status === 200) {
                 await getAllTags(false);
                 alertStore.triggerAlert('Tag updated successfully', 'success');
-                statusFrom.value = 'create';
+                statusButton.value = 'create';
                 formTag.value.tag_name = '';
             }
         } catch (err) {
             error.value = err.response.data.message
         } finally {
-            isLoading.value = false;
+            isFormLoadin.value = false;
+        }
+    }
+    
+    const deleteTag = async (tagId) => {
+        if(activeLoaderId.value !== null) return;
+        activeLoaderId.value = tagId;
+        statusButton.value = 'delete';
+        try {
+            const response = await axios.delete(`tag/${tagId}/delete`);
+            if(response.status === 200) {
+                await getAllTags(false);
+                alertStore.triggerAlert('Tag deleted successfully', 'success');
+            }
+        } catch (err) {
+            error.value = err.response.data.message
+        } finally {
+            activeLoaderId.value = null;
         }
     }
 
