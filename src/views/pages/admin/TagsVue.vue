@@ -15,7 +15,7 @@
                     <div class="relative w-3/5">
                         <SearchIcon
                             class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input type="text" placeholder="Search tags..."
+                        <input v-model="searchInput" @input="searchTag" type="text" placeholder="Search tags..."
                             class="w-full bg-slate-700 rounded-md pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
                     </div>
                     <form @submit.prevent="handleSubmit">
@@ -23,7 +23,7 @@
                             <input :class="[ error ? 'ring-2 ring-red-600' : '' ]" v-model="formTag.tag_name" type="text" placeholder="Enter tag name"
                                 class="w-5/6 bg-slate-700 rounded-md px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
                             <button class="w-44 px-2 bg-pink-600 hover:bg-pink-500 rounded-md flex items-center justify-center">
-                                <SpinnerComponent v-if="isFormLoadin" class="w-6 h-6"/>
+                                <SpinnerComponent v-if="isFormLoading" class="w-6 h-6"/>
                                 <div v-else>
                                     <span v-if="statusButton === 'create'" class="flex items-center gap-1"><CirclePlus :size="18" />Add Tag</span>
                                     <span v-else class="flex items-center gap-1"><EditIcon :size="18" />Update Tag</span>
@@ -102,9 +102,11 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
     const apiStore = useApiStore();
     const alertStore = useAlertStore();
     const error = ref('');
-    const isFormLoadin = ref(false);
+    const isFormLoading = ref(false);
+    const isSearchLoading = ref(false);
     const activeLoaderId = ref(null);
     const statusButton = ref('create');
+    const searchInput = ref('');
 
     const getAllTags = async (showLoader) => {
         if(showLoader) apiStore.isLoading = true
@@ -128,19 +130,20 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
 
     const createTag = async () => {
         error.value = '';
-        if(isFormLoadin.value) return;
-        isFormLoadin.value = true;
+        if(isFormLoading.value) return;
+        isFormLoading.value = true;
         try {
             const response = await axios.post('tag/store', formTag.value);
             if(response.status === 200) {
                 await getAllTags(false);
                 alertStore.triggerAlert('Tag created successfully', 'success');
                 formTag.value.tag_name = '';
+                searchInput.value = '';
             }
         } catch (err) {
             error.value = err.response.data.message
         } finally {
-            isFormLoadin.value = false;
+            isFormLoading.value = false;
         }
     }
 
@@ -162,8 +165,8 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
 
     const updateTag = async (tagId) => {
         error.value = '';
-        if(isFormLoadin.value) return;
-        isFormLoadin.value = true;
+        if(isFormLoading.value) return;
+        isFormLoading.value = true;
         try {
             const response = await axios.patch(`tag/${tagId}/update`, formTag.value);
             if(response.status === 200) {
@@ -171,11 +174,12 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
                 alertStore.triggerAlert('Tag updated successfully', 'success');
                 statusButton.value = 'create';
                 formTag.value.tag_name = '';
+                searchInput.value = '';
             }
         } catch (err) {
             error.value = err.response.data.message
         } finally {
-            isFormLoadin.value = false;
+            isFormLoading.value = false;
         }
     }
     
@@ -188,12 +192,33 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
             if(response.status === 200) {
                 await getAllTags(false);
                 alertStore.triggerAlert('Tag deleted successfully', 'success');
+                searchInput.value = '';
             }
         } catch (err) {
             error.value = err.response.data.message
         } finally {
             activeLoaderId.value = null;
         }
+    }
+
+    let timer;
+    const searchTag = () => {
+        clearTimeout(timer);
+        isSearchLoading.value = true
+        timer = setTimeout(async () => {
+            try {
+                if(searchInput.value) {
+                    const response = await axios.get('tags/search', { params: { query: searchInput.value }});
+                    tags.value = response.data.tags
+                } else {
+                    await getAllTags(false);
+                }
+            } catch(error) {
+                console.log(error);
+            } finally {
+                isSearchLoading.value = false
+            }
+        }, 1000);
     }
 
     onMounted(() => {
