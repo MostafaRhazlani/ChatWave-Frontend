@@ -47,24 +47,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
+                            <tr v-for="(user, index) in users" :key="index"
                                 class="border-b border-gray-700 hover:bg-gray-750">
                                 <td class="py-3 px-4 flex items-center gap-2">
-                                    <div class="w-9 h-9 rounded-full bg-gray-600"></div>
-                                    Mostafa Rhazlani
+                                    <div class="min-w-9 min-h-9 max-w-9 max-h-9 rounded-full bg-gray-600 overflow-hidden">
+                                        <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt="" class="w-full h-full object-cover">
+                                    </div>
+                                    {{ user.full_name }}
                                 </td>
-                                <td class="py-3 px-4">mostafa_rhazlani</td>
-                                <td class="py-3 px-4">mo@gmail.com</td>
-                                <td class="py-3 px-4 min-w-36">Feb 03, 2003</td>
-                                <td class="py-3 px-4 min-w-36">Morocco</td>
+                                <td class="py-3 px-4">{{ user.username }}</td>
+                                <td class="py-3 px-4">{{ user.email }}</td>
+                                <td class="py-3 px-4">{{ user.date_birth }}</td>
+                                <td class="py-3 px-4 min-w-36">{{ user.nationality }}</td>
                                 <td class="py-3 px-4 min-w-32">
-                                    <span class="px-2 py-1 rounded-full text-xs bg-purple-500/20 text-purple-500">
+                                    <span v-if="user.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-500">
+                                        Banned
+                                    </span>
+                                    <span v-else class="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">
                                         Not Banned
                                     </span>
                                 </td>
                                 <td class="py-3 px-4">
-                                    <span class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
-                                        Published
+                                    <span v-if="user.is_logged === true" class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
+                                        Online
+                                    </span>
+                                    <span v-else class="px-2 py-1 rounded-full text-xs bg-red-500/20 text-red-400">
+                                        Ofline
                                     </span>
                                 </td>
                                 <td class="py-3 px-4">
@@ -102,6 +110,29 @@
 
 <script setup>
     import { FileTextIcon, SearchIcon, EyeIcon, Trash2Icon } from 'lucide-vue-next';
+    import { onMounted, ref } from 'vue';
+    import axios from 'axios';
+
+    const users = ref([]);
+
+    const listUsers = async (showLoader) => {
+        if(showLoader) apiStore.isLoading = true
+
+        try {
+            const response = await axios.get('users');
+            if(response.status === 200) {
+                users.value = response.data.users;
+            } 
+        } catch (error) {
+            console.log('Error fetching users');
+        } finally {
+            if(showLoader) apiStore.isLoading = false
+        }
+    }
+
+    onMounted(() => {
+        listUsers();
+    })
 </script>
 
 
