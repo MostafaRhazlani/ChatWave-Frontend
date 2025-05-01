@@ -1,6 +1,6 @@
 <script setup>
 
-import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight, LayoutDashboard } from 'lucide-vue-next';
+import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight, LayoutDashboard, FileTextIcon } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import { useSidebarStore } from '@/store/sidebarStore.js';
@@ -82,8 +82,8 @@ const toggleSearch = () => {
         </div>
 
         <div class="flex flex-col justify-between h-full w-full">
-            <nav class="flex justify-between md:flex-col gap-2">
-                <div v-if="authStore.userRole === 'user'">
+            <nav class="flex justify-between md:flex-col">
+                <div v-if="authStore.userRole === 'user'" class="space-y-1">
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Home' }">  
                         <RouterLink to="/" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                             <House :size="30" :stroke-width="1.5"/>
@@ -125,12 +125,17 @@ const toggleSearch = () => {
                         </RouterLink>
                     </div>
                 </div>
-                <div v-else-if="authStore.userRole === 'admin'">
+                <div v-else-if="authStore.userRole === 'admin'" class="space-y-1">
                     <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'Dashboard' }">  
                         <RouterLink to="/dashboard" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
-                            <!-- <Users /> -->
                             <LayoutDashboard absoluteStrokeWidth :size="30" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Dashboard</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'AdminPosts' }">  
+                        <RouterLink to="/admin/posts" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <FileTextIcon absoluteStrokeWidth :size="30" :stroke-width="1.5"/>
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Posts</span>
                         </RouterLink>
                     </div>
                 </div>

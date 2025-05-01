@@ -104,6 +104,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/posts',
+      name: 'AdminPosts',
+      component: () => import('../views/pages/admin/PostsVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: ['admin'],
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/authorization',
       name: 'Authorization',
       component: () => import('../views/pages/AuthorizationVue.vue'),
@@ -133,7 +144,7 @@ router.beforeEach(async (to, from, next) => {
       const role = user.role;
       authStore.setUser(user);
       authStore.userRole = role;
-      
+
       if(to.meta.role && !to.meta.role.includes(role)) {
         if(to.name !== 'Authorization') {
           return next({ name: 'Authorization' });
