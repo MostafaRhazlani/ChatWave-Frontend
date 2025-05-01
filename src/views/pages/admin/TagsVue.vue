@@ -18,13 +18,16 @@
                         <input type="text" placeholder="Search tags..."
                             class="w-full bg-slate-700 rounded-md pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
                     </div>
-                    <form @submit.prevent="createTag">
+                    <form @submit.prevent="handleSubmit">
                         <div class="flex gap-2 w-3/6 md:w-full">
-                            <input :class="[ error ? 'ring-2 ring-red-600' : '' ]" v-model="formTag.tag_name" type="text" placeholder="Add new tag"
+                            <input :class="[ error ? 'ring-2 ring-red-600' : '' ]" v-model="formTag.tag_name" type="text" placeholder="Enter tag name"
                                 class="w-5/6 bg-slate-700 rounded-md px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
-                            <button class="w-36 px-2 bg-pink-600 hover:bg-pink-500 rounded-md flex items-center justify-center">
+                            <button class="w-44 px-2 bg-pink-600 hover:bg-pink-500 rounded-md flex items-center justify-center">
                                 <SpinnerComponent v-if="isLoading"/>
-                                <span v-else class="flex items-center gap-1"><CirclePlus :size="18" />Add Tag</span>
+                                <div v-else>
+                                    <span v-if="statusFrom === 'create'" class="flex items-center gap-1"><CirclePlus :size="18" />Add Tag</span>
+                                    <span v-else class="flex items-center gap-1"><EditIcon :size="18" />Update Tag</span>
+                                </div>
                             </button>
                         </div>
                     </form>
@@ -50,7 +53,7 @@
                                 <td class="py-3 px-4 min-w-36">{{ tag.tag_name }}</td>
                                 <td class="py-3 px-4">{{ tag.created_at }}</td>
                                 <td class="py-3 px-4 text-center">
-                                    <button class="p-1 rounded hover:bg-gray-700" title="Delete">
+                                    <button @click="editTag(tag.id)" class="p-1 rounded hover:bg-gray-700" title="Delete">
                                         <EditIcon class="w-5 h-5 text-gray-400 hover:text-white" />
                                     </button>
                                     <button class="p-1 rounded hover:bg-gray-700" title="Delete">
@@ -91,12 +94,14 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
 
     const tags = ref([]);
     const formTag = ref({
+        id: null,
         tag_name: '',
     });
     const apiStore = useApiStore();
     const alertStore = useAlertStore();
     const error = ref('');
     const isLoading = ref(false);
+    const statusFrom = ref('create');
 
     const getAllTags = async (showLoader) => {
         if(showLoader) apiStore.isLoading = true
@@ -107,6 +112,14 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
             console.log('Error fetching tags', error);
         } finally {
             if (showLoader) apiStore.isLoading = false
+        }
+    }
+
+    const handleSubmit = () => {
+        if(statusFrom.value === 'create') {
+            createTag();
+        } else {
+            updateTag(formTag.value.id)
         }
     }
 
@@ -123,7 +136,37 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
             }
         } catch (err) {
             error.value = err.response.data.message
-            console.log(error.value);
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    const editTag = async (tagId) => {
+        try {
+            const response = await axios.get(`tag/${tagId}/edit`);
+            if(response.status === 200) {
+                formTag.value = response.data.tag;
+                statusFrom.value = 'update';
+            }
+        } catch (error) {
+            console.log('Error fetchng tag', error); 
+        }
+    }
+
+    const updateTag = async (tagId) => {
+        error.value = '';
+        if(isLoading.value) return;
+        isLoading.value = true;
+        try {
+            const response = await axios.patch(`tag/${tagId}/update`, formTag.value);
+            if(response.status === 200) {
+                await getAllTags(false);
+                alertStore.triggerAlert('Tag updated successfully', 'success');
+                statusFrom.value = 'create';
+                formTag.value.tag_name = '';
+            }
+        } catch (err) {
+            error.value = err.response.data.message
         } finally {
             isLoading.value = false;
         }
