@@ -126,6 +126,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin/tags',
+      name: 'AdminTags',
+      component: () => import('../views/pages/admin/TagsVue.vue'),
+      meta: {
+        requiresAuth: true,
+        role: ['admin'],
+        showSidebar: true,
+        showHeader: true
+      },
+    },
+    {
       path: '/authorization',
       name: 'Authorization',
       component: () => import('../views/pages/AuthorizationVue.vue'),

@@ -1,6 +1,6 @@
 <script setup>
 
-import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight, LayoutDashboard, FileTextIcon } from 'lucide-vue-next';
+import { House, TvMinimalPlay, Search, Users, User, Layers2, Bell, MessageSquareText, ChevronRight, LayoutDashboard, FileTextIcon, Tags } from 'lucide-vue-next';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import { useSidebarStore } from '@/store/sidebarStore.js';
@@ -142,6 +142,12 @@ const toggleSearch = () => {
                         <RouterLink to="/admin/users" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
                             <Users :size="26" :stroke-width="1.5"/>
                             <span :class="[ statusSidebar ]" class="hidden lg:block">Users</span>
+                        </RouterLink>
+                    </div>
+                    <div :class="{ 'bg-slate-700 rounded-md' : route.name === 'AdminTags' }">  
+                        <RouterLink to="/admin/tags" class="flex p-2 hover:bg-slate-700 rounded-md items-center md:justify-center lg:justify-start gap-2 cursor-pointer">
+                            <Tags absoluteStrokeWidth />
+                            <span :class="[ statusSidebar ]" class="hidden lg:block">Tags</span>
                         </RouterLink>
                     </div>
                 </div>
