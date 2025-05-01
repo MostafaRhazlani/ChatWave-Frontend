@@ -57,15 +57,22 @@
                                 </td>
                                 <td class="py-3 px-4">{{ user.username }}</td>
                                 <td class="py-3 px-4">{{ user.email }}</td>
-                                <td class="py-3 px-4">{{ user.date_birth }}</td>
-                                <td class="py-3 px-4 min-w-36">{{ user.nationality }}</td>
-                                <td class="py-3 px-4 min-w-32">
-                                    <span v-if="user.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-500">
-                                        Banned
-                                    </span>
-                                    <span v-else class="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">
-                                        Not Banned
-                                    </span>
+                                <td class="py-3 px-4 min-w-36">{{ user.date_birth }}</td>
+                                <td class="py-3 px-4">{{ user.nationality }}</td>
+                                <td class="py-3 px-4 min-w-32 cursor-pointer" @click="toggleBanUser(user.id)">
+                                    <template v-if="activeLoaderId === user.id && statusButton === 'ban'">
+                                        <div class="flex pl-7 w-full">
+                                            <SpinnerComponent class="w-5 h-5"/>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <span v-if="user.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30">
+                                            Banned
+                                        </span>
+                                        <span v-else class="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">
+                                            Not Banned
+                                        </span>
+                                    </template>
                                 </td>
                                 <td class="py-3 px-4">
                                     <span v-if="user.is_logged === true" class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
@@ -112,8 +119,11 @@
     import { FileTextIcon, SearchIcon, EyeIcon, Trash2Icon } from 'lucide-vue-next';
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
+    import SpinnerComponent from '@/components/SpinnerComponent.vue';
 
     const users = ref([]);
+    const statusButton = ref('');
+    const activeLoaderId = ref(null);
 
     const listUsers = async (showLoader) => {
         if(showLoader) apiStore.isLoading = true
@@ -124,9 +134,24 @@
                 users.value = response.data.users;
             } 
         } catch (error) {
-            console.log('Error fetching users');
+            console.log('Error fetching users', error);
         } finally {
             if(showLoader) apiStore.isLoading = false
+        }
+    }
+
+    const toggleBanUser = async (userId) => {
+        if(activeLoaderId.value !== null) return
+        activeLoaderId.value = userId
+        statusButton.value = 'ban';
+
+        try {
+            await axios.patch(`user/${userId}/ban`);
+            await listUsers();
+        } catch (error) {
+            console.log('Something is wrong', error);
+        } finally {
+            activeLoaderId.value = null;
         }
     }
 

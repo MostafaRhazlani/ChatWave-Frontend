@@ -4,6 +4,7 @@
   import { useAuthStore } from '@/store/auth';
   import { reactive } from 'vue';
   import axios from '@/plugins/axios';
+  import { X as Close } from 'lucide-vue-next';
 
   const router = useRouter();
   const authStore = useAuthStore();
@@ -40,10 +41,15 @@
       }
     } catch(err) {
       if(err.response && err.response.data) {
-        error.errors = err.response.data
+        error.errors = err.response.data.message
+        console.log(error.errors);
         
       }
     }
+  }
+
+  const hideError = () => {
+    error.errors.userBan = '';
   }
 
 </script>
@@ -59,6 +65,10 @@
         <img width="40" height="40" src="/images/logo-chatwave.png" alt="">
       </div>
 
+      <div v-if="error.errors.userBan" class="flex justify-between items-center gap-4 p-4 w-full bg-red-500/20 text-red-500 rounded mb-4">
+        <span>{{ error.errors.userBan }}</span>
+        <span @click="hideError" class="cursor-pointer"><Close /></span>
+      </div>
       <!-- Form -->
       <form @submit.prevent="handleLogin" class="w-full space-y-4">
         <div class="space-y-4">
@@ -66,14 +76,14 @@
           <div>
             <input v-model="form.email" type="email" placeholder="Email"
               class="w-full px-4 py-2 rounded bg-navy-800 border border-navy-700 text-gray-300 focus:outline-none" />
-            <p class="text-red-600">{{ error.errors.message ? error.errors.message : '' }}</p>
+            <p class="text-red-600">{{ error.errors.incorrectInput ? error.errors.incorrectInput : '' }}</p>
           </div>
 
           <!-- Password input -->
           <div>
             <input v-model="form.password" type="password" placeholder="Password"
               class="w-full px-4 py-2 rounded bg-navy-800 border border-navy-700 text-gray-300 focus:outline-none" />
-            <p class="text-red-600">{{ error.errors.message ? error.errors.message : '' }}</p>
+            <p class="text-red-600">{{ error.errors.incorrectInput ? error.errors.incorrectInput : '' }}</p>
           </div>
 
           <!-- Sign in button -->

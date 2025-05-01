@@ -167,6 +167,10 @@ router.beforeEach(async (to, from, next) => {
       authStore.setUser(user);
       authStore.userRole = role;
 
+      if(user.is_banned === true) {
+        return next({ name: 'Login' });
+      }
+
       if(to.meta.role && !to.meta.role.includes(role)) {
         if(to.name !== 'Authorization') {
           return next({ name: 'Authorization' });
