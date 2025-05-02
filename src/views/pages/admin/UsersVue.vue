@@ -20,11 +20,11 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <select
+                        <select v-model="filterByStatus" @change="filterUsersByStatus"
                             class="bg-slate-700 rounded-lg px-3 py-2 w-44 cursor-pointer text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             <option value="">All Status</option>
-                            <option value="Published">Banned</option>
-                            <option value="Draft">Not Banned</option>
+                            <option value="true">Banned</option>
+                            <option value="false">Not Banned</option>
                         </select>
                     </div>
                 </div>
@@ -131,6 +131,8 @@
     const isSearchLoading = ref(false);
     const searchInput = ref(false);
     const alertStore = useAlertStore();
+    const filterByStatus = ref('');
+    const allUsers = ref([]);
 
     const listUsers = async (showLoader = true) => {
         if(showLoader) apiStore.isLoading = true
@@ -139,6 +141,7 @@
             const response = await axios.get('users');
             if(response.status === 200) {
                 users.value = response.data.users;
+                allUsers.value = response.data.users
             } 
         } catch (error) {
             console.log('Error fetching users', error);
@@ -197,6 +200,15 @@
                 isSearchLoading.value = false
             }
         }, 1000);
+    }
+
+    const filterUsersByStatus = async () => {
+        
+        if(filterByStatus.value !== '') {
+            users.value = allUsers.value.filter(el => String(el.is_banned) == filterByStatus.value);
+        } else {
+            users.value = allUsers.value
+        }
     }
 
     onMounted(() => {
