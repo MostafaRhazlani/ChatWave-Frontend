@@ -157,6 +157,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     
     if(!token) {
+      authStore.logout();
       return next({ name: 'Login' });
     }
 
@@ -168,6 +169,7 @@ router.beforeEach(async (to, from, next) => {
       authStore.userRole = role;
 
       if(user.is_banned === true) {
+        authStore.logout();
         return next({ name: 'Login' });
       }
 

@@ -108,7 +108,7 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
     const statusButton = ref('create');
     const searchInput = ref('');
 
-    const getAllTags = async (showLoader) => {
+    const getAllTags = async (showLoader = true) => {
         if(showLoader) apiStore.isLoading = true
         try {
             const response = await axios.get('/tags');

@@ -1,9 +1,10 @@
 <script setup>
   import CountriesComponent from '@/components/CountriesComponent.vue';
+  import SpinnerComponent from '@/components/SpinnerComponent.vue';
   import { useRouter } from 'vue-router';
   import { ChevronDown } from 'lucide-vue-next';
   import axios from '@/plugins/axios';
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import { useAlertStore } from '@/store/alert';
 
   const alertStore = useAlertStore();
@@ -19,11 +20,14 @@
     'password': '',
     'password_confirmation': '',
   });
+  const isLoading = ref(false)
   
 
   const error = reactive({ errors: {} });
 
-  const handleRegister = async () => {    
+  const handleRegister = async () => { 
+    if(isLoading.value) return; 
+    isLoading.value = true  
     try {
       const response = await axios.post('register', form);
       
@@ -40,6 +44,8 @@
       if(err.response && err.response.data) {
         error.errors = err.response.data.errors
       }
+    } finally {
+      isLoading.value = false
     }
   }
 </script>
@@ -116,8 +122,9 @@
         <!-- Sign up button -->
         <div>
           <button type="submit"
-            class="w-full px-4 py-2 text-white hover:bg-slate-800 rounded cursor-pointer duration-300 transition-all delay-100">
-            Sign up
+            class="w-full px-4 py-2 flex items-center justify-center text-white hover:bg-slate-800 rounded cursor-pointer duration-300 transition-all delay-100">
+            <SpinnerComponent v-if="isLoading" class="w-6 h-6"/>
+            <span v-else>Sign up</span>
           </button>
         </div>
 
