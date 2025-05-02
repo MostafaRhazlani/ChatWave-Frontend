@@ -188,20 +188,24 @@ const playPauseVideo = (event) => {
                 <div v-if="activeTab === 'Posts' || activeTab === 'Videos'"
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div v-for="(post) in DisplayMediaType" :key="post.id"
-                        class="h-80 md:h-64 rounded-lg bg-gray-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105"
-                        @click="apiStore.openModelDetailsPost(post.id)">
+                        class="h-80 md:h-64 rounded-lg bg-slate-800 cursor-pointer overflow-hidden transform transition-transform hover:scale-105">
 
-                        <div v-if="post.type === 'image'" class="w-full h-full">
-                            <img class="w-full h-full object-cover"
-                                :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="Post Image">
+                        <div @click="apiStore.openModelDetailsPost(post.id)" v-if="post.is_banned === false" class="w-full h-full">
+                            <div v-if="post.type === 'image'" class="w-full h-full">
+                                <img class="w-full h-full object-cover"
+                                    :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="Post Image">
+                            </div>
+                            <div v-if="post.type === 'video'" class="w-full h-full">
+                                <video class="w-full h-full" @mouseover="playPauseVideo($event)"
+                                    @mouseleave="playPauseVideo($event)">
+                                    <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`"
+                                        type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
                         </div>
-                        <div v-if="post.type === 'video'" class="w-full h-full">
-                            <video class="w-full h-full" @mouseover="playPauseVideo($event)"
-                                @mouseleave="playPauseVideo($event)">
-                                <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`"
-                                    type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+                        <div v-else class="w-full h-full flex justify-center items-center">
+                            <span>This Post is Stopped</span>
                         </div>
                     </div>
                 </div>
