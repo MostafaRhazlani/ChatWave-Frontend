@@ -15,7 +15,7 @@
                         <div class="relative">
                             <SearchIcon
                                 class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input type="text" placeholder="Search posts..."
+                            <input v-model="searchInput" @input="searchPost" type="text" placeholder="Search posts..."
                                 class="w-full bg-slate-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500" />
                         </div>
                     </div>
@@ -129,6 +129,8 @@ const apiStore = useApiStore();
 const alertStore = useAlertStore();
 const activeLoaderId = ref(null);
 const statusButton = ref('');
+const searchInput = ref('');
+const isSearchLoading = ref('');
 
 const deletePost = async (postId) => {
     if (activeLoaderId.value !== null) return;
@@ -148,6 +150,26 @@ const deletePost = async (postId) => {
         activeLoaderId.value = null;
     }
 }
+
+let timer;
+    const searchPost = () => {
+        clearTimeout(timer);
+        isSearchLoading.value = true
+        timer = setTimeout(async () => {
+            try {
+                if(searchInput.value) {
+                    const response = await axios.get('posts/search', { params: { query: searchInput.value }});
+                    apiStore.posts = response.data.posts
+                } else {
+                    apiStore.postsList(false);
+                }
+            } catch(error) {
+                console.log(error);
+            } finally {
+                isSearchLoading.value = false
+            }
+        }, 1000);
+    }
 
 onMounted(() => {
     apiStore.postsList();
