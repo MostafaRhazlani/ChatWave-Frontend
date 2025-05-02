@@ -36,6 +36,7 @@
                     <table class="w-full">
                         <thead>
                             <tr class="bg-slate-700">
+                                <th class="py-3 px-4 text-left">#</th>
                                 <th class="py-3 px-4 text-left">Media</th>
                                 <th class="py-3 px-4 text-left">Author</th>
                                 <th class="py-3 px-4 text-left">Date</th>
@@ -46,17 +47,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
+                            <tr v-for="(post, index) in apiStore.posts" :key="index"
                                 class="border-b border-gray-700 hover:bg-gray-750">
+                                <td class="py-3 px-4">{{ index+1 }}</td>
                                 <td class="py-3 px-4">
-                                    <div class="w-10 h-9 rounded-md bg-gray-600"></div>
+                                    <div class="min-w-10 min-h-9 max-w-10 max-h-9 rounded-md bg-gray-600 overflow-hidden flex items-center justify-center">
+                                        <img v-if="post.type === 'image'" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="" class="w-full h-full object-cover" />
+                                        
+                                        <video v-else class="w-full h-full object-cover">
+                                            <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
                                 </td>
-                                <td class="py-3 px-4">Mostafa Rhazlani</td>
-                                <td class="py-3 px-4 min-w-36">Apr 21, 2025</td>
-                                <td class="py-3 px-4">2M</td>
-                                <td class="py-3 px-4">100K</td>
+                                <td class="py-3 px-4">{{ post.person.full_name }}</td>
+                                <td class="py-3 px-4 min-w-36">{{ formatToSimpleDate(post.created_at) }}</td>
+                                <td class="py-3 px-4">{{ post.likes_count }}</td>
+                                <td class="py-3 px-4">{{ post.comments_count }}</td>
                                 <td class="py-3 px-4">
-                                    <span class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
+                                    <span v-if="post.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-red-500 hover:bg-red-500/30">
+                                        Stopped
+                                    </span>
+                                    <span v-else class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
                                         Published
                                     </span>
                                 </td>
@@ -95,6 +107,15 @@
 
 <script setup>
     import { FileTextIcon, SearchIcon, EyeIcon, Trash2Icon } from 'lucide-vue-next';
+    import { useApiStore } from '@/store/apiStore';
+    import { formatToSimpleDate } from '@/helpers/convertTime';
+import { onMounted } from 'vue';
+
+    const apiStore = useApiStore();
+
+    onMounted(() => {
+        apiStore.postsList();
+    })
 </script>
 
 
