@@ -7,6 +7,10 @@ export function convertTime(date) {
     return dayjs(date).fromNow();
 }
 
-export function formatDate(date) {
+export function formatToTime(date) {
     return dayjs(date).format('hh:mm A')
+}
+
+export function formatToSimpleDate(date) {
+    return dayjs(date).format('MMM DD, YYYY')
 }

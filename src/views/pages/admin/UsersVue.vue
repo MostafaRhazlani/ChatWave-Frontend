@@ -21,7 +21,7 @@
 
                     <div class="flex gap-3">
                         <select v-model="filterByStatus" @change="filterUsersByStatus"
-                            class="bg-slate-700 rounded-lg px-3 py-2 w-44 cursor-pointer text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                            class="bg-slate-700 rounded-lg px-3 py-2 w-44 cursor-pointer text-white focus:outline-none focus:ring-1 focus:ring-pink-500">
                             <option value="">All Status</option>
                             <option value="true">Banned</option>
                             <option value="false">Not Banned</option>

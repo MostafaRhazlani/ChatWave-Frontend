@@ -31,7 +31,7 @@
                         <div class="w-full">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-white font-medium text-sm truncate">{{ contact.full_name }}</h3>
-                                <span class="text-gray-400 text-xs">{{ formatDate(contact.lastMessage.created_at)}}</span>
+                                <span class="text-gray-400 text-xs">{{ formatToTime(contact.lastMessage.created_at)}}</span>
                             </div>
                             <p class="text-gray-400 text-sm truncate"><span class="font-semibold text-gray-300"
                                     v-if="authStore.user.id == contact.lastMessage.sender_id">You :</span> {{
@@ -86,7 +86,7 @@
                             <div class="flex items-center gap-2">
                                 <span v-if="message.sender_id === authStore.user.id">{{ authStore.user.full_name }}</span>
                                 <span v-else >{{ friendInfo.full_name }}</span>
-                                    • <span class="text-xs text-gray-400">{{ formatDate(message.created_at) }}</span>
+                                    • <span class="text-xs text-gray-400">{{ formatToTime(message.created_at) }}</span>
                                 <div v-if="message.sender_id === authStore.user.id" class="relative">
                                     <div @click="toggleMenuMessage(message.id)" class="cursor-pointer transition-colors duration-150 rounded-sm">
                                         <Ellipsis />
@@ -192,7 +192,7 @@
 import { Search, Info, SendHorizontal, Menu, Paperclip, Image, FileText, SquarePlay, X as Close, OctagonX, Ellipsis, Download, Pencil, Trash2 } from 'lucide-vue-next';
 import axios from 'axios';
 import { nextTick, onMounted, ref, watch, computed } from 'vue';
-import { convertTime , formatDate } from '@/helpers/convertTime';
+import { convertTime , formatToTime } from '@/helpers/convertTime';
 import { useApiStore } from '@/store/apiStore';
 import { useAuthStore } from '@/store/auth';
 import { useRoute, useRouter } from 'vue-router';

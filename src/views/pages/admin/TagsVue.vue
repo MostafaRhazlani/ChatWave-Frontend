@@ -51,7 +51,7 @@
                                 class="border-b border-gray-700 hover:bg-gray-750">
                                 <td class="py-3 px-4">{{ index+1 }}</td>
                                 <td class="py-3 px-4 min-w-36">{{ tag.tag_name }}</td>
-                                <td class="py-3 px-4">{{ tag.created_at }}</td>
+                                <td class="py-3 px-4">{{ formatToSimpleDate(tag.created_at) }}</td>
                                 <td class="py-3 px-4 flex justify-center">
                                     <button @click="editTag(tag.id)" class="p-1 rounded hover:bg-gray-700 flex" title="Edit">
                                         <SpinnerComponent v-if="activeLoaderId === tag.id && statusButton === 'update'" class="w-5 h-5" />
@@ -93,6 +93,7 @@ import { FileTextIcon, SearchIcon, EyeIcon, EditIcon, Trash2Icon, CirclePlus } f
     import AlertComponent from '@/components/AlertComponent.vue';
     import SpinnerComponent from '@/components/SpinnerComponent.vue';
     import { useAlertStore } from '@/store/alert';
+    import { formatToSimpleDate } from '@/helpers/convertTime';
 
     const tags = ref([]);
     const formTag = ref({
