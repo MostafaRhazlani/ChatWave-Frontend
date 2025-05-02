@@ -87,8 +87,9 @@
                                         <button class="p-1 rounded hover:bg-gray-700" title="View">
                                             <EyeIcon class="w-5 h-5 text-gray-400 hover:text-white" />
                                         </button>
-                                        <button class="p-1 rounded hover:bg-gray-700" title="Delete">
-                                            <Trash2Icon class="w-5 h-5 text-gray-400 hover:text-red-500" />
+                                        <button @click="deleteUser(user.id)" class="p-1 rounded hover:bg-gray-700 flex" title="Delete">
+                                            <SpinnerComponent v-if="activeLoaderId === user.id && statusButton === 'delete'" class="w-5 h-5" />
+                                            <Trash2Icon v-else class="w-5 h-5 text-gray-400 hover:text-red-500" />
                                         </button>
                                     </div>
                                 </td>
@@ -120,12 +121,14 @@
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
     import SpinnerComponent from '@/components/SpinnerComponent.vue';
+    import { useApiStore } from '@/store/apiStore';
 
     const users = ref([]);
     const statusButton = ref('');
     const activeLoaderId = ref(null);
+    const apiStore = useApiStore();
 
-    const listUsers = async (showLoader) => {
+    const listUsers = async (showLoader = true) => {
         if(showLoader) apiStore.isLoading = true
 
         try {
@@ -147,7 +150,24 @@
 
         try {
             await axios.patch(`user/${userId}/ban`);
-            await listUsers();
+            await listUsers(false);
+        } catch (error) {
+            console.log('Something is wrong', error);
+        } finally {
+            activeLoaderId.value = null;
+        }
+    }
+
+    const deleteUser = async (userId) => {
+        if(activeLoaderId.value !== null) return;
+        activeLoaderId.value = userId;
+        statusButton.value = 'delete';
+        try {
+            const response = await axios.delete(`user/${userId}/delete`);
+            if(response.status === 200) {
+                await listUsers(false);
+                alertStore.triggerAlert('User deleted successfully', 'success');
+            }
         } catch (error) {
             console.log('Something is wrong', error);
         } finally {
