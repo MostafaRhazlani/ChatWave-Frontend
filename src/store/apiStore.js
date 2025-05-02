@@ -3,6 +3,7 @@ import axios from "axios";
 export const useApiStore = defineStore("apiStore", {
   state: () => ({
     posts: [],
+    allPosts: [],
     userPosts: [],
     postId: 0,
     post: {},
@@ -27,6 +28,7 @@ export const useApiStore = defineStore("apiStore", {
       try {
         const response = await axios.get('posts');
         this.posts = response.data.posts
+        this.allPosts = response.data.posts
       } catch (error) {
         console.log(error);
         

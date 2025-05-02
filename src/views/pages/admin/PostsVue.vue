@@ -21,11 +21,11 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <select
+                        <select v-model="filterByStatus" @change="filterPostsByStatus"
                             class="bg-slate-700 rounded-lg px-3 py-2 w-44 cursor-pointer text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
                             <option value="">All Status</option>
-                            <option value="Published">Published</option>
-                            <option value="Draft">Stopped</option>
+                            <option value="false">Published</option>
+                            <option value="true">Stopped</option>
                         </select>
                     </div>
                 </div>
@@ -131,6 +131,7 @@ const activeLoaderId = ref(null);
 const statusButton = ref('');
 const searchInput = ref('');
 const isSearchLoading = ref('');
+const filterByStatus = ref('');
 
 const deletePost = async (postId) => {
     if (activeLoaderId.value !== null) return;
@@ -169,6 +170,15 @@ let timer;
                 isSearchLoading.value = false
             }
         }, 1000);
+    }
+
+    const filterPostsByStatus = async () => {
+        
+        if(filterByStatus.value !== '') {
+            apiStore.posts = apiStore.allPosts.filter(el => String(el.is_banned) == filterByStatus.value);
+        } else {
+            apiStore.posts = apiStore.allPosts;
+        }
     }
 
 onMounted(() => {
