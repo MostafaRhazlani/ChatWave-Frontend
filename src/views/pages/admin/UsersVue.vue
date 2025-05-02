@@ -14,7 +14,7 @@
                         <div class="relative">
                             <SearchIcon
                                 class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input type="text" placeholder="Search users..."
+                            <input v-model="searchInput" @input="searchUser" type="text" placeholder="Search users..."
                                 class="w-full bg-slate-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
                         </div>
                     </div>
@@ -122,11 +122,15 @@
     import axios from 'axios';
     import SpinnerComponent from '@/components/SpinnerComponent.vue';
     import { useApiStore } from '@/store/apiStore';
+    import { useAlertStore } from '@/store/alert';
 
     const users = ref([]);
     const statusButton = ref('');
     const activeLoaderId = ref(null);
     const apiStore = useApiStore();
+    const isSearchLoading = ref(false);
+    const searchInput = ref(false);
+    const alertStore = useAlertStore();
 
     const listUsers = async (showLoader = true) => {
         if(showLoader) apiStore.isLoading = true
@@ -173,6 +177,26 @@
         } finally {
             activeLoaderId.value = null;
         }
+    }
+
+    let timer;
+    const searchUser = () => {
+        clearTimeout(timer);
+        isSearchLoading.value = true
+        timer = setTimeout(async () => {
+            try {
+                if(searchInput.value) {
+                    const response = await axios.get('search-user', { params: { query: searchInput.value }});
+                    users.value = response.data.users
+                } else {
+                    await listUsers(false);
+                }
+            } catch(error) {
+                console.log(error);
+            } finally {
+                isSearchLoading.value = false
+            }
+        }, 1000);
     }
 
     onMounted(() => {
