@@ -1,4 +1,5 @@
 <template>
+    <AlertComponent />
     <div class="flex h-screen bg-gray-900 text-white">
 
         <!-- Main Content -->
@@ -15,7 +16,7 @@
                             <SearchIcon
                                 class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input type="text" placeholder="Search posts..."
-                                class="w-full bg-slate-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500"/>
+                                class="w-full bg-slate-700 rounded-lg pl-10 pr-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-pink-500" />
                         </div>
                     </div>
 
@@ -49,13 +50,17 @@
                         <tbody>
                             <tr v-for="(post, index) in apiStore.posts" :key="index"
                                 class="border-b border-gray-700 hover:bg-gray-750">
-                                <td class="py-3 px-4">{{ index+1 }}</td>
+                                <td class="py-3 px-4">{{ index + 1 }}</td>
                                 <td class="py-3 px-4">
-                                    <div class="min-w-10 min-h-9 max-w-10 max-h-9 rounded-md bg-gray-600 overflow-hidden flex items-center justify-center">
-                                        <img v-if="post.type === 'image'" :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt="" class="w-full h-full object-cover" />
-                                        
+                                    <div
+                                        class="min-w-10 min-h-9 max-w-10 max-h-9 rounded-md bg-gray-600 overflow-hidden flex items-center justify-center">
+                                        <img v-if="post.type === 'image'"
+                                            :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt=""
+                                            class="w-full h-full object-cover" />
+
                                         <video v-else class="w-full h-full object-cover">
-                                            <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`" type="video/mp4">
+                                            <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`"
+                                                type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     </div>
@@ -65,7 +70,8 @@
                                 <td class="py-3 px-4">{{ post.likes_count }}</td>
                                 <td class="py-3 px-4">{{ post.comments_count }}</td>
                                 <td class="py-3 px-4">
-                                    <span v-if="post.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-red-500 hover:bg-red-500/30">
+                                    <span v-if="post.is_banned === true"
+                                        class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-red-500 hover:bg-red-500/30">
                                         Stopped
                                     </span>
                                     <span v-else class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
@@ -77,8 +83,12 @@
                                         <button class="p-1 rounded hover:bg-gray-700" title="View">
                                             <EyeIcon class="w-5 h-5 text-gray-400 hover:text-white" />
                                         </button>
-                                        <button class="p-1 rounded hover:bg-gray-700" title="Delete">
-                                            <Trash2Icon class="w-5 h-5 text-gray-400 hover:text-red-500" />
+                                        <button @click="deletePost(post.id)" class="p-1 rounded hover:bg-gray-700 flex"
+                                            title="Delete">
+                                            <SpinnerComponent
+                                                v-if="activeLoaderId === post.id && statusButton === 'delete'"
+                                                class="w-5 h-5" />
+                                            <Trash2Icon v-else class="w-5 h-5 text-gray-400 hover:text-red-500" />
                                         </button>
                                     </div>
                                 </td>
@@ -106,18 +116,43 @@
 </template>
 
 <script setup>
-    import { FileTextIcon, SearchIcon, EyeIcon, Trash2Icon } from 'lucide-vue-next';
-    import { useApiStore } from '@/store/apiStore';
-    import { formatToSimpleDate } from '@/helpers/convertTime';
-import { onMounted } from 'vue';
+import { FileTextIcon, SearchIcon, EyeIcon, Trash2Icon } from 'lucide-vue-next';
+import { useApiStore } from '@/store/apiStore';
+import { formatToSimpleDate } from '@/helpers/convertTime';
+import AlertComponent from '@/components/AlertComponent.vue';
+import SpinnerComponent from '@/components/SpinnerComponent.vue';
+import { useAlertStore } from '@/store/alert';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
 
-    const apiStore = useApiStore();
+const apiStore = useApiStore();
+const alertStore = useAlertStore();
+const activeLoaderId = ref(null);
+const statusButton = ref('');
 
-    onMounted(() => {
-        apiStore.postsList();
-    })
+const deletePost = async (postId) => {
+    if (activeLoaderId.value !== null) return;
+    activeLoaderId.value = postId;
+    statusButton.value = 'delete';
+    try {
+        const response = await axios.delete(`post/${postId}/delete`);
+
+        if (response.status === 200) {
+            apiStore.postsList(false);
+            alertStore.triggerAlert('Post deleted successfully', 'success');
+        }
+    } catch (error) {
+        alertStore.triggerAlert('Post not deleted', 'error');
+        console.log(error);
+    } finally {
+        activeLoaderId.value = null;
+    }
+}
+
+onMounted(() => {
+    apiStore.postsList();
+})
 </script>
 
 
-<style>
-</style>
+<style></style>
