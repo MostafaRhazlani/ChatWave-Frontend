@@ -5,78 +5,86 @@
             <h2 class="text-2xl font-semibold mb-6">Dashboard Overview</h2>
 
             <!-- Analytics Widgets -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 <!-- Total Posts Widget -->
-                <div class="bg-slate-800 rounded-lg p-5 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-sm">Total Posts</p>
-                            <h3 class="text-2xl font-bold mt-1">1,254</h3>
-                            <div class="flex items-center mt-2 text-green-500">
-                                <TrendingUpIcon class="w-4 h-4 mr-1" />
-                                <span class="text-sm">+12 this week</span>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Posts</p>
+                                <h3 class="text-2xl font-bold mt-1">{{ totalPosts }}</h3>
+                            </div>
+                            <div class="bg-green-500/20 p-3 rounded-lg">
+                                <FileTextIcon class="w-6 h-6 text-green-500" />
                             </div>
                         </div>
-                        <div class="bg-green-500/20 p-3 rounded-lg">
-                            <FileTextIcon class="w-6 h-6 text-green-500" />
+                        <div class="flex items-center mt-2 text-green-500 mt-4">
+                            <TrendingUpIcon class="w-4 h-4 mr-1" />
+                            <span class="text-sm">+{{ totalPostsInWeek }} this week</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Active Users Widget -->
-                <div class="bg-slate-800 rounded-lg p-5 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-sm">Active Users</p>
-                            <h3 class="text-2xl font-bold mt-1">3,872</h3>
-                            <div class="flex items-center mt-2 text-blue-500">
-                                <TrendingUpIcon class="w-4 h-4 mr-1" />
-                                <span class="text-sm">+8 this week</span>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="text-gray-400 text-sm">Active Users</p>
+                                <h3 class="text-2xl font-bold mt-1">{{ totalUsers }}</h3>
+                            </div>
+                            <div class="bg-blue-500/20 p-3 rounded-lg">
+                                <UsersIcon class="w-6 h-6 text-blue-500" />
                             </div>
                         </div>
-                        <div class="bg-blue-500/20 p-3 rounded-lg">
-                            <UsersIcon class="w-6 h-6 text-blue-500" />
+                        <div class="flex items-center mt-2 text-blue-500 mt-4">
+                            <TrendingUpIcon class="w-4 h-4 mr-1" />
+                            <span class="text-sm">+{{ totalUsersInWeek }} this week</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Unread Messages Widget -->
-                <div class="bg-slate-800 rounded-lg p-5 border-l-4 border-red-500 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-sm">Total Messages</p>
-                            <h3 class="text-2xl font-bold mt-1">642</h3>
-                            <div class="flex items-center mt-2 text-red-500">
-                                <TrendingUpIcon class="w-4 h-4 mr-1" />
-                                <span class="text-sm">+24 this week</span>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-red-500 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Messages</p>
+                                <h3 class="text-2xl font-bold mt-1">{{ totalMessages }}</h3>
+                            </div>
+                            <div class="bg-red-500/20 p-3 rounded-lg">
+                                <MailIcon class="w-6 h-6 text-red-500" />
                             </div>
                         </div>
-                        <div class="bg-red-500/20 p-3 rounded-lg">
-                            <MailIcon class="w-6 h-6 text-red-500" />
+                        <div class="flex items-center mt-2 text-red-500 mt-4">
+                            <TrendingUpIcon class="w-4 h-4 mr-1" />
+                            <span class="text-sm">+{{ totalMessagesInWeek }} this week</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- New Comments Widget -->
-                <div class="bg-slate-800 rounded-lg p-5 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-gray-400 text-sm">Total Comments</p>
-                            <h3 class="text-2xl font-bold mt-1">928</h3>
-                            <div class="flex items-center mt-2 text-purple-500">
-                                <TrendingUpIcon class="w-4 h-4 mr-1" />
-                                <span class="text-sm">+18 this week</span>
+                <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
+                    <div class="flex flex-col">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total Comments</p>
+                                <h3 class="text-2xl font-bold mt-1">{{ totalComments }}</h3>
+                            </div>
+                            <div class="bg-purple-500/20 p-3 rounded-lg">
+                                <MessageSquareIcon class="w-6 h-6 text-purple-500" />
                             </div>
                         </div>
-                        <div class="bg-purple-500/20 p-3 rounded-lg">
-                            <MessageSquareIcon class="w-6 h-6 text-purple-500" />
+                        <div class="flex items-center mt-2 text-purple-500 mt-4">
+                            <TrendingUpIcon class="w-4 h-4 mr-1" />
+                            <span class="text-sm">+{{ totalCommentsInWeek }} this week</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Tables Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 <!-- Posts Table -->
                 <div class="bg-slate-800 rounded-lg border border-gray-700 overflow-hidden">
                     <div class="p-4 border-b border-gray-700 flex justify-between items-center">
@@ -157,7 +165,75 @@
 </template>
 
 <script setup>
-import { UsersIcon, FileTextIcon, TrendingUpIcon, MailIcon, MessageSquareIcon } from 'lucide-vue-next';
+    import { UsersIcon, FileTextIcon, TrendingUpIcon, MailIcon, MessageSquareIcon } from 'lucide-vue-next';
+    import axios from 'axios';
+    import { onMounted, ref } from 'vue';
+    import { useApiStore } from '@/store/apiStore';
+
+    const apiStore = useApiStore();
+    const totalPosts = ref(null);
+    const totalPostsInWeek = ref(null);
+    const totalUsersInWeek = ref(null);
+    const totalUsers = ref(null);
+    const totalMessagesInWeek = ref(null);
+    const totalMessages = ref(null);
+    const totalComments = ref(null);
+    const totalCommentsInWeek = ref(null);
+
+    const getTotalPosts = async () => {
+        try {
+            const response = await axios.get('posts/total');
+            totalPosts.value = response.data.postsCount
+            totalPostsInWeek.value = response.data.totalPostsInWeek
+        } catch (error) {
+            console.log('Error fetching total users', error);
+        }
+    }
+
+    const getTotalUsers = async () => {
+        try {
+            const response = await axios.get('users/total');
+            totalUsers.value = response.data.usersCount
+            totalUsersInWeek.value = response.data.totalUsersInWeek
+        } catch (error) {
+            console.log('Error fetching total users', error);
+        }
+    }
+
+    const getTotalMessages = async () => {
+        try {
+            const response = await axios.get('messages/total');
+            totalMessages.value = response.data.messagesCount
+            totalMessagesInWeek.value = response.data.totalMessagesInWeek
+        } catch (error) {
+            console.log('Error fetching total users', error);
+        }
+    }
+
+    const getTotalComments = async () => {
+        try {
+            const response = await axios.get('comments/total');
+            totalComments.value = response.data.commentsCount
+            totalCommentsInWeek.value = response.data.totalCommentsInWeek
+        } catch (error) {
+            console.log('Error fetching total users', error);
+        }
+    }
+
+    onMounted(async () => {
+        apiStore.isLoading = true;
+
+        try {
+            await getTotalPosts();
+            await getTotalUsers();
+            await getTotalMessages();
+            await getTotalComments();
+        } catch (error) {
+            console.log('error fetching data', error);
+        } finally {
+            apiStore.isLoading = false;
+        }
+    })
 
 </script>
 
