@@ -6,7 +6,7 @@
 
             <!-- Analytics Widgets -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <!-- Total Posts Widget -->
+                <!-- Total Posts -->
                 <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
                     <div class="flex flex-col">
                         <div class="flex items-start justify-between gap-2">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
 
-                <!-- Active Users Widget -->
+                <!-- Active Users -->
                 <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
                     <div class="flex flex-col">
                         <div class="flex items-start justify-between gap-2">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
 
-                <!-- Unread Messages Widget -->
+                <!-- total Messages -->
                 <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-red-500 hover:shadow-lg transition-shadow">
                     <div class="flex flex-col">
                         <div class="flex items-start justify-between gap-2">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <!-- New Comments Widget -->
+                <!-- total Comments -->
                 <div class="bg-slate-800 rounded-lg p-4 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
                     <div class="flex flex-col">
                         <div class="flex items-start justify-between gap-2">
@@ -89,7 +89,7 @@
                 <div class="bg-slate-800 rounded-lg border border-gray-700 overflow-hidden">
                     <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Recent Posts</h3>
-                        <button class="text-sm text-pink-500 hover:underline">View All</button>
+                        <RouterLink to="/admin/posts" class="text-sm text-cyan-500 hover:underline">View All</RouterLink>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -98,23 +98,32 @@
                                     <th class="py-3 px-4 text-left">Media</th>
                                     <th class="py-3 px-4 text-left">Author</th>
                                     <th class="py-3 px-4 text-left">Type</th>
-                                    <th class="py-3 px-4 text-left">Date</th>
-                                    <th class="py-3 px-4 text-left">Status</th>
+                                    <th class="py-3 px-4 text-left">Date Create</th>
+                                    <th class="py-3 px-4">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
+                                <tr v-for="(post, index) in lastFivePosts" :key="index"
                                     class="border-b border-gray-700 hover:bg-gray-750">
                                     <td class="py-3 px-4">
-                                        <div class="w-10 h-9 rounded-md bg-gray-600"></div>
+                                        <div
+                                            class="min-w-10 min-h-9 max-w-10 max-h-9 rounded-md bg-gray-600 overflow-hidden flex items-center justify-center">
+                                            <img v-if="post.type === 'image'"
+                                                :src="`http://127.0.0.1:8000/storage/posts/images/${post.media}`" alt=""
+                                                class="w-full h-full object-cover" />
+
+                                            <video v-else class="w-full h-full object-cover">
+                                                <source :src="`http://127.0.0.1:8000/storage/posts/videos/${post.media}`"
+                                                    type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
                                     </td>
-                                    <td class="py-3 px-4">Mostafa Rhazlani</td>
-                                    <td class="py-3 px-4">Image</td>
-                                    <td class="py-3 px-4 min-w-32">May 01, 2025</td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2 py-1 rounded-full text-xs bg-red-500/20 text-red-500">
-                                            Stopped
-                                        </span>
+                                    <td class="py-3 px-4">{{ post.person.full_name }}</td>
+                                    <td class="py-3 px-4">{{ post.type }}</td>
+                                    <td class="py-3 px-4 min-w-32">{{ formatToSimpleDate(post.created_at) }}</td>
+                                    <td class="py-3 px-4 text-center">
+                                        <StatusPostComponent :post="post" @statusUpdated="() => getLastFivePosts()"/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -126,32 +135,39 @@
                 <div class="bg-slate-800 rounded-lg overflow-hidden border border-gray-700">
                     <div class="p-4 border-b border-gray-700 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Top 5 Followed Profiles</h3>
-                        <button class="text-sm text-pink-500 hover:underline">View All</button>
+                        <RouterLink to="/admin/users" class="text-sm text-cyan-500 hover:underline">View All</RouterLink>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
                                 <tr class="bg-slate-700">
                                     <th class="py-3 px-4 text-left">User</th>
+                                    <th class="py-3 px-4 text-left">Username</th>
                                     <th class="py-3 px-4 text-left">Followers</th>
-                                    <th class="py-3 px-4 text-left">Is banned</th>
-                                    <th class="py-3 px-4 text-left">Status</th>
+                                    <th class="py-3 px-4">Is banned</th>
+                                    <th class="py-3 px-4">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
+                                <tr v-for="(user, index) in topFollowedUsers" :key="index"
                                     class="border-b border-gray-700 hover:bg-gray-750">
                                     <td class="py-3 px-4 flex items-center gap-2">
-                                        <div class="w-9 h-9 rounded-full bg-gray-600"></div>
-                                        Mostafa Rhazlani
+                                        <div class="min-w-9 min-h-9 max-w-9 max-h-9 rounded-full bg-gray-600 overflow-hidden">
+                                            <img :src="`http://127.0.0.1:8000/storage/images/${user.image}`" alt="" class="w-full h-full object-cover">
+                                        </div>
+                                        {{ user.full_name }}
                                     </td>
-                                    <td class="py-3 px-4">200M</td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-500">Yes</span>
+                                    <td class="py-3 px-4">{{ user.username }}</td>
+                                    <td class="py-3 px-4">{{ user.followers_count }}</td>
+                                    <td class="py-3 px-4 text-center">
+                                        <UserBanStatusComponent :user-id="user.id" :is-banned="user.is_banned" @updated="() => getTopFiveFollowedUsers()" />
                                     </td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
+                                    <td class="py-3 px-4 text-center">
+                                        <span v-if="user.is_logged === true" class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
                                             Online
+                                        </span>
+                                        <span v-else class="px-2 py-1 rounded-full text-xs bg-red-500/20 text-red-500">
+                                            Ofline
                                         </span>
                                     </td>
                                 </tr>
@@ -169,6 +185,9 @@
     import axios from 'axios';
     import { onMounted, ref } from 'vue';
     import { useApiStore } from '@/store/apiStore';
+    import { formatToSimpleDate } from '@/helpers/convertTime';
+    import StatusPostComponent from '@/components/StatusPostComponent.vue';
+    import UserBanStatusComponent from '@/components/UserBanStatusComponent.vue';
 
     const apiStore = useApiStore();
     const totalPosts = ref(null);
@@ -179,6 +198,8 @@
     const totalMessages = ref(null);
     const totalComments = ref(null);
     const totalCommentsInWeek = ref(null);
+    const lastFivePosts = ref([]);
+    const topFollowedUsers = ref([]);
 
     const getTotalPosts = async () => {
         try {
@@ -220,6 +241,24 @@
         }
     }
 
+    const getLastFivePosts = async () => {
+        try {
+            const response = await axios.get('posts/last-five');
+            lastFivePosts.value = response.data.lastFivePosts;
+        } catch (error) {
+            console.log('Error fetching posts', error);
+        }
+    }
+
+    const getTopFiveFollowedUsers = async () => {
+        try {
+            const response = await axios.get('users/top-five-followed');
+            topFollowedUsers.value = response.data.users;
+        } catch (error) {
+            console.log('Error fetching posts', error);
+        }
+    }
+
     onMounted(async () => {
         apiStore.isLoading = true;
 
@@ -228,6 +267,8 @@
             await getTotalUsers();
             await getTotalMessages();
             await getTotalComments();
+            await getLastFivePosts();
+            await getTopFiveFollowedUsers();
         } catch (error) {
             console.log('error fetching data', error);
         } finally {

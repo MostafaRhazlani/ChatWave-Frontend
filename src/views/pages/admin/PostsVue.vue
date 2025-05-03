@@ -40,10 +40,10 @@
                                 <th class="py-3 px-4 text-left">#</th>
                                 <th class="py-3 px-4 text-left">Media</th>
                                 <th class="py-3 px-4 text-left">Author</th>
-                                <th class="py-3 px-4 text-left">Date</th>
+                                <th class="py-3 px-4 text-left">Date Create</th>
                                 <th class="py-3 px-4 text-left">Likes</th>
                                 <th class="py-3 px-4 text-left">Comments</th>
-                                <th class="py-3 px-4 text-left">Status</th>
+                                <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -69,21 +69,8 @@
                                 <td class="py-3 px-4 min-w-36">{{ formatToSimpleDate(post.created_at) }}</td>
                                 <td class="py-3 px-4">{{ post.likes_count }}</td>
                                 <td class="py-3 px-4">{{ post.comments_count }}</td>
-                                <td class="py-3 px-4 cursor-pointer" @click="toggleStatusPost(post.id)">
-                                    <template v-if="activeLoaderId === post.id && statusButton === 'ban'">
-                                        <div class="flex pl-3 w-full">
-                                            <SpinnerComponent class="w-5 h-5"/>
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <span v-if="post.is_banned === true"
-                                            class="px-2 py-1 rounded-full text-xs bg-red-500/20 text-red-500 hover:bg-red-500/30">
-                                            Stopped
-                                        </span>
-                                        <span v-else class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400 hover:bg-green-500/30">
-                                            Published
-                                        </span>
-                                    </template>
+                                <td class="py-3 px-4 text-center">
+                                    <StatusPostComponent :post="post" @statusUpdated="() => apiStore.postsList(false)" />
                                 </td>
                                 <td class="py-3 px-4">
                                     <div class="flex gap-2">
@@ -128,6 +115,7 @@ import { useApiStore } from '@/store/apiStore';
 import { formatToSimpleDate } from '@/helpers/convertTime';
 import AlertComponent from '@/components/AlertComponent.vue';
 import SpinnerComponent from '@/components/SpinnerComponent.vue';
+import StatusPostComponent from '@/components/StatusPostComponent.vue';
 import { useAlertStore } from '@/store/alert';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
@@ -177,21 +165,6 @@ let timer;
                 isSearchLoading.value = false
             }
         }, 1000);
-    }
-
-    const toggleStatusPost = async (postId) => {
-        if(activeLoaderId.value !== null) return
-        activeLoaderId.value = postId
-        statusButton.value = 'ban';
-
-        try {
-            await axios.patch(`post/${postId}/status`);
-            await apiStore.postsList(false);
-        } catch (error) {
-            console.log('Something is wrong', error);
-        } finally {
-            activeLoaderId.value = null;
-        }
     }
 
     const filterPostsByStatus = async () => {

@@ -41,7 +41,7 @@
                                 <th class="py-3 px-4 text-left">Email</th>
                                 <th class="py-3 px-4 text-left">Date Birth</th>
                                 <th class="py-3 px-4 text-left">Country</th>
-                                <th class="py-3 px-4 text-left">Is Banned</th>
+                                <th class="py-3 px-4">Is Banned</th>
                                 <th class="py-3 px-4 text-left">Status</th>
                                 <th class="py-3 px-4 text-left">Actions</th>
                             </tr>
@@ -59,20 +59,8 @@
                                 <td class="py-3 px-4">{{ user.email }}</td>
                                 <td class="py-3 px-4 min-w-36">{{ user.date_birth }}</td>
                                 <td class="py-3 px-4">{{ user.nationality }}</td>
-                                <td class="py-3 px-4 min-w-32 cursor-pointer" @click="toggleBanUser(user.id)">
-                                    <template v-if="activeLoaderId === user.id && statusButton === 'ban'">
-                                        <div class="flex pl-7 w-full">
-                                            <SpinnerComponent class="w-5 h-5"/>
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <span v-if="user.is_banned === true" class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30">
-                                            Banned
-                                        </span>
-                                        <span v-else class="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">
-                                            Not Banned
-                                        </span>
-                                    </template>
+                                <td class="py-3 px-4 min-w-32 text-center">
+                                    <UserBanStatusComponent :user-id="user.id" :is-banned="user.is_banned" @updated="() => listUsers(false)" />
                                 </td>
                                 <td class="py-3 px-4">
                                     <span v-if="user.is_logged === true" class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-500">
@@ -121,6 +109,7 @@
     import { onMounted, ref } from 'vue';
     import axios from 'axios';
     import SpinnerComponent from '@/components/SpinnerComponent.vue';
+    import UserBanStatusComponent from '@/components/UserBanStatusComponent.vue';
     import { useApiStore } from '@/store/apiStore';
     import { useAlertStore } from '@/store/alert';
 
