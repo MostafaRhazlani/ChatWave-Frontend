@@ -24,8 +24,8 @@
 
 <template>
     <div>
-        <div :class="route.name === 'Profile' || route.name === 'Peoples' ? 'px-4 py-2 rounded-md' : 'text-xs px-3 py-1 rounded-full'" v-if="followStatus.isFollowMe && !followStatus.isFollowHim" @click="toggoleFollowAndRefresh"
-            class="cursor-pointer transition-colors duration-150  bg-slate-600 hover:bg-slate-500">
+        <div :class="route.name === 'Profile' || route.name === 'Peoples' ? 'px-2 py-2 rounded-md min-w-32' : 'text-xs px-3 py-1 rounded-full'" v-if="followStatus.isFollowMe && !followStatus.isFollowHim" @click="toggoleFollowAndRefresh"
+            class="cursor-pointer transition-colors duration-150 bg-slate-600 hover:bg-slate-500">
             Follow Back
         </div>
         <div v-else class="">

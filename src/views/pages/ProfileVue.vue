@@ -21,7 +21,6 @@ const isBlockedHim = ref();
 const tabs = [
     { name: 'Posts' },
     { name: 'Videos' },
-    { name: 'Photos' },
 ]
 
 const toggleMenuProfile = () => {
@@ -72,8 +71,8 @@ const playPauseVideo = (event) => {
         <!-- Main Content -->
         <div>
             <!-- Profile Header -->
-            <div class="border-b border-gray-700">
-                <div class="p-4">
+            <div class="px-4 py-4">
+                <div class="border-b border-gray-700">
                     <div class="flex items-center gap-4">
                         <div class="min-w-24 min-h-24 max-w-24 max-h-24 md:min-w-32 md:min-h-32 md:max-w-32 md:max-h-32 rounded-full border-[3px] p-1 border-pink-500 hover:opacity-90 duration-150 cursor-pointer overflow-hidden hover:border-pink-600">
                             <div class="w-full h-full rounded-full overflow-hidden">
@@ -100,7 +99,7 @@ const playPauseVideo = (event) => {
                                     </div>
                                 </div>
 
-                                <div class="hidden sm:flex justify-between gap-3" v-if="authStore.user.id !== apiStore.userInfo.id && isBlockedHim === false">
+                                <div class="hidden sm:flex justify-between items-center gap-3" v-if="authStore.user.id !== apiStore.userInfo.id && isBlockedHim === false">
                                     <FollowComponent class="w-full text-center" :userId="apiStore.userInfo.id"/>
                                     <RouterLink :to="`/messages/${apiStore.userInfo.id}`"
                                         class="w-full text-center px-4 py-2 transition-colors duration-150 rounded-md bg-pink-600 hover:bg-pink-500">
@@ -148,29 +147,8 @@ const playPauseVideo = (event) => {
                 </div>
             </div>
 
-            <div class="px-4 py-4">
-                <h2 class="text-lg font-semibold mb-4">Stories</h2>
-                <div class="overflow-x-auto w-full scroll-smooth no-scrollbar">
-                    <div class="snap-x snap-mandatory text-pink-500 flex gap-4 min-w-max">
-                        <div
-                            class="w-32 h-32 border-2 hover:bg-slate-800 duration-150 cursor-pointer border-dashed border-pink-500 rounded-full flex justify-center items-center">
-                            <div class="flex flex-col items-center">
-                                <Plus />
-                                <p>Add New</p>
-                            </div>
-                        </div>
-                        <div v-for="i in 10" :key="`highlights-${i}`"
-                            class="w-32 h-32 duration-150 cursor-pointer rounded-full overflow-hidden">
-                            <img class="w-full h-full object-cover"
-                                src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp"
-                                alt="">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Posts Section -->
-            <div class="px-4 py-4">
+            <div class="px-4 pb-4">
                 <!-- Page Navigation -->
                 <div class="flex mb-8 border-b border-gray-700">
                     <nav class="flex space-x-8 pt-1">
